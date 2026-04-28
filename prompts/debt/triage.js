@@ -7,19 +7,25 @@ Quickly assess the document and decide:
 Return ONLY:
 
 [TYPE]
-debt | other
+debt | unknown
 [/TYPE]
 
 [COMPLEXITY]
 simple | complex
 [/COMPLEXITY]
 
+[CONFIDENCE]
+low | medium | high
+[/CONFIDENCE]
+
 [NOTES]
-1 short sentence describing why.
+1 short sentence explaining your reasoning.
 [/NOTES]
 
 Rules:
-- "simple" = standard debt collection, few issues
-- "complex" = legal threats, court, multiple parties, unclear ownership
+- "simple" = standard debt collection, clear and straightforward
+- "complex" = legal threats, court action, unclear ownership, disputed facts, or missing key information
+
+If unsure, choose "unknown" and "complex".
 
 IMPORTANT: Keep it short. Not legal advice.`;
