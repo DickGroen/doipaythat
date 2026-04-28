@@ -1,7 +1,9 @@
-const HAIKU_MODEL = "claude-haiku-4-5-20251001";
+const HAIKU_MODEL = "claude-haiku-4-5";
 const SONNET_MODEL = "claude-sonnet-4-6";
 
 export async function callClaude(env, { model, maxTokens, prompt, fileBase64, mediaType }) {
+  const isPdf = mediaType === "application/pdf";
+
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -15,9 +17,23 @@ export async function callClaude(env, { model, maxTokens, prompt, fileBase64, me
       messages: [{
         role: "user",
         content: [
-          mediaType === "application/pdf"
-            ? { type: "document", source: { type: "base64", media_type: mediaType, data: fileBase64 } }
-            : { type: "image", source: { type: "base64", media_type: mediaType, data: fileBase64 } },
+          isPdf
+            ? {
+                type: "document",
+                source: {
+                  type: "base64",
+                  media_type: mediaType,
+                  data: fileBase64
+                }
+              }
+            : {
+                type: "image",
+                source: {
+                  type: "base64",
+                  media_type: mediaType,
+                  data: fileBase64
+                }
+              },
           { type: "text", text: prompt }
         ]
       }]
@@ -25,32 +41,32 @@ export async function callClaude(env, { model, maxTokens, prompt, fileBase64, me
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(`Claude API error: ${JSON.stringify(data)}`);
+
+  if (!res.ok) {
+    throw new Error(`Claude API error: ${JSON.stringify(data)}`);
+  }
+
   return data?.content?.[0]?.text || "";
 }
 
 export async function runTriage(env, { fileBase64, mediaType, triagePrompt }) {
-  const raw = await callClaude(env, {
+  return callClaude(env, {
     model: HAIKU_MODEL,
     maxTokens: 800,
     prompt: triagePrompt,
     fileBase64,
     mediaType
   });
-  console.log("TRIAGE RAW:", raw.substring(0, 300));
-  return raw;
 }
 
-export async function runAnalysis(env, { fileBase64, mediaType, route, haikusPrompt, sonnetPrompt }) {
+export async function runAnalysis(env, { fileBase64, mediaType, route, haikuPrompt, sonnetPrompt }) {
   const useSonnet = route === "SONNET";
-  const analysis = await callClaude(env, {
+
+  return callClaude(env, {
     model: useSonnet ? SONNET_MODEL : HAIKU_MODEL,
     maxTokens: useSonnet ? 3500 : 1800,
-    prompt: useSonnet ? sonnetPrompt : haikusPrompt,
+    prompt: useSonnet ? sonnetPrompt : haikuPrompt,
     fileBase64,
     mediaType
-  }) || "";
-  console.log("ANALYSIS MODEL:", useSonnet ? "sonnet" : "haiku");
-  console.log("ANALYSIS LENGTH:", analysis.length);
-  return analysis;
+  });
 }
