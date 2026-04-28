@@ -14,29 +14,31 @@ export async function callClaude(env, { model, maxTokens, prompt, fileBase64, me
     body: JSON.stringify({
       model,
       max_tokens: maxTokens,
-      messages: [{
-        role: "user",
-        content: [
-          isPdf
-            ? {
-                type: "document",
-                source: {
-                  type: "base64",
-                  media_type: mediaType,
-                  data: fileBase64
+      system: prompt,
+      messages: [
+        {
+          role: "user",
+          content: [
+            isPdf
+              ? {
+                  type: "document",
+                  source: {
+                    type: "base64",
+                    media_type: mediaType,
+                    data: fileBase64
+                  }
                 }
-              }
-            : {
-                type: "image",
-                source: {
-                  type: "base64",
-                  media_type: mediaType,
-                  data: fileBase64
+              : {
+                  type: "image",
+                  source: {
+                    type: "base64",
+                    media_type: mediaType,
+                    data: fileBase64
+                  }
                 }
-              },
-          { type: "text", text: prompt }
-        ]
-      }]
+          ]
+        }
+      ]
     })
   });
 
