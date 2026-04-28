@@ -1,89 +1,366 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DoIPayThis — Do you actually have to pay this?</title>
-  <meta name="description" content="Check if you actually have to pay. Debt letters, parking fines, bills and subscriptions — get a full analysis and ready-to-send letter within 24 hours.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 40px 0; max-width: 760px; margin-left: auto; margin-right: auto; }
-    @media (max-width: 600px) { .category-grid { grid-template-columns: 1fr; } }
-    .category-card { background: var(--white); border: 1.5px solid var(--line); border-radius: 16px; padding: 28px 24px; text-decoration: none; color: var(--ink); display: block; transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s; }
-    .category-card:hover { border-color: var(--accent-2); box-shadow: 0 8px 24px rgba(17,24,39,0.10); transform: translateY(-2px); text-decoration: none; }
-    .category-card__icon { font-size: 2rem; margin-bottom: 14px; }
-    .category-card__title { font-family: 'DM Serif Display', Georgia, serif; font-size: 1.3rem; color: var(--ink); margin-bottom: 8px; }
-    .category-card__desc { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
-    .category-card__price { font-size: 0.82rem; font-weight: 700; color: var(--accent); }
-    .category-card--featured { border-color: var(--accent-2); background: var(--accent-soft); }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Successful — Upload Document | DoIPayThat</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
 </head>
+
 <body>
 
-<header class="site-header">
-  <div class="container--wide">
-    <div class="site-header__inner">
-      <div class="logo"><span class="logo-dot"></span>DoIPayThis</div>
+  <div id="locked-screen" class="locked" style="display:none;">
+    <div class="locked__icon">🔒</div>
+    <h2>Link invalid or expired</h2>
+    <p>This page is only accessible after a successful payment.</p>
+    <a href="/">Back to DoIPayThat</a>
+  </div>
+
+  <div id="thankyou-app" class="wrap" style="display:none;">
+    <div class="card">
+
+      <div class="badge">
+        <span class="badge__dot"></span>
+        Payment successful
+      </div>
+
+      <div class="progress">
+        <span class="progress__done">✓ Paid</span>
+        <span class="progress__divider"></span>
+        <span class="progress__current" id="progress-label">Step 2: Upload document</span>
+      </div>
+
+      <h1 id="page-title">Upload your document</h1>
+
+      <p class="subtext">
+        You'll receive your complete <span id="result-label">analysis and letter</span>
+        <strong>within 24 hours</strong> by email.
+      </p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step__num">1</div>
+          <div>
+            <div class="step__title">Upload your document</div>
+            <div class="step__desc" id="document-label">PDF, JPG or PNG accepted.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">2</div>
+          <div>
+            <div class="step__title">We review everything</div>
+            <div class="step__desc">We check for errors, deadlines, weak points and dispute options.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">3</div>
+          <div>
+            <div class="step__title">Result by email</div>
+            <div class="step__desc">Full analysis plus ready-to-send letter within 24 hours.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="upsell" id="upsell-box">
+        <div class="upsell-box">
+          <div class="upsell-badge">⭐ Most users add this</div>
+          <h3>Increase your success chances</h3>
+
+          <!-- ✅ UPDATED PARAGRAPH -->
+          <p>
+            We strengthen your letter using proven legal patterns, stronger arguments and clearer wording.
+            This increases your chances of winning your case.
+          </p>
+
+          <button class="upsell-btn" id="add-upsell" type="button">
+            Add for £9
+          </button>
+        </div>
+      </div>
+
+      <div id="upload-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="customer-name">Your name</label>
+            <input type="text" id="customer-name" placeholder="First and last name" autocomplete="name" />
+          </div>
+
+          <div class="field">
+            <label for="customer-email">Email address for your result</label>
+            <input type="email" id="customer-email" placeholder="you@example.com" autocomplete="email" />
+          </div>
+        </div>
+
+        <label class="upload-panel" id="upload-panel" for="real-file-input">
+          <input type="file" id="real-file-input" accept=".pdf,.jpg,.jpeg,.png" />
+
+          <div class="upload-panel__icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#6b7280" stroke-width="1.8">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+          </div>
+
+          <div class="upload-panel__title">Click or drag file here</div>
+          <div class="upload-panel__sub">PDF, JPG or PNG · max. 10 MB</div>
+        </label>
+
+        <div class="upload-security">
+          🔒 Secure SSL connection · Document deleted after analysis
+        </div>
+
+        <div class="selected-file" id="selected-file">
+          <div class="selected-file__check">✓</div>
+          <div>
+            <div class="selected-file__name" id="selected-file-name"></div>
+            <div class="selected-file__meta" id="selected-file-meta"></div>
+          </div>
+          <button type="button" class="selected-file__remove" id="remove-file">remove</button>
+        </div>
+
+        <button class="cta" id="submit-btn" type="button" disabled>
+          Select a file first
+        </button>
+
+        <div class="cta-note">
+          After upload we start immediately — result within 24 hours.
+        </div>
+
+        <div class="status" id="status-box"></div>
+      </div>
+
+      <div id="success-screen" class="success-screen" style="display:none;">
+        <div class="success-screen__icon">✓</div>
+        <h2>Upload successful</h2>
+        <p>Your analysis and letter will be sent to your email address within 24 hours.</p>
+      </div>
+
+      <div class="fallback">
+        <strong>Upload not working?</strong>
+        <p>
+          Send your document directly by email. Please include your name and the email address you paid with.
+        </p>
+        <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a>
+      </div>
+
     </div>
   </div>
-</header>
 
-<section class="hero" style="padding-bottom: 20px;">
-  <div class="container" style="text-align:center;">
-    <div class="hero__eyebrow" style="display:inline-block;margin-bottom:20px;">
-      UK consumer document analysis &mdash; fast, affordable, informational
-    </div>
-    <h1>Do you actually have to pay this?</h1>
-    <p class="hero__sub" style="max-width:600px;margin:0 auto 16px;">
-      Most people pay without checking. Debt letters, parking fines, disputed bills and unwanted subscriptions &mdash; many can be challenged or cancelled.
-    </p>
-    <p style="font-size:0.9rem;color:var(--muted);">Choose what you&rsquo;ve received:</p>
-  </div>
-</section>
+  <script>
+    const CONFIG = {
+      debt: {
+        title: "Upload your debt letter",
+        progress: "Step 2: Debt letter upload",
+        documentLabel: "Debt letter, collection letter or solicitor letter. PDF, JPG or PNG.",
+        resultLabel: "analysis and dispute letter"
+      },
+      parking: {
+        title: "Upload your parking fine",
+        progress: "Step 2: Parking fine upload",
+        documentLabel: "Parking fine, PCN or notice. PDF, JPG or PNG.",
+        resultLabel: "analysis and appeal letter"
+      },
+      bill: {
+        title: "Upload your bill",
+        progress: "Step 2: Bill upload",
+        documentLabel: "Bill, invoice or charge notice. PDF, JPG or PNG.",
+        resultLabel: "analysis and dispute letter"
+      },
+      subscription: {
+        title: "Upload your subscription or contract",
+        progress: "Step 2: Contract upload",
+        documentLabel: "Subscription, contract or cancellation notice. PDF, JPG or PNG.",
+        resultLabel: "analysis and cancellation letter"
+      }
+    };
 
-<section style="padding: 0 0 72px;">
-  <div class="container">
-    <div class="category-grid">
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get("type");
+    const sessionId = params.get("session_id");
+    const cfg = CONFIG[type];
 
-      <a href="/debt/" class="category-card category-card--featured">
-        <div class="category-card__icon">&#128424;</div>
-        <div class="category-card__title">Debt Letter</div>
-        <div class="category-card__desc">Debt collection letter, demand notice or solicitor&rsquo;s letter. Check if you actually owe this money.</div>
-        <div class="category-card__price">Full analysis + dispute letter &mdash; &pound;29</div>
-      </a>
+    let upsellSelected = false;
 
-      <a href="/parking/" class="category-card">
-        <div class="category-card__icon">&#128663;</div>
-        <div class="category-card__title">Parking Fine</div>
-        <div class="category-card__desc">Private parking charge or council PCN. Many can be successfully appealed &mdash; especially private fines.</div>
-        <div class="category-card__price">Full analysis + appeal letter &mdash; &pound;19</div>
-      </a>
+    if (!cfg || !sessionId) {
+      document.getElementById("locked-screen").style.display = "";
+    } else {
+      document.getElementById("thankyou-app").style.display = "";
 
-      <a href="/bill/" class="category-card">
-        <div class="category-card__icon">&#9889;</div>
-        <div class="category-card__title">Disputed Bill</div>
-        <div class="category-card__desc">Energy, water, telecoms or service bill that doesn&rsquo;t look right. Check for estimated readings, wrong tariffs and unlawful fees.</div>
-        <div class="category-card__price">Full analysis + dispute letter &mdash; &pound;19</div>
-      </a>
+      document.getElementById("page-title").textContent = cfg.title;
+      document.getElementById("progress-label").textContent = cfg.progress;
+      document.getElementById("document-label").textContent = cfg.documentLabel;
+      document.getElementById("result-label").textContent = cfg.resultLabel;
 
-      <a href="/subscription/" class="category-card">
-        <div class="category-card__icon">&#128260;</div>
-        <div class="category-card__title">Subscription / Contract</div>
-        <div class="category-card__desc">Gym, mobile, insurance or software contract you want to cancel. Check if the auto-renewal or terms are actually enforceable.</div>
-        <div class="category-card__price">Full analysis + cancellation letter &mdash; &pound;19</div>
-      </a>
+      document.getElementById("add-upsell")?.addEventListener("click", () => {
+        upsellSelected = true;
 
-    </div>
+        const btn = document.getElementById("add-upsell");
+        btn.textContent = "✓ Added";
+        btn.style.background = "#16a34a";
+      });
 
-    <p style="text-align:center;font-size:0.82rem;color:var(--muted);margin-top:8px;">
-      DoIPayThis provides informational analysis and draft letters &mdash; not legal advice. &nbsp;&middot;&nbsp;
-      <a href="mailto:support@doipaythis.co.uk">support@doipaythis.co.uk</a>
-    </p>
-  </div>
-</section>
+      const panel = document.getElementById("upload-panel");
+      const fileInput = document.getElementById("real-file-input");
+      const selectedBox = document.getElementById("selected-file");
+      const fileName = document.getElementById("selected-file-name");
+      const fileMeta = document.getElementById("selected-file-meta");
+      const removeBtn = document.getElementById("remove-file");
+      const submitBtn = document.getElementById("submit-btn");
+      const statusBox = document.getElementById("status-box");
+
+      let selectedFile = null;
+
+      function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + " B";
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+        return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+      }
+
+      function validateFile(file) {
+        const allowed = ["application/pdf", "image/jpeg", "image/png"];
+        if (!allowed.includes(file.type) && !/\.(pdf|jpe?g|png)$/i.test(file.name)) {
+          return "Please upload a PDF, JPG or PNG file.";
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          return "File too large. Maximum 10 MB.";
+        }
+        return null;
+      }
+
+      function showStatus(message, type) {
+        statusBox.className = "status " + type;
+        statusBox.textContent = message;
+      }
+
+      function clearStatus() {
+        statusBox.className = "status";
+        statusBox.textContent = "";
+      }
+
+      function setFile(file) {
+        const error = validateFile(file);
+        if (error) {
+          showStatus(error, "error");
+          return;
+        }
+        selectedFile = file;
+        fileName.textContent = file.name;
+        fileMeta.textContent = formatFileSize(file.size);
+        selectedBox.classList.add("show");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit document";
+        clearStatus();
+      }
+
+      function clearFile() {
+        selectedFile = null;
+        fileInput.value = "";
+        selectedBox.classList.remove("show");
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Select a file first";
+      }
+
+      fileInput.addEventListener("change", () => {
+        if (fileInput.files[0]) setFile(fileInput.files[0]);
+      });
+
+      removeBtn.addEventListener("click", clearFile);
+
+      panel.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        panel.classList.add("drag-over");
+      });
+
+      panel.addEventListener("dragleave", () => {
+        panel.classList.remove("drag-over");
+      });
+
+      panel.addEventListener("drop", (event) => {
+        event.preventDefault();
+        panel.classList.remove("drag-over");
+        if (event.dataTransfer.files[0]) {
+          setFile(event.dataTransfer.files[0]);
+        }
+      });
+
+      submitBtn.addEventListener("click", async () => {
+        const nameInput = document.getElementById("customer-name");
+        const emailInput = document.getElementById("customer-email");
+
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+
+        nameInput.classList.remove("invalid");
+        emailInput.classList.remove("invalid");
+
+        if (!name) {
+          nameInput.classList.add("invalid");
+          showStatus("Please enter your name.", "error");
+          return;
+        }
+
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          emailInput.classList.add("invalid");
+          showStatus("Please enter a valid email address.", "error");
+          return;
+        }
+
+        if (!selectedFile) {
+          showStatus("Please select a file first.", "error");
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Uploading…";
+        showStatus("Uploading your document — please wait…", "info");
+
+        try {
+          const fd = new FormData();
+
+          fd.append("file", selectedFile);
+          fd.append("name", name);
+          fd.append("email", email);
+          fd.append("type", type);
+          fd.append("session_id", sessionId);
+          fd.append("upsell_stronger_letter", upsellSelected ? "true" : "false");
+          fd.append("upsell_stronger_letter_price", upsellSelected ? "9" : "0");
+
+          const res = await fetch("/api/submit", {
+            method: "POST",
+            body: fd
+          });
+
+          const data = await res.json();
+
+          if (!res.ok || !data.ok) {
+            throw new Error(data.error || "Upload failed.");
+          }
+
+          document.getElementById("upload-form").style.display = "none";
+          document.getElementById("upsell-box").style.display = "none";
+          document.getElementById("success-screen").style.display = "";
+
+        } catch (err) {
+          showStatus(
+            "Something went wrong: " + (err.message || "Please try again or email us directly."),
+            "error"
+          );
+
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Try again";
+        }
+      });
+    }
+  </script>
+
+  <script src="/app.js" defer></script>
 
 </body>
 </html>
