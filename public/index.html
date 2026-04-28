@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DoIPayThis — Do you actually have to pay this?</title>
+  <meta name="description" content="Check if you actually have to pay. Debt letters, parking fines, bills and subscriptions — get a full analysis and ready-to-send letter within 24 hours.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 40px 0; max-width: 760px; margin-left: auto; margin-right: auto; }
+    @media (max-width: 600px) { .category-grid { grid-template-columns: 1fr; } }
+    .category-card { background: var(--white); border: 1.5px solid var(--line); border-radius: 16px; padding: 28px 24px; text-decoration: none; color: var(--ink); display: block; transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s; }
+    .category-card:hover { border-color: var(--accent-2); box-shadow: 0 8px 24px rgba(17,24,39,0.10); transform: translateY(-2px); text-decoration: none; }
+    .category-card__icon { font-size: 2rem; margin-bottom: 14px; }
+    .category-card__title { font-family: 'DM Serif Display', Georgia, serif; font-size: 1.3rem; color: var(--ink); margin-bottom: 8px; }
+    .category-card__desc { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+    .category-card__price { font-size: 0.82rem; font-weight: 700; color: var(--accent); }
+    .category-card--featured { border-color: var(--accent-2); background: var(--accent-soft); }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container--wide">
+    <div class="site-header__inner">
+      <div class="logo"><span class="logo-dot"></span>DoIPayThis</div>
+    </div>
+  </div>
+</header>
+
+<section class="hero" style="padding-bottom: 20px;">
+  <div class="container" style="text-align:center;">
+    <div class="hero__eyebrow" style="display:inline-block;margin-bottom:20px;">
+      UK consumer document analysis &mdash; fast, affordable, informational
+    </div>
+    <h1>Do you actually have to pay this?</h1>
+    <p class="hero__sub" style="max-width:600px;margin:0 auto 16px;">
+      Most people pay without checking. Debt letters, parking fines, disputed bills and unwanted subscriptions &mdash; many can be challenged or cancelled.
+    </p>
+    <p style="font-size:0.9rem;color:var(--muted);">Choose what you&rsquo;ve received:</p>
+  </div>
+</section>
+
+<section style="padding: 0 0 72px;">
+  <div class="container">
+    <div class="category-grid">
+
+      <a href="/debt/" class="category-card category-card--featured">
+        <div class="category-card__icon">&#128424;</div>
+        <div class="category-card__title">Debt Letter</div>
+        <div class="category-card__desc">Debt collection letter, demand notice or solicitor&rsquo;s letter. Check if you actually owe this money.</div>
+        <div class="category-card__price">Full analysis + dispute letter &mdash; &pound;29</div>
+      </a>
+
+      <a href="/parking/" class="category-card">
+        <div class="category-card__icon">&#128663;</div>
+        <div class="category-card__title">Parking Fine</div>
+        <div class="category-card__desc">Private parking charge or council PCN. Many can be successfully appealed &mdash; especially private fines.</div>
+        <div class="category-card__price">Full analysis + appeal letter &mdash; &pound;19</div>
+      </a>
+
+      <a href="/bill/" class="category-card">
+        <div class="category-card__icon">&#9889;</div>
+        <div class="category-card__title">Disputed Bill</div>
+        <div class="category-card__desc">Energy, water, telecoms or service bill that doesn&rsquo;t look right. Check for estimated readings, wrong tariffs and unlawful fees.</div>
+        <div class="category-card__price">Full analysis + dispute letter &mdash; &pound;19</div>
+      </a>
+
+      <a href="/subscription/" class="category-card">
+        <div class="category-card__icon">&#128260;</div>
+        <div class="category-card__title">Subscription / Contract</div>
+        <div class="category-card__desc">Gym, mobile, insurance or software contract you want to cancel. Check if the auto-renewal or terms are actually enforceable.</div>
+        <div class="category-card__price">Full analysis + cancellation letter &mdash; &pound;19</div>
+      </a>
+
+    </div>
+
+    <p style="text-align:center;font-size:0.82rem;color:var(--muted);margin-top:8px;">
+      DoIPayThis provides informational analysis and draft letters &mdash; not legal advice. &nbsp;&middot;&nbsp;
+      <a href="mailto:support@doipaythis.co.uk">support@doipaythis.co.uk</a>
+    </p>
+  </div>
+</section>
+
+</body>
+</html>
