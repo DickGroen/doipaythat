@@ -12,14 +12,13 @@ export async function verifySession(env, sessionId) {
   });
 
   if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Stripe API error: ${err}`);
+    throw new Error(await res.text());
   }
 
   const session = await res.json();
 
   if (session.payment_status !== "paid") {
-    throw new Error(`Payment not completed (status: ${session.payment_status})`);
+    throw new Error("Payment not completed");
   }
 
   return {
@@ -28,7 +27,12 @@ export async function verifySession(env, sessionId) {
   };
 }
 
-export function getStripeLink(env, type) {
-  const key = `STRIPE_LINK_${type.toUpperCase()}`;
-  return env[key] || env.STRIPE_LINK_DEBT || "https://doipaythis.co.uk";
+export async function verifyPaidSession(env, sessionId) {
+  const record = await env.PAID_SESSIONS.get(sessionId, "json");
+
+  if (!record || !record.paid) {
+    throw new Error("Payment not verified");
+  }
+
+  return record;
 }
