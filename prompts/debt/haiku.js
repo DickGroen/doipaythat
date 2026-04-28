@@ -35,7 +35,10 @@ Short title
 [/NEXT_STEPS]
 
 [DISPUTE_LETTER]
-Short, simple letter requesting proof of debt and putting account on hold.
+Write a short, simple letter that:
+- disputes the debt
+- requests proof of the agreement
+- requests the account to be placed on hold
 [/DISPUTE_LETTER]
 
 IMPORTANT: Not legal advice.`;
