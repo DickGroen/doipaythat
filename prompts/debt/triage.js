@@ -28,4 +28,6 @@ Rules:
 
 If unsure, choose "unknown" and "complex".
 
+Base your decision only on the content of the document. Do not assume missing information.
+
 IMPORTANT: Keep it short. Not legal advice.`;
