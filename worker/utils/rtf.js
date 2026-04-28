@@ -1,67 +1,110 @@
-import { extractTaggedSection } from "./files.js";
-
-export function rtfEscape(str) {
-  return String(str || "")
-    .replace(/\\/g, "\\\\").replace(/\{/g, "\\{").replace(/\}/g, "\\}")
-    .replace(/\n/g, "\\par\n")
-    .replace(/[^\x00-\x7F]/g, c => `\\u${c.charCodeAt(0)}?`);
+export function rtfToBase64(rtf) {
+  return btoa(unescape(encodeURIComponent(rtf)));
 }
 
-export function rtfToBase64(rtfString) {
-  const bytes = new TextEncoder().encode(rtfString);
-  let binary = "";
-  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  return btoa(binary);
+function esc(value = "") {
+  return String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/{/g, "\\{")
+    .replace(/}/g, "\\}")
+    .replace(/\n/g, "\\par\n");
 }
 
-function bulletLines(text) {
-  return String(text || "").split("\n").map(l => l.trim()).filter(Boolean)
-    .map(l => `{\\pard\\sb0\\sa200\\fi-300\\li300\\f1\\fs22 \\bullet  ${rtfEscape(l.replace(/^- /, ""))}\\par}`)
-    .join("\n");
+function stripBlocks(text = "") {
+  return String(text)
+    .replace(/\[\/?[A-Z_]+\]/g, "")
+    .trim();
 }
 
-// The analysis section tag varies by type (OBJECTION / DISPUTE_LETTER / APPEAL_LETTER)
-const LETTER_TAG = { debt: "DISPUTE_LETTER", parking: "APPEAL_LETTER", bill: "DISPUTE_LETTER", subscription: "CANCELLATION_LETTER" };
+function getBlock(text, block) {
+  const regex = new RegExp(`\\[${block}\\]([\\s\\S]*?)\\[\\/${block}\\]`, "i");
+  const match = String(text).match(regex);
+  return match ? match[1].trim() : "";
+}
 
-export function makeAnalysisRtf(analysis, customerName, customerEmail, triage, type) {
-  const title = extractTaggedSection(analysis, "TITLE") || "DoIPayThis Analysis";
-  const amount = triage?.amount_claimed ? `\\u163?${triage.amount_claimed}` : (triage?.fine_amount ? `\\u163?${triage.fine_amount}` : "unknown");
+export function makeAnalysisRtf(analysis, name = "", email = "", triage = {}, type = "debt") {
+  const title = getBlock(analysis, "TITLE") || "Document Analysis";
+  const summary = getBlock(analysis, "SUMMARY");
+  const issues = getBlock(analysis, "ISSUES");
+  const assessment = getBlock(analysis, "ASSESSMENT");
+  const nextSteps = getBlock(analysis, "NEXT_STEPS");
 
   return `{\\rtf1\\ansi\\deff0
-{\\fonttbl{\\f0\\froman\\fcharset0 Times New Roman;}{\\f1\\fswiss\\fcharset0 Arial;}}
-{\\colortbl;\\red27\\green58\\blue140;\\red153\\green26\\blue26;}
-\\paperw11906\\paperh16838\\margl1800\\margr1800\\margt1440\\margb1440\\f1\\fs22
-{\\pard\\sb400\\sa200\\f1\\fs32\\b\\cf1 ${rtfEscape(title)}\\par}
-{\\pard\\sb0\\sa100\\f1\\fs20\\cf0 Name: ${rtfEscape(customerName || "")} (${rtfEscape(customerEmail || "")})\\par}
-{\\pard\\sb0\\sa200\\f1\\fs20\\cf0 Type: ${rtfEscape(type || "")} | Amount: ${amount} | Risk: ${rtfEscape(triage?.risk || "")}\\par}
-{\\pard\\sb300\\sa120\\f1\\fs24\\b Summary\\par}
-{\\pard\\sa200\\f1\\fs22 ${rtfEscape(extractTaggedSection(analysis, "SUMMARY"))}\\par}
-{\\pard\\sb300\\sa120\\f1\\fs24\\b Findings\\par}
-${bulletLines(extractTaggedSection(analysis, "ISSUES"))}
-{\\pard\\sb300\\sa120\\f1\\fs24\\b Assessment\\par}
-{\\pard\\sa200\\f1\\fs22 ${rtfEscape(extractTaggedSection(analysis, "ASSESSMENT"))}\\par}
-{\\pard\\sb300\\sa120\\f1\\fs24\\b Next Steps\\par}
-${bulletLines(extractTaggedSection(analysis, "NEXT_STEPS"))}
-{\\pard\\sb400\\sa100\\f1\\fs18\\cf0\\i Note: This is an informational analysis and not legal advice. We do not represent you. For complex cases, contact Citizens Advice or a solicitor.\\par}
+{\\fonttbl{\\f0 Arial;}{\\f1 Georgia;}}
+\\paperw11906\\paperh16838\\margl1440\\margr1440\\margt1200\\margb1200
+
+\\f1\\fs34\\b ${esc(title)}\\b0\\par
+\\f0\\fs20\\cf0
+\\par
+\\b Customer:\\b0 ${esc(name)}\\par
+\\b Email:\\b0 ${esc(email)}\\par
+\\b Type:\\b0 ${esc(type)}\\par
+\\b Date:\\b0 ${esc(new Date().toLocaleDateString("en-GB"))}\\par
+
+\\par\\line
+
+\\fs26\\b Summary\\b0\\fs20\\par
+${esc(summary || "No summary available.")}\\par
+
+\\par
+\\fs26\\b Potential Issues\\b0\\fs20\\par
+${esc(issues || "No specific issues identified.")}\\par
+
+\\par
+\\fs26\\b Assessment\\b0\\fs20\\par
+${esc(assessment || "No assessment available.")}\\par
+
+\\par
+\\fs26\\b Recommended Next Steps\\b0\\fs20\\par
+${esc(nextSteps || "No next steps available.")}\\par
+
+\\par\\line
+\\fs18\\i This document is an informational analysis only and is not legal advice. We do not represent you legally.\\i0\\par
 }`;
 }
 
-export function makeLetterRtf(analysis, customerName, triage, type) {
-  const tag = LETTER_TAG[type] || "DISPUTE_LETTER";
-  const letterTitle = {
+export function makeLetterRtf(analysis, name = "", triage = {}, type = "debt") {
+  const letter = getBlock(analysis, "DISPUTE_LETTER") || stripBlocks(analysis);
+
+  const titleMap = {
     debt: "Dispute Letter",
     parking: "Appeal Letter",
     bill: "Dispute Letter",
     subscription: "Cancellation Letter"
-  }[type] || "Letter";
+  };
+
+  const title = titleMap[type] || "Letter";
 
   return `{\\rtf1\\ansi\\deff0
-{\\fonttbl{\\f0\\froman\\fcharset0 Times New Roman;}{\\f1\\fswiss\\fcharset0 Arial;}}
-{\\colortbl;\\red27\\green58\\blue140;\\red153\\green26\\blue26;}
-\\paperw11906\\paperh16838\\margl1800\\margr1800\\margt1440\\margb1440\\f1\\fs22
-{\\pard\\sb400\\sa200\\f1\\fs28\\b\\cf2 ${rtfEscape(letterTitle)}\\par}
-{\\pard\\sb0\\sa200\\f1\\fs20\\cf0 Prepared for: ${rtfEscape(customerName || "")}\\par}
-{\\pard\\sb300\\sa200\\f1\\fs22\\cf0 ${rtfEscape(extractTaggedSection(analysis, tag))}\\par}
-{\\pard\\sb400\\sa100\\f1\\fs18\\cf0\\i Note: This is a draft letter and not legal advice. DoIPayThis is not liable for the outcome.\\par}
+{\\fonttbl{\\f0 Arial;}{\\f1 Georgia;}}
+\\paperw11906\\paperh16838\\margl1440\\margr1440\\margt1200\\margb1200
+
+\\f1\\fs32\\b ${esc(title)}\\b0\\par
+\\f0\\fs20
+\\par
+
+[Your Name]\\par
+[Your Address]\\par
+[Postcode]\\par
+\\par
+[Company Name]\\par
+[Company Address]\\par
+\\par
+${esc(new Date().toLocaleDateString("en-GB"))}\\par
+\\par
+
+\\b Re: ${esc(title)}\\b0\\par
+\\b Reference:\\b0 [Reference Number]\\par
+
+\\par
+${esc(letter)}\\par
+
+\\par
+Yours faithfully,\\par
+\\par
+${esc(name || "[Your Name]")}\\par
+
+\\par\\line
+\\fs18\\i This letter is a draft template for informational purposes only and is not legal advice.\\i0\\par
 }`;
 }
