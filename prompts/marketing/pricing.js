@@ -1,51 +1,61 @@
-export const pricingPrompt = `
-You are a senior pricing strategist and conversion optimization expert for legal-tech, SaaS, and paid acquisition funnels.
+const PRICES = {
+  parking: {
+    basic: 19,
+    pro: 29,
+    premium: 49
+  },
 
-Business:
-DoIPayThat (UK) / MussIchZahlen (DE)
+  debt: {
+    basic: 29,
+    pro: 49,
+    premium: 79
+  },
 
-Model:
-Users upload a document such as a debt letter, parking fine, bill, or subscription/contract.
-They receive a free check first.
-Then they can pay for a full analysis plus dispute, appeal, or cancellation letter.
+  bill: {
+    basic: 29,
+    pro: 49,
+    premium: 79
+  },
 
-Current prices:
-- Debt: £29
-- Parking: £19
-- Bill: £29
-- Subscription: £29
+  subscription: {
+    basic: 29,
+    pro: 39,
+    premium: 69
+  }
+};
 
-Traffic:
-Google Ads
+const CURRENCY = "£";
 
-Ad costs:
-- CPC: £0.80–£1.20
+function formatPrice(value) {
+  return `${CURRENCY}${value}`;
+}
 
-Current funnel:
-Google Ads → landing page → free check → Stripe payment → upload document → email result
+function applyPricing(type) {
+  const prices = PRICES[type];
 
-Conversion:
-- Free check to paid: 5–10%
-- Target CPA: below £15
+  if (!prices) {
+    console.warn("Unknown pricing type:", type);
+    return;
+  }
 
-Goal:
-Reach £5,000/month profit while scaling paid traffic.
+  const basicEl = document.getElementById("price-basic");
+  const proEl = document.getElementById("price-pro");
+  const premiumEl = document.getElementById("price-premium");
 
-Task:
-Design the optimal pricing strategy.
+  if (basicEl) {
+    basicEl.textContent = formatPrice(prices.basic);
+  }
 
-Include:
-1. Best pricing per category
-2. Basic / Pro / Premium tiers
-3. Recommended anchor tier
-4. Psychological pricing
-5. Upsells
-6. Bundles
-7. Subscription option
-8. AOV improvement plan
-9. Conversion assumptions
-10. Profit math to reach £5k/month
+  if (proEl) {
+    proEl.textContent = formatPrice(prices.pro);
+  }
 
-Output:
-Clear, tactical, direct, and focused on profit.
-`;
+  if (premiumEl) {
+    premiumEl.textContent = formatPrice(prices.premium);
+  }
+}
+
+const params = new URLSearchParams(window.location.search);
+const type = params.get("type") || "debt";
+
+applyPricing(type);
