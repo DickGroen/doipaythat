@@ -6,16 +6,34 @@ import { enqueueFree } from "../services/queue.js";
 import { notifyAdminFree } from "../services/resend.js";
 import { loadPrompts } from "../config/prompts.js";
 import { getStripeLink } from "../services/stripe.js";
+import { requireType } from "../config/types.js";
 
 export async function handleAnalyzeFree(request, env) {
   const formData = await request.formData();
+
   const file = formData.get("file");
   const name = String(formData.get("name") || "").trim();
   const email = String(formData.get("email") || "").trim();
-  const type = String(formData.get("type") || "").trim();
+  const rawType = String(formData.get("type") || "").trim();
 
-  const validationError = validateUploadInput({ file, name, email, type });
-  if (validationError) return jsonResponse({ ok: false, error: validationError }, 400);
+  let type;
+
+  try {
+    type = requireType(rawType);
+  } catch (err) {
+    return jsonResponse({ ok: false, error: err.message }, 400);
+  }
+
+  const validationError = validateUploadInput({
+    file,
+    name,
+    email,
+    type
+  });
+
+  if (validationError) {
+    return jsonResponse({ ok: false, error: validationError }, 400);
+  }
 
   const { base64, mediaType } = await fileToBase64(file);
   const prompts = await loadPrompts(type);
@@ -27,24 +45,42 @@ export async function handleAnalyzeFree(request, env) {
   });
 
   const triage = safeJsonParse(raw) || {
-    sender: null, risk: "medium", route: "SONNET", teaser: "Based on your document, there may be grounds to challenge this."
+    sender: null,
+    risk: "medium",
+    route: "SONNET",
+    teaser: "Based on your document, there may be grounds to challenge this."
   };
 
   console.log("TRIAGE:", JSON.stringify(triage));
 
   const stripeLink = getStripeLink(env, type);
 
-  await enqueueFree(env, { type, name, email, triage, stripeLink });
+  await enqueueFree(env, {
+    type,
+    rawType,
+    name,
+    email,
+    triage,
+    stripeLink
+  });
 
   try {
-    await notifyAdminFree(env, { name, email, type, triage });
+    await notifyAdminFree(env, {
+      name,
+      email,
+      type,
+      rawType,
+      triage
+    });
   } catch (err) {
     console.error("Admin notify failed:", err.message);
   }
 
   return jsonResponse({
     ok: true,
+    type,
     triage,
+    stripeLink,
     message: "You'll receive your assessment by the next business day before 4pm."
   });
 }
