@@ -1,1 +1,295 @@
+/* Layout */
+.wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
 
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 32px;
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #16a34a;
+  margin-bottom: 16px;
+}
+
+.badge__dot {
+  width: 8px;
+  height: 8px;
+  background: #16a34a;
+  border-radius: 50%;
+}
+
+/* Progress */
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+
+.progress__done {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.progress__current {
+  font-weight: 600;
+}
+
+.progress__divider {
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+/* Headings */
+h1 {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+}
+
+.subtext {
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+/* Steps */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.step {
+  display: flex;
+  gap: 14px;
+}
+
+.step__num {
+  width: 28px;
+  height: 28px;
+  background: #111827;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+.step__title {
+  font-weight: 600;
+}
+
+.step__desc {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+/* Upsell */
+.upsell {
+  margin-bottom: 28px;
+}
+
+.upsell-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px;
+  background: #f9fafb;
+}
+
+.upsell-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #b45309;
+  margin-bottom: 8px;
+}
+
+.upsell h3 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.upsell p {
+  font-size: 0.9rem;
+  color: #374151;
+  margin-bottom: 14px;
+}
+
+.upsell-btn {
+  background: #111827;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.upsell-btn:hover {
+  background: #000;
+}
+
+/* Form */
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.field label {
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.field input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+/* Upload */
+.upload-panel {
+  display: block;
+  border: 2px dashed #d1d5db;
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+
+.upload-panel.drag-over {
+  border-color: #111827;
+  background: #f3f4f6;
+}
+
+.upload-panel__icon {
+  font-size: 1.6rem;
+  margin-bottom: 6px;
+}
+
+.upload-panel__title {
+  font-weight: 600;
+}
+
+.upload-panel__sub {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* Selected file */
+.selected-file {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.selected-file.show {
+  display: flex;
+}
+
+.selected-file__check {
+  color: #16a34a;
+}
+
+.selected-file__name {
+  font-weight: 600;
+}
+
+.selected-file__meta {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.selected-file__remove {
+  margin-left: auto;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #ef4444;
+}
+
+/* CTA */
+.cta {
+  width: 100%;
+  padding: 14px;
+  background: #111827;
+  color: #fff;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cta-note {
+  font-size: 0.8rem;
+  color: #6b7280;
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* Status */
+.status {
+  margin-top: 14px;
+  font-size: 0.85rem;
+}
+
+.status.error {
+  color: #dc2626;
+}
+
+.status.success {
+  color: #16a34a;
+}
+
+.status.info {
+  color: #374151;
+}
+
+/* Success */
+.success-screen {
+  text-align: center;
+  padding: 40px 0;
+}
+
+.success-screen__icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+/* Locked */
+.locked {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.locked__icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
