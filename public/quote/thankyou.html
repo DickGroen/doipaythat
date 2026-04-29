@@ -1,1 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Payment Successful — Upload Quote | DoIPayThat</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+
+<body>
+
+  <div id="locked-screen" class="locked" style="display:none;">
+    <div class="locked__icon">🔒</div>
+    <h2>Link invalid or expired</h2>
+    <p>This page is only accessible after a successful payment.</p>
+    <a href="/quote/">Back to quote check</a>
+  </div>
+
+  <div id="thankyou-app" class="wrap" style="display:none;">
+    <div class="card">
+
+      <div class="badge">
+        <span class="badge__dot"></span>
+        Payment successful
+      </div>
+
+      <div class="progress">
+        <span class="progress__done">✓ Paid</span>
+        <span class="progress__divider"></span>
+        <span class="progress__current">Step 2: Upload your quote</span>
+      </div>
+
+      <h1>Upload your quote</h1>
+
+      <p class="subtext">
+        You will receive your full quote analysis
+        <strong>within 24 hours</strong> by email.
+      </p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step__num">1</div>
+          <div>
+            <div class="step__title">Upload your quote</div>
+            <div class="step__desc">PDF, JPG or PNG. Maximum 10 MB.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">2</div>
+          <div>
+            <div class="step__title">We analyse the price</div>
+            <div class="step__desc">We check pricing, cost breakdown, unusual charges and possible overpayment.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">3</div>
+          <div>
+            <div class="step__title">You get clear next steps</div>
+            <div class="step__desc">Including savings opportunities and practical negotiation guidance.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="upsell" id="upsell-box">
+        <div class="upsell-box">
+          <div class="upsell-badge">⭐ Most users add this</div>
+
+          <h3>Increase your chances of saving money</h3>
+
+          <p>
+            We write a clear negotiation message you can send to the provider.
+            This helps you ask for a better price without sounding difficult.
+          </p>
+
+          <button class="upsell-btn" id="add-upsell" type="button">
+            Add for £9
+          </button>
+        </div>
+      </div>
+
+      <div id="upload-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="customer-name">Your name</label>
+            <input type="text" id="customer-name" placeholder="First and last name" autocomplete="name" />
+          </div>
+
+          <div class="field">
+            <label for="customer-email">Email address for your result</label>
+            <input type="email" id="customer-email" placeholder="you@example.com" autocomplete="email" />
+          </div>
+        </div>
+
+        <label class="upload-panel" id="upload-panel" for="real-file-input">
+          <input type="file" id="real-file-input" accept=".pdf,.jpg,.jpeg,.png" />
+
+          <div class="upload-panel__icon">📄</div>
+          <div class="upload-panel__title">Click or drag your quote here</div>
+          <div class="upload-panel__sub">PDF, JPG or PNG · max. 10 MB</div>
+        </label>
+
+        <div class="upload-security">
+          🔒 Secure SSL connection · Document deleted after analysis
+        </div>
+
+        <div class="selected-file" id="selected-file">
+          <div class="selected-file__check">✓</div>
+          <div>
+            <div class="selected-file__name" id="selected-file-name"></div>
+            <div class="selected-file__meta" id="selected-file-meta"></div>
+          </div>
+          <button type="button" class="selected-file__remove" id="remove-file">remove</button>
+        </div>
+
+        <button class="cta" id="submit-btn" type="button" disabled>
+          Select a file first
+        </button>
+
+        <div class="cta-note">
+          After upload we start immediately — result within 24 hours.
+        </div>
+
+        <div class="status" id="status-box"></div>
+      </div>
+
+      <div id="success-screen" class="success-screen" style="display:none;">
+        <div class="success-screen__icon">✓</div>
+        <h2>Upload successful</h2>
+        <p>Your quote analysis will be sent to your email address within 24 hours.</p>
+      </div>
+
+      <div class="fallback">
+        <strong>Upload not working?</strong>
+        <p>
+          Send your quote directly by email. Please include your name and the email address you paid with.
+        </p>
+        <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const TYPE = "quote";
+
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+    const tier = params.get("tier") || "pro";
+
+    let upsellSelected = false;
+    let selectedFile = null;
+
+    if (!sessionId) {
+      document.getElementById("locked-screen").style.display = "";
+    } else {
+      document.getElementById("thankyou-app").style.display = "";
+    }
+
+    document.getElementById("add-upsell")?.addEventListener("click", () => {
+      upsellSelected = true;
+
+      const btn = document.getElementById("add-upsell");
+      btn.textContent = "✓ Added";
+      btn.style.background = "#16a34a";
+    });
+
+    const panel = document.getElementById("upload-panel");
+    const fileInput = document.getElementById("real-file-input");
+    const selectedBox = document.getElementById("selected-file");
+    const fileName = document.getElementById("selected-file-name");
+    const fileMeta = document.getElementById("selected-file-meta");
+    const removeBtn = document.getElementById("remove-file");
+    const submitBtn = document.getElementById("submit-btn");
+    const statusBox = document.getElementById("status-box");
+
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + " B";
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+      return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+    }
+
+    function validateFile(file) {
+      const allowed = ["application/pdf", "image/jpeg", "image/png"];
+
+      if (!file) {
+        return "Please select a file first.";
+      }
+
+      if (!allowed.includes(file.type) && !/\.(pdf|jpe?g|png)$/i.test(file.name)) {
+        return "Please upload a PDF, JPG or PNG file.";
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        return "File too large. Maximum 10 MB.";
+      }
+
+      return null;
+    }
+
+    function showStatus(message, type) {
+      statusBox.className = "status " + type;
+      statusBox.textContent = message;
+    }
+
+    function clearStatus() {
+      statusBox.className = "status";
+      statusBox.textContent = "";
+    }
+
+    function setFile(file) {
+      const error = validateFile(file);
+
+      if (error) {
+        showStatus(error, "error");
+        return;
+      }
+
+      selectedFile = file;
+      fileName.textContent = file.name;
+      fileMeta.textContent = formatFileSize(file.size);
+      selectedBox.classList.add("show");
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Submit quote";
+      clearStatus();
+    }
+
+    function clearFile() {
+      selectedFile = null;
+      fileInput.value = "";
+      selectedBox.classList.remove("show");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Select a file first";
+    }
+
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files[0]) {
+        setFile(fileInput.files[0]);
+      }
+    });
+
+    removeBtn.addEventListener("click", clearFile);
+
+    panel.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      panel.classList.add("drag-over");
+    });
+
+    panel.addEventListener("dragleave", () => {
+      panel.classList.remove("drag-over");
+    });
+
+    panel.addEventListener("drop", (event) => {
+      event.preventDefault();
+      panel.classList.remove("drag-over");
+
+      if (event.dataTransfer.files[0]) {
+        setFile(event.dataTransfer.files[0]);
+      }
+    });
+
+    submitBtn.addEventListener("click", async () => {
+      const nameInput = document.getElementById("customer-name");
+      const emailInput = document.getElementById("customer-email");
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+
+      nameInput.classList.remove("invalid");
+      emailInput.classList.remove("invalid");
+
+      if (!name) {
+        nameInput.classList.add("invalid");
+        showStatus("Please enter your name.", "error");
+        return;
+      }
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        emailInput.classList.add("invalid");
+        showStatus("Please enter a valid email address.", "error");
+        return;
+      }
+
+      const fileError = validateFile(selectedFile);
+
+      if (fileError) {
+        showStatus(fileError, "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Uploading…";
+      showStatus("Uploading your quote — please wait…", "info");
+
+      try {
+        const formData = new FormData();
+
+        formData.append("file", selectedFile);
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("type", TYPE);
+        formData.append("tier", tier);
+        formData.append("session_id", sessionId);
+        formData.append("upsell_negotiation_message", upsellSelected ? "true" : "false");
+        formData.append("upsell_negotiation_message_price", upsellSelected ? "9" : "0");
+
+        const response = await fetch("/api/submit", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+          throw new Error(data.error || "Upload failed.");
+        }
+
+        document.getElementById("upload-form").style.display = "none";
+        document.getElementById("upsell-box").style.display = "none";
+        document.getElementById("success-screen").style.display = "";
+
+      } catch (err) {
+        showStatus(
+          "Something went wrong: " + (err.message || "Please try again or email us directly."),
+          "error"
+        );
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Try again";
+      }
+    });
+  </script>
+
+</body>
+</html>
