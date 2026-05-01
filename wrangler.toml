@@ -1,10 +1,17 @@
-name = "doipaythis"
+name = "doipaythat"
 main = "worker/index.js"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
 ENV = "production"
+ADMIN_EMAIL = "support@doipaythat.co.uk"
+
+# Secrets via: wrangler secret put <NAAM>
+# ANTHROPIC_API_KEY
+# STRIPE_SECRET_KEY
+# STRIPE_WEBHOOK_SECRET
+# RESEND_API_KEY
 
 [[kv_namespaces]]
 binding = "SESSIONS_KV"
