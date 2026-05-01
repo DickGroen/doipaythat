@@ -3,237 +3,315 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Do you really have to pay this debt? | DoIPayThis</title>
-  <meta name="description" content="Debt collection letter? You may be about to overpay by £50–£1,000. Upload your letter and get a full analysis + ready-to-send dispute letter within 24 hours. One-time £29.">
+  <title>Do you really have to pay this debt? | DoIPayThat</title>
+  <meta name="description" content="Upload your debt letter for a free first check. See whether the claim may be worth reviewing before you pay.">
+  <link rel="canonical" href="https://doipaythat.co.uk/debt/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    .trust-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 8px; }
-    @media (max-width:680px) { .trust-grid { grid-template-columns: 1fr; } }
-    .trust-item { background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 20px 16px; }
-    .trust-item__label { font-size: .76rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); margin-bottom: 6px; }
-    .trust-item__text { font-size: .88rem; color: var(--ink-3); line-height: 1.65; }
-    .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: .84rem; color: var(--muted); text-decoration: none; margin-bottom: 12px; }
-    .back-link:hover { color: var(--accent); }
+    :root{--ink:#0f1923;--ink-2:#2d3748;--ink-3:#4a5568;--muted:#718096;--line:#e2e8f0;--surface:#f7f9fc;--white:#ffffff;--accent:#1a3a6b;--accent-2:#2d5499;--green:#166534;--green-soft:#dcfce7;--warn:#eab308;--warn-soft:#fef9c3;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.65;color:var(--ink);background:var(--white);-webkit-font-smoothing:antialiased;}
+    h1,h2,h3{font-family:'Lora',Georgia,serif;line-height:1.2;}
+    a{color:var(--accent);}
+    .container{max-width:860px;margin:0 auto;padding:0 24px;}
+    .warning-banner{background:#fff7ed;border-bottom:2px solid #fdba74;padding:10px 0;text-align:center;font-size:.84rem;font-weight:600;color:#92400e;}
+    .header{background:var(--white);border-bottom:1px solid var(--line);padding:16px 0;position:sticky;top:0;z-index:100;}
+    .header__inner{display:flex;align-items:center;justify-content:space-between;}
+    .logo{font-family:'Lora',serif;font-size:1.15rem;font-weight:700;color:var(--accent);}
+    .logo-dot{display:inline-block;width:8px;height:8px;background:var(--accent-2);border-radius:50%;margin-right:6px;vertical-align:middle;}
+    .header-cta{background:var(--accent);color:var(--white);border:none;border-radius:8px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;text-decoration:none;}
+    .hero{padding:64px 0 48px;text-align:center;}
+    .hero h1{font-size:clamp(1.9rem,5vw,2.9rem);margin-bottom:20px;max-width:720px;margin-left:auto;margin-right:auto;}
+    .hero__sub{font-size:1.05rem;color:var(--ink-3);max-width:590px;margin:0 auto 30px;line-height:1.7;}
+    .hero-cta,.primary-btn{display:inline-block;background:var(--accent);color:var(--white);text-decoration:none;padding:17px 34px;border-radius:10px;font-size:1.05rem;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .hero-cta:hover,.primary-btn:hover,.offer-cta:hover{background:var(--accent-2);}
+    .hero-sub-note{font-size:.82rem;color:var(--muted);margin-top:10px;}
+    .trust-triggers{background:var(--green-soft);border:1px solid #bbf7d0;border-radius:12px;padding:20px 24px;margin:40px auto 0;display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:640px;}
+    @media(max-width:600px){.trust-triggers{grid-template-columns:1fr;}}
+    .trust-trigger{display:flex;align-items:flex-start;gap:10px;font-size:.87rem;color:var(--green);line-height:1.55;}
+    .trust-trigger strong{display:block;font-weight:700;color:#14532d;margin-bottom:2px;}
+    .section{padding:72px 0;}
+    .section--alt{background:var(--surface);}
+    .section-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent-2);margin-bottom:10px;}
+    .section h2{font-size:clamp(1.5rem,3vw,2rem);margin-bottom:32px;}
+    .value-strip{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 36px;justify-content:center;}
+    .value-item{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:100px;padding:8px 16px;font-size:.86rem;color:var(--ink-2);font-weight:500;}
+    .vi-check{color:var(--green);font-weight:700;}
+    .offer-card{background:var(--white);border:2px solid var(--accent);border-radius:16px;padding:36px 32px;max-width:580px;margin:0 auto;box-shadow:0 12px 40px rgba(26,58,107,.1);}
+    @media(max-width:600px){.offer-card{padding:24px 20px;}}
+    .offer-badge{display:inline-block;background:var(--accent);color:var(--white);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:4px 12px;border-radius:100px;margin-bottom:16px;}
+    .offer-title{font-family:'Lora',serif;font-size:1.45rem;margin-bottom:8px;}
+    .offer-desc{color:var(--ink-3);font-size:.93rem;margin-bottom:20px;line-height:1.65;}
+    .offer-list{list-style:none;margin-bottom:24px;display:grid;gap:8px;}
+    .offer-list li{display:flex;align-items:flex-start;gap:10px;font-size:.93rem;color:var(--ink-2);line-height:1.55;}
+    .offer-list li::before{content:"✓";color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px;}
+    hr.offer-divider{border:none;border-top:1px solid var(--line);margin:20px 0;}
+    .offer-price{font-size:2rem;font-weight:700;color:var(--accent);font-family:'Lora',serif;}
+    .offer-price span{font-size:.95rem;color:var(--muted);font-weight:400;font-family:'DM Sans',sans-serif;}
+    .offer-cta{display:block;background:var(--accent);color:var(--white);text-decoration:none;text-align:center;padding:17px;border-radius:10px;font-size:1.05rem;font-weight:700;margin-top:20px;border:none;width:100%;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .offer-security{text-align:center;font-size:.78rem;color:var(--muted);margin-top:10px;}
+    .offer-refund{text-align:center;font-size:.76rem;color:var(--muted);margin-top:6px;}
+    .upload-zone{border:2px dashed var(--line);border-radius:14px;padding:28px;text-align:center;cursor:pointer;background:var(--surface);transition:.2s;}
+    .upload-zone:hover{border-color:var(--accent);background:#eef4ff;}
+    .upload-label{font-weight:700;color:var(--accent);}
+    .upload-hint{font-size:.84rem;color:var(--muted);margin-top:6px;}
+    .contact-fields{display:none;flex-direction:column;gap:10px;margin-top:18px;}
+    .input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;}
+    .input:focus{outline:none;border-color:var(--accent);}
+    .input-hint{display:none;font-size:.78rem;color:#b91c1c;margin-top:-6px;margin-bottom:4px;}
+    .optie-status{font-size:.9rem;margin-top:12px;}
+    .optie-status--error{color:#b91c1c;}
+    .optie-status--success{color:var(--green);}
+    .optie-status--info{color:var(--accent);}
+    .teaser{display:none;margin-top:30px;opacity:0;transform:translateY(10px);transition:.25s ease;}
+    .teaser--visible{opacity:1;transform:translateY(0);}
+    .teaser-card{border-color:var(--warn);background:#fffdf2;}
+    .teaser-heading{font-weight:800;font-size:1.2rem;color:var(--ink);}
+    .teaser-sub{margin-top:6px;color:var(--muted);font-size:.92rem;}
+    .teaser-ai{margin:16px 0;background:var(--warn-soft);border-left:4px solid var(--warn);padding:14px;border-radius:8px;font-weight:500;color:#713f12;}
+    .teaser-financial{margin:16px 0;background:#fff7ed;border:1px solid #fed7aa;padding:14px;border-radius:10px;color:#7c2d12;}
+    .teaser-cta{margin-top:16px;}
+    .teaser-cta h3{font-size:1.2rem;margin-bottom:10px;}
+    .teaser-cta ul{list-style:none;margin:10px 0 16px;display:grid;gap:7px;}
+    .teaser-cta li{font-size:.92rem;color:var(--ink-2);}
+    .teaser-trust{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;font-size:.8rem;color:var(--muted);}
+    .teaser-trust span{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 10px;}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+    @media(max-width:640px){.steps{grid-template-columns:1fr;}}
+    .step__num{font-family:'Lora',serif;font-size:2.2rem;font-weight:700;color:var(--line);margin-bottom:10px;line-height:1;}
+    .step__title{font-weight:700;margin-bottom:6px;font-size:.98rem;}
+    .step__desc{font-size:.87rem;color:var(--ink-3);line-height:1.65;}
+    .trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+    @media(max-width:680px){.trust-grid{grid-template-columns:1fr;}}
+    .trust-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:20px;}
+    .trust-item__label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);margin-bottom:8px;}
+    .trust-item__text{font-size:.87rem;color:var(--ink-3);line-height:1.65;}
+    .fit-rows{display:grid;gap:10px;max-width:560px;}
+    .fit-row{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;background:var(--green-soft);border:1px solid #bbf7d0;border-radius:10px;font-size:.93rem;color:#14532d;}
+    .fit-row span:first-child{font-weight:700;flex-shrink:0;}
+    .final-cta{background:var(--accent);color:var(--white);padding:72px 0;text-align:center;}
+    .final-cta h2{color:var(--white);font-size:clamp(1.6rem,3.5vw,2.1rem);margin-bottom:12px;}
+    .final-cta p{color:rgba(255,255,255,.75);margin-bottom:32px;}
+    .final-cta-btn{display:inline-block;background:var(--white);color:var(--accent);text-decoration:none;padding:17px 40px;border-radius:10px;font-size:1.05rem;font-weight:700;}
+    .final-cta-note{color:rgba(255,255,255,.6);font-size:.8rem;margin-top:12px;}
+    .sticky-footer{position:fixed;bottom:0;left:0;right:0;background:var(--ink);color:var(--white);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;transform:translateY(100%);transition:transform .3s ease;z-index:200;}
+    .sticky-footer.visible,.sticky-footer--visible{transform:translateY(0);}
+    .sticky-footer__text{font-size:.9rem;font-weight:600;}
+    .sticky-footer__sub{font-size:.76rem;color:rgba(255,255,255,.6);margin-top:2px;}
+    .sticky-cta{background:var(--white);color:var(--accent);border:none;border-radius:8px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;text-decoration:none;}
+    @media(max-width:500px){.sticky-footer{flex-direction:column;text-align:center;}.sticky-cta{width:100%;}}
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,25,35,.6);backdrop-filter:blur(4px);z-index:300;display:none;align-items:center;justify-content:center;padding:24px;}
+    .modal-overlay.open,.modal-overlay.modal--open{display:flex;}
+    .modal{background:var(--white);border-radius:16px;max-width:480px;width:100%;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.2);}
+    .modal__header{background:var(--accent);color:var(--white);padding:28px 28px 24px;}
+    .modal__eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;opacity:.7;margin-bottom:8px;}
+    .modal__title{font-family:'Lora',serif;font-size:1.25rem;font-weight:700;margin-bottom:8px;}
+    .modal__price{font-size:1.6rem;font-weight:700;font-family:'Lora',serif;}
+    .modal__price span{font-size:.95rem;opacity:.7;font-weight:400;font-family:'DM Sans',sans-serif;}
+    .modal__body{padding:24px 28px;}
+    .modal__feature{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;font-size:.92rem;color:var(--ink-2);}
+    .modal__feature .check{color:var(--green);font-weight:700;flex-shrink:0;}
+    .modal__disclaimer{background:var(--surface);border-radius:8px;padding:10px 14px;font-size:.8rem;color:var(--muted);margin:16px 0;line-height:1.55;}
+    .modal__cta{display:block;background:var(--accent);color:var(--white);text-decoration:none;text-align:center;padding:16px;border-radius:10px;font-size:1rem;font-weight:700;margin-bottom:10px;}
+    .modal__security{text-align:center;font-size:.78rem;color:var(--muted);}
+    .modal__close{display:block;text-align:center;margin-top:14px;font-size:.84rem;color:var(--muted);cursor:pointer;}
+    .modal__close:hover{color:var(--ink);}
+    .footer-trust{padding:32px 0 16px;font-size:.85rem;color:var(--ink-3);line-height:1.75;border-top:1px solid var(--line);}
+    .disclaimer{padding:16px 0 80px;font-size:.78rem;color:var(--muted);line-height:1.7;}
   </style>
 </head>
+
 <body>
 
-<header class="site-header">
-  <div class="container--wide">
-    <div class="site-header__inner">
-      <div class="logo"><a href="/" style="text-decoration:none;display:flex;align-items:center;gap:8px;color:inherit;"><span class="logo-dot"></span>DoIPayThis</a></div>
-      <button class="header-cta" onclick="openModal()">Check before I pay &mdash; &pound;29</button>
+<div class="warning-banner">⚠️ Don't pay blindly — debt letters can include unclear charges or missing proof</div>
+
+<header class="header">
+  <div class="container">
+    <div class="header__inner">
+      <div class="logo"><span class="logo-dot"></span>DoIPayThat</div>
+      <a href="#free-check" class="header-cta">Free check</a>
     </div>
   </div>
 </header>
 
 <section class="hero">
   <div class="container">
-    <a href="/" class="back-link">&#8592; All checks</a>
+    <h1>Do you really have to pay this debt — or are you about to pay too much?</h1>
+    <p class="hero__sub">Upload your debt letter and get a free first check. If there are signs worth reviewing, you can then get the full analysis plus a ready-to-send response draft.</p>
+    <a href="#free-check" class="hero-cta">Start free check →</a>
+    <div class="hero-sub-note">PDF, JPG or PNG · no subscription · full analysis optional</div>
 
-    <div class="hero__eyebrow" style="justify-content:center;text-align:center;display:block;margin:0 auto 20px;">
-      Debt collection letters often contain errors &mdash; check before you pay
+    <div class="trust-triggers">
+      <div class="trust-trigger"><span>🔴</span><div><strong>Collection fees</strong>Added charges can be unclear or disproportionate.</div></div>
+      <div class="trust-trigger"><span>🔴</span><div><strong>Proof matters</strong>You should understand who is claiming payment and why.</div></div>
     </div>
-
-    <h1 style="text-align:center;">Do you really have to pay this debt?<br>You may be about to overpay by &pound;50&ndash;&pound;1,000.</h1>
-
-    <p class="hero__sub" style="text-align:center;margin:0 auto;max-width:620px;">
-      Debt collection letters often contain errors &mdash; including statute barred debts, excessive fees, or no valid proof of assignment.<br><br>
-      Upload your letter and get a full analysis + ready-to-send dispute letter within 24 hours.<br><br>
-      <strong>Before you decide to pay.</strong>
-    </p>
-
-    <div class="value-strip">
-      <span class="value-item"><span class="vi-check">&#10004;</span> Could save you &pound;50&ndash;&pound;1,000 &mdash; before you pay</span>
-      <span class="value-item"><span class="vi-check">&#10004;</span> Check for statute of limitations &amp; excessive fees</span>
-      <span class="value-item"><span class="vi-check">&#10004;</span> One-time &pound;29 &middot; no subscription</span>
-      <span class="value-item"><span class="vi-check">&#10004;</span> Document deleted after processing</span>
-    </div>
-
-    <!-- CARDS -->
-    <div class="optie-grid">
-
-      <!-- PAID — PRIMARY -->
-      <div class="optie-card optie-card--betaald">
-        <div class="optie-badge optie-badge--betaald">Most popular</div>
-        <h3 class="optie-title">Full Analysis + Dispute Letter</h3>
-        <p class="optie-desc">We check your letter for every ground to challenge and write a ready-to-send dispute letter. You send it &mdash; and keep your money.</p>
-        <ul class="optie-list">
-          <li>&#10003; Check for statute of limitations (6 years, Limitation Act 1980)</li>
-          <li>&#10003; Check for valid notice of assignment</li>
-          <li>&#10003; Check for proof of original debt</li>
-          <li>&#10003; Check for excessive or unlawful fees</li>
-          <li>&#10003; Ready-to-send dispute letter</li>
-          <li>&#10003; Next steps if rejected (FOS, FCA, court)</li>
-          <li>&#10003; Delivered within 24 hours</li>
-        </ul>
-        <div style="background:var(--accent-soft);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:.82rem;color:var(--accent);margin-bottom:16px;line-height:1.55;">
-          You send the letter yourself &mdash; 5 minutes that could save you hundreds.
-        </div>
-        <div class="optie-price">&pound;29 <span>one-time &middot; no subscription</span></div>
-        <a href="https://buy.stripe.com/YOUR_STRIPE_LINK_DEBT" class="optie-btn optie-btn--betaald">Check before I pay &rarr;</a>
-        <p class="optie-security">&#128274; Secure payment via Stripe</p>
-        <p class="optie-guarantee" style="font-size:.76rem;color:var(--muted);text-align:center;margin-top:6px;">Incomplete analysis? Full refund.</p>
-      </div>
-
-      <!-- FREE — SECONDARY (delayed 4s) -->
-      <div class="optie-card optie-card--gratis" id="free-card" style="opacity:0;transform:scale(.97);transform-origin:top center;transition:opacity .4s ease;pointer-events:none;">
-        <div class="optie-badge optie-badge--gratis">Free</div>
-        <h3 class="optie-title" style="font-size:.98rem;">Not sure yet?</h3>
-        <p class="optie-desc" style="font-size:.82rem;">Get a free initial assessment first.</p>
-        <ul class="optie-list" style="font-size:.82rem;">
-          <li>&#10003; Sender and type identified</li>
-          <li>&#10003; Initial challenge potential: high, medium or low</li>
-          <li>&#10003; By next business day before 4pm</li>
-        </ul>
-        <div class="optie-price" style="font-size:1.2rem;">Free</div>
-        <input type="file" id="gratis-file-input" accept=".pdf,.jpg,.jpeg,.png" onchange="handleGratisFileSelect(this)" style="display:none;">
-        <label class="upload-section upload-section--small" id="gratis-upload-zone" for="gratis-file-input">
-          <div class="upload-label">Upload your letter</div>
-          <div class="upload-hint">PDF, JPG or PNG &middot; max 8 MB</div>
-        </label>
-        <div id="gratis-contact-fields" style="display:none;gap:8px;flex-direction:column;">
-          <input type="text" id="gratis-name" placeholder="Your name" class="optie-input">
-          <input type="email" id="gratis-email" placeholder="Your email" class="optie-input">
-        </div>
-        <button class="optie-btn optie-btn--gratis" id="gratis-btn" onclick="startGratisUpload()" disabled>Get free check</button>
-        <div class="optie-status" id="gratis-status"></div>
-      </div>
-
-    </div>
-
-    <!-- TEASER -->
-    <div class="teaser" id="teaser">
-      <div class="teaser__header">
-        <div>
-          <div style="font-size:.72rem;color:#9CA3AF;margin-bottom:4px;letter-spacing:.05em;text-transform:uppercase;">Identified</div>
-          <div class="teaser__company" id="teaser-company">We&rsquo;ve identified potential challenge scenarios</div>
-        </div>
-        <div class="teaser__status-label">Ready</div>
-      </div>
-      <div class="teaser__body">
-        <div class="teaser__found">Initial assessment:</div>
-        <div class="teaser__sub" id="teaser-sub">Your document has been reviewed.</div>
-        <div class="teaser__locked">
-          <div class="lock-icon">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </div>
-          <div class="teaser__locked-text">
-            <strong>Full analysis + dispute letter after payment</strong>
-            We&rsquo;ll check all grounds to challenge and write a ready-to-send dispute letter &mdash; within 24 hours, before you decide to pay.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="cta-wrap">
-      <button class="cta-main" onclick="openModal()">Check before I pay &mdash; &pound;29 &middot; Within 24 hours</button>
-      <div class="cta-sub">Before you pay &middot; one-time &pound;29 &middot; &#128274; Secure via Stripe</div>
-    </div>
-
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
+<section class="section" id="free-check">
+  <div class="container" style="max-width:620px;">
+    <div class="offer-card" id="free-card">
+      <div class="offer-badge">Start free</div>
+      <div class="offer-title">Free first check</div>
+      <p class="offer-desc">Upload your debt letter, collection letter or payment demand. You'll see whether a closer review may be worth it before you pay.</p>
+
+      <div id="gratis-upload-zone" class="upload-zone" onclick="this.querySelector('input').click()">
+        <div class="upload-label">Choose file</div>
+        <div class="upload-hint">PDF, JPG or PNG · max. 8 MB</div>
+        <input type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="handleGratisFileSelect(this)">
+      </div>
+
+      <div id="gratis-contact-fields" class="contact-fields">
+        <input id="gratis-name" class="input" placeholder="Your name">
+        <input id="gratis-email" class="input" placeholder="Your email" type="email" autocomplete="email">
+        <div id="gratis-email-hint" class="input-hint"></div>
+        <button id="gratis-btn" onclick="startGratisUpload()" disabled class="offer-cta">
+          Start free check
+        </button>
+      </div>
+
+      <div id="gratis-status" class="optie-status"></div>
+      <div class="offer-security">🔒 Your file is only used to analyse your document.</div>
+    </div>
+
+    <div id="teaser" class="teaser">
+      <div class="offer-card teaser-card">
+        <div id="teaser-company" class="teaser-heading"></div>
+        <div id="teaser-sub" class="teaser-sub"></div>
+        <div id="modal-dynamic-copy" class="teaser-ai"></div>
+        <div id="teaser-financial" class="teaser-financial"></div>
+        <div id="teaser-cta" class="teaser-cta"></div>
+        <div class="teaser-trust">
+          <span>No subscription</span>
+          <span>Secure payment via Stripe</span>
+          <span>Result by email</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="value-strip">
+      <span class="value-item"><span class="vi-check">✓</span> Debt proof check</span>
+      <span class="value-item"><span class="vi-check">✓</span> Fee review</span>
+      <span class="value-item"><span class="vi-check">✓</span> Collection authority</span>
+      <span class="value-item"><span class="vi-check">✓</span> Response draft</span>
+      <span class="value-item"><span class="vi-check">✓</span> One-off £49</span>
+    </div>
+
+    <div class="offer-card">
+      <div class="offer-badge">After first check</div>
+      <div class="offer-title">Full analysis + response draft</div>
+      <p class="offer-desc">We review the document for possible points worth checking and prepare a practical response draft. You decide what to do next.</p>
+
+      <ul class="offer-list">
+        <li>Review of the claimed amount and added fees</li>
+        <li>Check whether proof or authority appears unclear</li>
+        <li>Assessment of possible warning signs</li>
+        <li>Clear next steps</li>
+        <li>Ready-to-send response draft</li>
+        <li>Result by email</li>
+      </ul>
+
+      <hr class="offer-divider">
+      <div class="offer-price">£49 <span>one-off · no subscription</span></div>
+      <a href="#free-check" class="offer-cta">Start with free check →</a>
+      <div class="offer-security">🔒 Secure payment via Stripe after the free first check</div>
+      <div class="offer-refund">If the analysis is incomplete: money back.</div>
+    </div>
+  </div>
+</section>
+
 <section class="section">
   <div class="container">
     <div class="section-label">How it works</div>
-    <h2>Three steps to your answer</h2>
+    <h2>Three steps to clarity</h2>
     <div class="steps">
-      <div class="step"><div class="step__num">01</div><div class="step__title">Upload your letter</div><div class="step__desc">Debt collection letter, demand notice or solicitor&rsquo;s letter. PDF, JPG or PNG. Under 2 minutes.</div></div>
-      <div class="step"><div class="step__num">02</div><div class="step__title">We check everything</div><div class="step__desc">Statute of limitations, notice of assignment, proof of debt, fee legitimacy and FCA compliance.</div></div>
-      <div class="step"><div class="step__num">03</div><div class="step__title">Analysis by email</div><div class="step__desc">Within 24 hours: full analysis + ready-to-send dispute letter. You send it and keep your money.</div></div>
+      <div class="step"><div class="step__num">01</div><div class="step__title">Upload your letter</div><div class="step__desc">Upload your debt letter, collection letter or payment demand.</div></div>
+      <div class="step"><div class="step__num">02</div><div class="step__title">Get a free first check</div><div class="step__desc">See whether the claim may be worth reviewing further.</div></div>
+      <div class="step"><div class="step__num">03</div><div class="step__title">Optional full analysis</div><div class="step__desc">If you want, get the full analysis plus a ready-to-send response draft.</div></div>
     </div>
   </div>
 </section>
 
-<!-- TRUST -->
 <section class="section section--alt">
   <div class="container">
-    <div class="section-label">How we work</div>
-    <h2>Based on UK consumer debt law</h2>
+    <div class="section-label">What we check</div>
+    <h2>Common debt-letter issues</h2>
     <div class="trust-grid">
-      <div class="trust-item"><div class="trust-item__label">Legal basis</div><div class="trust-item__text">Limitation Act 1980, Consumer Credit Act 1974 (s.77/78), Law of Property Act 1925 (s.136), FCA regulations.</div></div>
-      <div class="trust-item"><div class="trust-item__label">What we check</div><div class="trust-item__text">Statute of limitations, notice of assignment, proof of original debt, fee legitimacy, identity and FCA compliance.</div></div>
-      <div class="trust-item"><div class="trust-item__label">What we are not</div><div class="trust-item__text">We don&rsquo;t provide legal advice and don&rsquo;t represent you. For complex cases, contact Citizens Advice or a solicitor.</div></div>
+      <div class="trust-item"><div class="trust-item__label">Proof of debt</div><div class="trust-item__text">Does the document clearly explain what the claim is based on?</div></div>
+      <div class="trust-item"><div class="trust-item__label">Added fees</div><div class="trust-item__text">Are collection charges or admin fees clearly explained?</div></div>
+      <div class="trust-item"><div class="trust-item__label">Authority to collect</div><div class="trust-item__text">Is it clear that the sender is entitled to collect the debt?</div></div>
     </div>
   </div>
 </section>
 
-<!-- PROOF -->
 <section class="section">
   <div class="container">
-    <div class="section-label">Key facts</div>
-    <h2>Know your rights</h2>
-    <div class="proof-grid">
-      <div class="proof-item"><div class="proof-num">6 years</div><div class="proof-label">Limitation period for most debts in England &amp; Wales</div></div>
-      <div class="proof-item"><div class="proof-num">Often</div><div class="proof-label">Debt letters contain errors — excessive fees, invalid assignment or statute barred</div></div>
-      <div class="proof-item"><div class="proof-num">&pound;29</div><div class="proof-label">One-time &mdash; a fraction of what you could save</div></div>
-      <div class="proof-item"><div class="proof-num">24 hrs</div><div class="proof-label">Full analysis + dispute letter in your inbox</div></div>
+    <div class="section-label">Is this for you?</div>
+    <h2>Use this if</h2>
+    <div class="fit-rows">
+      <div class="fit-row"><span>✓</span><span>You received a debt letter, collection letter or payment demand</span></div>
+      <div class="fit-row"><span>✓</span><span>You are unsure whether the amount is right</span></div>
+      <div class="fit-row"><span>✓</span><span>You want to know what to ask before paying</span></div>
     </div>
   </div>
 </section>
 
-<!-- FAQ -->
-<section class="section section--alt">
+<section class="final-cta">
   <div class="container">
-    <div class="section-label">Questions</div>
-    <h2>Everything you need to know</h2>
-    <div class="faq-list">
-      <div class="faq-item"><div class="faq-q">When is a debt statute barred?<svg class="faq-chevron" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">In England and Wales, most debts become statute barred 6 years after the last payment or written acknowledgement (Limitation Act 1980). Once statute barred, the creditor cannot obtain a County Court Judgment, though the debt technically still exists.</div></div>
-      <div class="faq-item"><div class="faq-q">What is a notice of assignment?<svg class="faq-chevron" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">When a debt is sold to a third party, the debtor must be notified in writing (s.136 Law of Property Act 1925). Without valid notice, you may not be legally required to pay the new owner.</div></div>
-      <div class="faq-item"><div class="faq-q">What if the debt turns out to be valid?<svg class="faq-chevron" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">You still receive a full report with a clear explanation and your options — including negotiating repayment. You never pay for an empty report.</div></div>
-      <div class="faq-item"><div class="faq-q">Is this legal advice?<svg class="faq-chevron" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">No. This is an informational analysis and draft dispute letter. We do not provide legal advice and do not represent you. For complex situations, contact Citizens Advice or a solicitor.</div></div>
-      <div class="faq-item"><div class="faq-q">What happens to my document?<svg class="faq-chevron" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Your document is permanently deleted after analysis. We don&rsquo;t store personal data beyond what&rsquo;s needed to process your request.</div></div>
-    </div>
+    <h2>Check before you pay</h2>
+    <p>Debt letter received? Start with a free first check.</p>
+    <a href="#free-check" class="final-cta-btn">Free check →</a>
+    <div class="final-cta-note">PDF, JPG or PNG · no subscription · full analysis optional</div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<div style="max-width:860px;margin:0 auto 24px;padding:0 24px;font-size:.88rem;color:var(--ink-3);line-height:1.75;">
-  <p><strong>DoIPayThis</strong> is a UK-focused consumer document analysis service. Need help? Email <a href="mailto:support@doipaythis.co.uk">support@doipaythis.co.uk</a>. Uploaded documents are processed securely, used only for your analysis, and deleted after completion.</p>
+<div class="container">
+  <div class="footer-trust"><strong>DoIPayThat</strong> — Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a></div>
+  <div class="disclaimer">DoIPayThat provides informative document analysis and response drafts. It is not legal advice and does not provide legal representation. Documents are processed only for analysis. © 2026 DoIPayThat</div>
 </div>
-<footer class="disclaimer">
-  <div class="container">
-    <p>DoIPayThis provides informational analyses and draft dispute letters based on UK consumer debt law. We do not provide legal advice and do not represent you. A dispute letter does not automatically stop enforcement. For complex cases, consult Citizens Advice or a solicitor. Documents deleted after processing. &copy; 2025 DoIPayThis.</p>
-  </div>
-</footer>
 
-<!-- STICKY FOOTER -->
 <div class="sticky-footer" id="sticky-footer">
   <div>
-    <div class="sticky-footer__text">Debt letter? Check before you pay.</div>
-    <div class="sticky-footer__sub">Debt letters often contain errors &middot; &pound;29 one-time</div>
+    <div class="sticky-footer__text">Debt letter received? Check before you pay.</div>
+    <div class="sticky-footer__sub">Free first check · full analysis optional</div>
   </div>
-  <button class="sticky-cta" onclick="openModal()">Check before I pay &mdash; &pound;29 &rarr;</button>
+  <a href="#free-check" class="sticky-cta">Free check →</a>
 </div>
 
-<!-- MODAL -->
-<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+<div class="modal-overlay" id="modal">
   <div class="modal">
     <div class="modal__header">
-      <div class="modal__eyebrow">What you get</div>
-      <div class="modal__title">Full analysis + dispute letter within 24 hours</div>
-      <div class="modal__sub">Upload your letter. We check every ground to challenge and send you a ready-to-send dispute letter.</div>
-      <div class="modal__price">&pound;29 <span style="font-size:1rem;color:#9CA3AF;font-weight:400;">one-time &middot; no subscription</span></div>
+      <div class="modal__eyebrow">Full analysis</div>
+      <div class="modal__title">Analysis + response draft</div>
+      <div class="modal__price">£49 <span>one-off</span></div>
     </div>
+
     <div class="modal__body">
-      <div class="modal__feature"><div class="check">&#10003;</div><div>Statute of limitations, assignment, proof of debt and fee checks</div></div>
-      <div class="modal__feature"><div class="check">&#10003;</div><div>Full analysis of all grounds to challenge</div></div>
-      <div class="modal__feature"><div class="check">&#10003;</div><div>Ready-to-send dispute letter</div></div>
-      <div class="modal__feature"><div class="check">&#10003;</div><div>Next steps if rejected (FOS, FCA, court)</div></div>
-      <div class="modal__disclaimer">&#8505;&#65039; Informational analysis, not legal advice. We do not represent you.</div>
-      <p id="modal-dynamic-copy" style="margin-bottom:16px;color:#6b7a90;font-size:.9rem;">We&rsquo;ve identified potential challenge scenarios &mdash; full analysis after payment. Don&rsquo;t pay yet.</p>
-      <a href="https://buy.stripe.com/YOUR_STRIPE_LINK_DEBT" class="modal__cta">Check before I pay &mdash; &pound;29 &rarr;</a>
-      <div class="modal__security">&#128274; Secure payment via Stripe</div>
-      <div class="modal__close" onclick="closeModal()">Cancel</div>
+      <div class="modal__feature"><span class="check">✓</span><span>Clear assessment of your situation</span></div>
+      <div class="modal__feature"><span class="check">✓</span><span>Practical next steps</span></div>
+      <div class="modal__feature"><span class="check">✓</span><span>Ready-to-send response draft</span></div>
+
+      <div class="modal__disclaimer">Informative analysis and response draft. Not legal advice.</div>
+
+      <a href="https://buy.stripe.com/REPLACE_WITH_DEBT_STRIPE_LINK" class="modal__cta js-stripe-link" data-type="debt" data-price="49">
+        Get full analysis →
+      </a>
+
+      <div class="modal__security">🔒 Secure payment via Stripe · no subscription</div>
+      <div class="modal__close" onclick="closeModal('modal')">Back</div>
     </div>
   </div>
 </div>
 
-<script type="module" src="app.js"></script>
+<script type="module" src="./app.js"></script>
+
 </body>
 </html>
