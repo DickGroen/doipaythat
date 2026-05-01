@@ -1,9 +1,22 @@
 name = "doipaythis"
 main = "worker/index.js"
 compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
 
 [vars]
 ENV = "production"
 
+[[kv_namespaces]]
+binding = "SESSIONS_KV"
+id = "REPLACE_AFTER_WRANGLER_CREATE"
+
+[[kv_namespaces]]
+binding = "JOBS_KV"
+id = "REPLACE_AFTER_WRANGLER_CREATE"
+
+[[r2_buckets]]
+binding = "DOCS_BUCKET"
+bucket_name = "doipaythat-docs"
+
 [triggers]
-crons = ["*/5 * * * *"]
+crons = ["0 3 * * *"]
