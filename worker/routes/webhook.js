@@ -1,4 +1,11 @@
+// worker/routes/webhook.js
+
 import { json } from "../utils/response.js";
+import { getFreeCase, markPaid, enqueuePaid } from "../services/queue.js";
+import { notifyAdminPaid } from "../services/resend.js";
+import { runAnalysis } from "../services/claude.js";
+import { loadPrompts } from "../config/prompts.js";
+import { requireType } from "../config/types.js";
 
 export async function handleStripeWebhook(request, env) {
   const signature = request.headers.get("stripe-signature");
@@ -20,13 +27,7 @@ export async function handleStripeWebhook(request, env) {
   try {
     event = await verifyStripeWebhook(rawBody, signature, env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
-    return json(
-      {
-        ok: false,
-        error: "Invalid webhook signature"
-      },
-      400
-    );
+    return json({ ok: false, error: "Invalid webhook signature" }, 400);
   }
 
   try {
@@ -34,13 +35,71 @@ export async function handleStripeWebhook(request, env) {
       case "checkout.session.completed": {
         const session = event.data.object;
 
-        console.log("Payment completed:", {
-          sessionId: session.id,
-          customerEmail: session.customer_details?.email,
-          amountTotal: session.amount_total,
-          currency: session.currency,
-          metadata: session.metadata
-        });
+        if (session.payment_status !== "paid") {
+          console.log("Session not paid yet:", session.id);
+          break;
+        }
+
+        const email = session.metadata?.email || session.customer_details?.email || null;
+        const name  = session.metadata?.name  || session.customer_details?.name  || "Customer";
+        const rawType = session.metadata?.type || "debt";
+        const freeSessionId = session.metadata?.free_session_id || null;
+
+        let type;
+        try {
+          type = requireType(rawType);
+        } catch {
+          type = "debt";
+        }
+
+        console.log("Payment completed:", { sessionId: session.id, email, type });
+
+        // Mark as paid — stops recovery sequence
+        if (email) {
+          await markPaid(env, email);
+        }
+
+        // Try to find free case for automatic analysis
+        const saved = email ? await getFreeCase(env, { type, email }) : null;
+
+        if (saved?.file_base64 && saved?.media_type && saved?.triage) {
+          console.log("Free case found — running analysis automatically");
+
+          try {
+            const prompts  = await loadPrompts(type);
+            const triage   = saved.triage;
+
+            const analysis = await runAnalysis(env, {
+              fileBase64:   saved.file_base64,
+              mediaType:    saved.media_type,
+              route:        triage.route || "SONNET",
+              haikuPrompt:  prompts.haiku,
+              sonnetPrompt: prompts.sonnet,
+            });
+
+            await enqueuePaid(env, {
+              type,
+              name:  saved.name || name,
+              email,
+              triage,
+              analysis,
+            });
+
+            await notifyAdminPaid(env, {
+              name:  saved.name || name,
+              email,
+              type,
+              triage,
+              analysis,
+            });
+
+            console.log("Analysis queued for:", email);
+          } catch (err) {
+            console.error("Auto analysis failed:", err.message);
+          }
+        } else {
+          console.log("No free case found — fallback upload needed for:", email);
+        }
 
         break;
       }
@@ -58,14 +117,7 @@ export async function handleStripeWebhook(request, env) {
     return json({ ok: true });
   } catch (err) {
     console.error("Webhook processing error:", err);
-
-    return json(
-      {
-        ok: false,
-        error: "Webhook processing failed"
-      },
-      500
-    );
+    return json({ ok: false, error: "Webhook processing failed" }, 500);
   }
 }
 
@@ -74,9 +126,9 @@ async function verifyStripeWebhook(rawBody, signatureHeader, webhookSecret) {
     throw new Error("Missing STRIPE_WEBHOOK_SECRET");
   }
 
-  const parts = signatureHeader.split(",");
-  const timestampPart = parts.find((part) => part.startsWith("t="));
-  const signaturePart = parts.find((part) => part.startsWith("v1="));
+  const parts         = signatureHeader.split(",");
+  const timestampPart = parts.find(p => p.startsWith("t="));
+  const signaturePart = parts.find(p => p.startsWith("v1="));
 
   if (!timestampPart || !signaturePart) {
     throw new Error("Invalid Stripe signature header");
@@ -84,8 +136,7 @@ async function verifyStripeWebhook(rawBody, signatureHeader, webhookSecret) {
 
   const timestamp = timestampPart.replace("t=", "");
   const signature = signaturePart.replace("v1=", "");
-
-  const signedPayload = `${timestamp}.${rawBody}`;
+  const signed    = `${timestamp}.${rawBody}`;
 
   const encoder = new TextEncoder();
 
@@ -97,35 +148,24 @@ async function verifyStripeWebhook(rawBody, signatureHeader, webhookSecret) {
     ["sign"]
   );
 
-  const signed = await crypto.subtle.sign(
-    "HMAC",
-    key,
-    encoder.encode(signedPayload)
-  );
+  const result = await crypto.subtle.sign("HMAC", key, encoder.encode(signed));
 
-  const expectedSignature = bufferToHex(signed);
+  const expected = [...new Uint8Array(result)]
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
 
-  if (!secureCompare(expectedSignature, signature)) {
+  if (!secureCompare(expected, signature)) {
     throw new Error("Webhook signature mismatch");
   }
 
   return JSON.parse(rawBody);
 }
 
-function bufferToHex(buffer) {
-  return [...new Uint8Array(buffer)]
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
-}
-
 function secureCompare(a, b) {
   if (a.length !== b.length) return false;
-
   let result = 0;
-
   for (let i = 0; i < a.length; i++) {
     result |= a.charCodeAt(i) ^ b.charCodeAt(i);
   }
-
   return result === 0;
 }
