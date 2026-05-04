@@ -254,18 +254,54 @@ function ctaText(risk) {
   return `Get full analysis + response draft — ${CURRENCY}${PRICE} →`;
 }
 
-window.goToStripe = function() {
+window.goToStripe = async function() {
   track('stripe_clicked', {
     type:  TYPE,
     price: PRICE
   });
 
-  if (stripeLink) {
-    window.location.href = stripeLink;
+  const name  = document.getElementById('gratis-name')?.value.trim()  || '';
+  const email = document.getElementById('gratis-email')?.value.trim() || '';
+
+  if (!name || !email) {
+    openModal('modal');
     return;
   }
 
-  openModal('modal');
+  const btn = document.querySelector('.offer-cta[onclick="goToStripe()"]');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Redirecting to checkout…';
+  }
+
+  try {
+    const res = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type:          TYPE,
+        name,
+        email,
+        freeSessionId: stripeLink || '',
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.ok && data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'Checkout failed');
+    }
+  } catch (err) {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = ctaText(TYPE);
+    }
+    console.error('Checkout error:', err.message);
+    // Fallback to static link if available
+    if (stripeLink) window.location.href = stripeLink;
+  }
 };
 
 // ── Paid upload fallback flow for thankyou.html ──────────────────────────────
