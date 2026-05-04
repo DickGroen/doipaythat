@@ -1,4 +1,6 @@
-import { getDueEntries, deleteEntry } from "../services/queue.js";
+// worker/routes/cron.js
+
+import { getDueEntries, deleteEntry, hasPaid } from "../services/queue.js";
 import { sendFreeEmail, sendPaidEmail } from "../services/resend.js";
 
 export async function handleCron(env) {
@@ -9,22 +11,36 @@ export async function handleCron(env) {
   for (const { key, entry } of due) {
     try {
       if (entry.kind === "free") {
+        const alreadyPaid = await hasPaid(env, entry.email);
+
+        if (alreadyPaid) {
+          await deleteEntry(env, key);
+          console.log(`Cron: recovery skipped, already paid: ${entry.email}`);
+          continue;
+        }
+
         await sendFreeEmail(env, {
-          name: entry.name,
-          email: entry.email,
-          type: entry.type,
-          triage: entry.triage,
-          stripeLink: entry.stripe_link || "https://doipaythis.co.uk"
+          name:       entry.name,
+          email:      entry.email,
+          type:       entry.type,
+          triage:     entry.triage,
+          stripeLink: entry.stripe_link || "https://doipaythat.co.uk",
+          stage:      entry.stage || 1,
         });
+
       } else if (entry.kind === "paid") {
         await sendPaidEmail(env, {
-          name: entry.name,
-          email: entry.email,
-          type: entry.type,
-          triage: entry.triage,
-          analysis: entry.analysis
+          name:     entry.name,
+          email:    entry.email,
+          type:     entry.type,
+          triage:   entry.triage,
+          analysis: entry.analysis,
         });
+
+      } else {
+        console.warn(`Cron: unknown entry kind: ${entry.kind} (${key})`);
       }
+
       await deleteEntry(env, key);
       console.log(`Cron: sent and deleted ${key}`);
     } catch (err) {
