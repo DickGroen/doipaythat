@@ -1,8 +1,10 @@
+// worker/routes/analyze-free.js
+
 import { validateUploadInput } from "../utils/validation.js";
 import { fileToBase64, safeJsonParse } from "../utils/files.js";
 import { jsonResponse } from "../utils/response.js";
 import { runTriage } from "../services/claude.js";
-import { enqueueFree } from "../services/queue.js";
+import { enqueueFree, saveFreeCase } from "../services/queue.js";
 import { notifyAdminFree } from "../services/resend.js";
 import { loadPrompts } from "../config/prompts.js";
 import { getStripeLink } from "../services/stripe.js";
@@ -11,10 +13,10 @@ import { requireType } from "../config/types.js";
 export async function handleAnalyzeFree(request, env) {
   const formData = await request.formData();
 
-  const file = formData.get("file");
-  const name = String(formData.get("name") || "").trim();
-  const email = String(formData.get("email") || "").trim();
-  const rawType = String(formData.get("type") || "").trim();
+  const file    = formData.get("file");
+  const name    = String(formData.get("name")    || "").trim();
+  const email   = String(formData.get("email")   || "").trim();
+  const rawType = String(formData.get("type")    || "").trim();
 
   let type;
 
@@ -24,12 +26,7 @@ export async function handleAnalyzeFree(request, env) {
     return jsonResponse({ ok: false, error: err.message }, 400);
   }
 
-  const validationError = validateUploadInput({
-    file,
-    name,
-    email,
-    type
-  });
+  const validationError = validateUploadInput({ file, name, email, type });
 
   if (validationError) {
     return jsonResponse({ ok: false, error: validationError }, 400);
@@ -39,21 +36,34 @@ export async function handleAnalyzeFree(request, env) {
   const prompts = await loadPrompts(type);
 
   const raw = await runTriage(env, {
-    fileBase64: base64,
+    fileBase64:    base64,
     mediaType,
-    triagePrompt: prompts.triage
+    triagePrompt:  prompts.triage,
   });
 
   const triage = safeJsonParse(raw) || {
     sender: null,
-    risk: "medium",
-    route: "SONNET",
-    teaser: "Based on your document, there may be grounds to challenge this."
+    risk:   "medium",
+    route:  "SONNET",
+    teaser: "Based on your document, there may be grounds to challenge this.",
   };
 
   console.log("TRIAGE:", JSON.stringify(triage));
 
   const stripeLink = getStripeLink(env, type);
+
+  // Save file + triage so webhook can run analysis automatically after payment
+  await saveFreeCase(env, {
+    type,
+    name,
+    email,
+    triage,
+    stripeLink,
+    fileBase64: base64,
+    mediaType,
+    fileName:   file.name   || null,
+    fileSize:   file.size   || null,
+  });
 
   await enqueueFree(env, {
     type,
@@ -61,7 +71,7 @@ export async function handleAnalyzeFree(request, env) {
     name,
     email,
     triage,
-    stripeLink
+    stripeLink,
   });
 
   try {
@@ -70,17 +80,18 @@ export async function handleAnalyzeFree(request, env) {
       email,
       type,
       rawType,
-      triage
+      triage,
+      stripeLink,
     });
   } catch (err) {
     console.error("Admin notify failed:", err.message);
   }
 
   return jsonResponse({
-    ok: true,
+    ok:         true,
     type,
     triage,
     stripeLink,
-    message: "You'll receive your assessment by the next business day before 4pm."
+    message:    "You'll receive your assessment by the next business day before 4pm.",
   });
 }
