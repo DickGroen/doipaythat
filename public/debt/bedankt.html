@@ -44,8 +44,9 @@
   <div class="card" id="auto-card">
     <h1>Almost there…</h1>
     <p>We're verifying your payment and starting your full analysis. You'll have everything you need to respond with confidence.</p>
-    <div id="auto-status" class="status-box info">Checking payment…</div>
-    <p class="note">You can leave this page open. Your result will be sent by email — usually within a few minutes.</p></div>
+    <div id="auto-status" class="status-box info">Verifying your payment…</div>
+    <p class="note">You can leave this page open. Your result will be sent by email — usually within a few minutes.</p>
+  </div>
 
   <!-- A-flow fallback: only shown if automatic link cannot be found -->
   <div class="card hidden" id="thankyou-app">
@@ -120,7 +121,7 @@
     showOnly(locked);
   } else {
     try {
-      autoStatus.textContent = 'Checking payment…';
+      autoStatus.textContent = 'Verifying your payment…';
 
       await submitAutoPaid({
         type,
@@ -134,7 +135,6 @@
     } catch (err) {
       if (err.needUpload) {
         track('auto_paid_fallback_upload_needed', { type, reason: err.message });
-
         showOnly(fallback);
 
         const emailEl = document.getElementById('customer-email');
@@ -143,8 +143,8 @@
         if (emailEl && params.get('email')) emailEl.value = params.get('email');
         if (nameEl  && params.get('name'))  nameEl.value  = params.get('name');
       } else {
-        autoStatus.className = 'status-box error';
-        autoStatus.textContent = err.message || 'Automatic analysis failed.';
+        autoStatus.className   = 'status-box error';
+        autoStatus.textContent = 'Something went wrong. Please contact us at support@doipaythat.co.uk';
       }
     }
   }
