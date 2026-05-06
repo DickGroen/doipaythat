@@ -27,6 +27,20 @@ const PRODUCT_DESC = {
   quote:        "Check this quote before you agree. Get a clear answer and a ready-to-send letter.",
 };
 
+async function trackEvent(env, event, data = {}) {
+  try {
+    const id  = crypto.randomUUID();
+    const key = `track:${data.type || "unknown"}:${event}:${Date.now()}:${id}`;
+    await env.DEBT_QUEUE.put(key, JSON.stringify({
+      event,
+      ...data,
+      received_at: new Date().toISOString(),
+    }), { expirationTtl: 60 * 60 * 24 * 90 });
+  } catch (err) {
+    console.error("Track error:", err.message);
+  }
+}
+
 export async function handleCreateCheckout(request, env) {
   let body;
 
@@ -36,9 +50,9 @@ export async function handleCreateCheckout(request, env) {
     return jsonResponse({ ok: false, error: "Invalid JSON" }, 400);
   }
 
-  const rawType = String(body.type || "").trim();
-  const name    = String(body.name || "").trim();
-  const email   = String(body.email || "").trim();
+  const rawType       = String(body.type          || "").trim();
+  const name          = String(body.name          || "").trim();
+  const email         = String(body.email         || "").trim();
   const freeSessionId = String(body.freeSessionId || "").trim();
 
   let type;
@@ -98,6 +112,13 @@ export async function handleCreateCheckout(request, env) {
   }
 
   const session = await res.json();
+
+  await trackEvent(env, "checkout_session_created", {
+    type,
+    email,
+    value: unitAmount / 100,
+    currency: "GBP",
+  });
 
   return jsonResponse({
     ok:  true,
