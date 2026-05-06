@@ -18,7 +18,10 @@ export function jsonResponse(data, status = 200) {
 
 export function corsResponse() {
   return new Response(null, {
-    status: 204, // 👈 beter voor preflight
+    status: 204,
     headers: CORS_HEADERS
   });
 }
+
+// Alias used by webhook.js
+export const json = jsonResponse;
