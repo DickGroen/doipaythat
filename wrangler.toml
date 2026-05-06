@@ -12,7 +12,7 @@ ADMIN_EMAIL = "support@doipaythat.co.uk"
 
 [[kv_namespaces]]
 binding = "DEBT_QUEUE"
-id = "REPLACE_WITH_REAL_KV_ID"
+id = "79aa4e89ce7c4699a36c73a6ea8a8af2"
 
 [[r2_buckets]]
 binding = "DOCS_BUCKET"
