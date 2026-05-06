@@ -7,6 +7,20 @@ import { runAnalysis } from "../services/claude.js";
 import { loadPrompts } from "../config/prompts.js";
 import { requireType } from "../config/types.js";
 
+async function trackEvent(env, event, data = {}) {
+  try {
+    const id  = crypto.randomUUID();
+    const key = `track:${data.type || "unknown"}:${event}:${Date.now()}:${id}`;
+    await env.DEBT_QUEUE.put(key, JSON.stringify({
+      event,
+      ...data,
+      received_at: new Date().toISOString(),
+    }), { expirationTtl: 60 * 60 * 24 * 90 });
+  } catch (err) {
+    console.error("Track error:", err.message);
+  }
+}
+
 export async function handleStripeWebhook(request, env) {
   const signature = request.headers.get("stripe-signature");
 
@@ -40,10 +54,9 @@ export async function handleStripeWebhook(request, env) {
           break;
         }
 
-        const email = session.metadata?.email || session.customer_details?.email || null;
-        const name  = session.metadata?.name  || session.customer_details?.name  || "Customer";
-        const rawType = session.metadata?.type || "debt";
-        const freeSessionId = session.metadata?.free_session_id || null;
+        const email   = session.metadata?.email || session.customer_details?.email || null;
+        const name    = session.metadata?.name  || session.customer_details?.name  || "Customer";
+        const rawType = session.metadata?.type  || "debt";
 
         let type;
         try {
@@ -53,6 +66,15 @@ export async function handleStripeWebhook(request, env) {
         }
 
         console.log("Payment completed:", { sessionId: session.id, email, type });
+
+        // Track payment success
+        await trackEvent(env, "payment_success", {
+          type,
+          email,
+          value:    (session.amount_total || 4900) / 100,
+          currency: session.currency || "gbp",
+          session_id: session.id,
+        });
 
         // Mark as paid — stops recovery sequence
         if (email) {
