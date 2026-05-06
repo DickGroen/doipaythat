@@ -1,3 +1,5 @@
+// worker/services/stripe.js
+
 const STRIPE_API = "https://api.stripe.com/v1";
 
 export async function verifySession(env, sessionId) {
@@ -35,4 +37,9 @@ export async function verifyPaidSession(env, sessionId) {
   }
 
   return record;
+}
+
+export function getStripeLink(env, type) {
+  const key = `STRIPE_LINK_${String(type).toUpperCase()}`;
+  return env[key] || env.STRIPE_LINK_DEBT || "https://doipaythat.co.uk";
 }
