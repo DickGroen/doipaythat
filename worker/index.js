@@ -4,6 +4,7 @@ import { corsResponse, jsonResponse } from "./utils/response.js";
 import { handleAnalyzeFree }    from "./routes/analyze-free.js";
 import { handleSubmitPaid }     from "./routes/submit-paid.js";
 import { handleCreateCheckout } from "./routes/create-checkout.js";
+import { handleTrack }          from "./routes/track.js";
 import { handleCron }           from "./routes/cron.js";
 import { handleStripeWebhook }  from "./routes/webhook.js";
 
@@ -26,6 +27,10 @@ export default {
 
       if (url.pathname === "/api/create-checkout" && request.method === "POST") {
         return await handleCreateCheckout(request, env);
+      }
+
+      if (url.pathname === "/api/track" && request.method === "POST") {
+        return await handleTrack(request, env);
       }
 
       if (url.pathname === "/api/submit" && request.method === "POST") {
