@@ -7,23 +7,20 @@ compatibility_flags = ["nodejs_compat"]
 ENV = "production"
 ADMIN_EMAIL = "support@doipaythat.co.uk"
 
-# Secrets via: wrangler secret put <NAAM>
-# ANTHROPIC_API_KEY
-# STRIPE_SECRET_KEY
-# STRIPE_WEBHOOK_SECRET
-# RESEND_API_KEY
+# Secrets via Cloudflare Dashboard:
+# ANTHROPIC_API_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY
 
 [[kv_namespaces]]
-binding = "SESSIONS_KV"
-id = "REPLACE_AFTER_WRANGLER_CREATE"
-
-[[kv_namespaces]]
-binding = "JOBS_KV"
-id = "REPLACE_AFTER_WRANGLER_CREATE"
+binding = "DEBT_QUEUE"
+id = "REPLACE_WITH_REAL_KV_ID"
 
 [[r2_buckets]]
 binding = "DOCS_BUCKET"
 bucket_name = "doipaythat-docs"
 
 [triggers]
-crons = ["0 3 * * *"]
+crons = ["*/5 * * * *"]
+
+routes = [
+  { pattern = "doipaythat.co.uk/api/*", zone_name = "doipaythat.co.uk" }
+]
