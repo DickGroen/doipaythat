@@ -1,8 +1,45 @@
 // ── Shared frontend helpers for DoIPayThat ────────────────────────────────────
 
 const WORKER_URL = "/api";
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // ✅ aligned met backend
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ALLOWED_EXTENSIONS = [".pdf", ".jpg", ".jpeg", ".png"];
+
+// ── Analytics ─────────────────────────────────────────────────────────────────
+
+export function track(eventName, payload = {}) {
+  const event = {
+    event: eventName,
+    path: window.location.pathname,
+    url: window.location.href,
+    referrer: document.referrer || null,
+    ts: new Date().toISOString(),
+    ...payload
+  };
+
+  try {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(event);
+  } catch (_) {}
+
+  try {
+    const body = JSON.stringify(event);
+
+    if (navigator.sendBeacon) {
+      const blob = new Blob([body], { type: "application/json" });
+      navigator.sendBeacon(`${WORKER_URL}/track`, blob);
+      return;
+    }
+
+    fetch(`${WORKER_URL}/track`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+      keepalive: true
+    }).catch(() => {});
+  } catch (_) {}
+}
+
+export const trackEvent = track;
 
 // ── File helpers ──────────────────────────────────────────────────────────────
 
@@ -49,6 +86,37 @@ export async function submitFree({ file, name, email, type, onStatus }) {
     throw new Error(data.error || "Check failed");
   }
 
+  track("upload_completed", {
+    type,
+    fileType: file.type || null,
+    fileSize: file.size || null,
+  });
+
+  return data;
+}
+
+// ── Automatic paid analysis (no second upload) ────────────────────────────────
+
+export async function submitAutoPaid({ type, sessionId, onStatus }) {
+  onStatus?.("info", "Verifying your payment…");
+
+  const res = await fetch(`${WORKER_URL}/submit-auto`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ type, session_id: sessionId })
+  });
+
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok || !data.ok) {
+    const err = new Error(data?.error || `Error ${res.status}`);
+    if (data?.need_upload || data?.needUpload || res.status === 404) {
+      err.needUpload = true;
+    }
+    throw err;
+  }
+
+  onStatus?.("success", "Analysis started.");
   return data;
 }
 
