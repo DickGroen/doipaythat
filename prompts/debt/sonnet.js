@@ -51,8 +51,9 @@ Use cautious wording:
 How to use this result:
 1. Read the review to understand what may need checking.
 2. Use the response draft below if you want to ask for proof before paying.
-3. Send the response in writing and keep a copy.
-4. Do not ignore any stated deadline.
+3. Send the response draft on its own — do not include this analysis when you write to the sender.
+4. Send the response in writing and keep a copy.
+5. Do not ignore any stated deadline.
 [/HOW_TO_USE]
 
 [ISSUES]
@@ -84,6 +85,7 @@ Age and timing
 - Are there any indicators this may be an old debt?
 - Is the original default date visible?
 - Does the debt appear to originate several years ago?
+- If the debt appears to be more than 6 years old (or 5 years in Scotland), note that the limitation period may be relevant and worth checking.
 
 Personal details
 - Does the name, address or account reference clearly match the recipient?
@@ -116,7 +118,7 @@ Do not make legal conclusions.
 3. Do not discuss the debt by phone — keep all communication in writing.
 4. Do not admit liability verbally or in writing until the debt has been verified.
 5. Request a written response with full proof before taking any further action.
-6. Send the response draft below if you wish to formally request evidence.
+6. Send the response draft below if you wish to formally request evidence — send the letter on its own, without this analysis.
 [/NEXT_STEPS]
 
 [LETTER]
@@ -130,19 +132,21 @@ Yours faithfully,
 
 Signature placeholder:
 [Your full name]
-[Your address]
+[Your full address including postcode]
 [Date]
 
 The letter must:
 - reference the claim, account number or reference number if visible in the document
 - if no reference is visible, write "the account referenced in your letter"
+- include this exact sentence in the opening paragraph: "I formally dispute this claim until sufficient documentary evidence has been provided."
 - request a full itemised written breakdown of the total amount claimed, including all fees, charges and interest
 - ask for a copy of the original agreement, contract, invoice or document that gives rise to the debt
 - if a collection agency, debt purchaser or solicitor is involved, ask for proof of their authority to collect or act in relation to the claim
 - ask for confirmation of the name and contact details of the original creditor
+- if there are any indicators the debt may be more than 6 years old, ask for written confirmation of the date on which the debt first became due and the date of the original default
 - state clearly that the letter does not constitute an admission of liability
 - ask the sender to pause further collection activity until the requested documentation has been provided and reviewed
-- be professional, calm and no longer than 280 words
+- be professional, calm and no longer than 300 words
 
 Do not include legal threats.
 Do not promise payment.
