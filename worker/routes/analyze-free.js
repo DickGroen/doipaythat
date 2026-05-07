@@ -5,7 +5,7 @@ import { fileToBase64, safeJsonParse } from "../utils/files.js";
 import { jsonResponse } from "../utils/response.js";
 import { runTriage } from "../services/claude.js";
 import { enqueueFree, saveFreeCase } from "../services/queue.js";
-import { notifyAdminFree } from "../services/resend.js";
+import { notifyAdminFree, sendConfirmationEmail } from "../services/resend.js";
 import { loadPrompts } from "../config/prompts.js";
 import { getStripeLink } from "../services/stripe.js";
 import { requireType } from "../config/types.js";
@@ -14,9 +14,9 @@ export async function handleAnalyzeFree(request, env) {
   const formData = await request.formData();
 
   const file    = formData.get("file");
-  const name    = String(formData.get("name")    || "").trim();
-  const email   = String(formData.get("email")   || "").trim();
-  const rawType = String(formData.get("type")    || "").trim();
+  const name    = String(formData.get("name")  || "").trim();
+  const email   = String(formData.get("email") || "").trim();
+  const rawType = String(formData.get("type")  || "").trim();
 
   let type;
 
@@ -36,9 +36,9 @@ export async function handleAnalyzeFree(request, env) {
   const prompts = await loadPrompts(type);
 
   const raw = await runTriage(env, {
-    fileBase64:    base64,
+    fileBase64:   base64,
     mediaType,
-    triagePrompt:  prompts.triage,
+    triagePrompt: prompts.triage,
   });
 
   const triage = safeJsonParse(raw) || {
@@ -52,7 +52,6 @@ export async function handleAnalyzeFree(request, env) {
 
   const stripeLink = getStripeLink(env, type);
 
-  // Save file + triage so webhook can run analysis automatically after payment
   await saveFreeCase(env, {
     type,
     name,
@@ -61,8 +60,8 @@ export async function handleAnalyzeFree(request, env) {
     stripeLink,
     fileBase64: base64,
     mediaType,
-    fileName:   file.name   || null,
-    fileSize:   file.size   || null,
+    fileName:   file.name || null,
+    fileSize:   file.size || null,
   });
 
   await enqueueFree(env, {
@@ -74,24 +73,24 @@ export async function handleAnalyzeFree(request, env) {
     stripeLink,
   });
 
+  // Directe bevestigingsemail — geen AI toon, menselijk en vertrouwenwekkend
   try {
-    await notifyAdminFree(env, {
-      name,
-      email,
-      type,
-      rawType,
-      triage,
-      stripeLink,
-    });
+    await sendConfirmationEmail(env, { name, email, type });
+  } catch (err) {
+    console.error("Confirmation email failed:", err.message);
+  }
+
+  try {
+    await notifyAdminFree(env, { name, email, type, rawType, triage, stripeLink });
   } catch (err) {
     console.error("Admin notify failed:", err.message);
   }
 
   return jsonResponse({
-    ok:         true,
+    ok:      true,
     type,
     triage,
     stripeLink,
-    message:    "You'll receive your assessment by the next business day before 4pm.",
+    message: "You'll receive your assessment by the next business day before 4pm.",
   });
 }
