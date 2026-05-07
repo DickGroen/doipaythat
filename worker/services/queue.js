@@ -100,7 +100,7 @@ export async function enqueueFree(env, { type, rawType, name, email, triage, str
   const emailKey     = safeEmailKey(email);
   const baseKey      = `free:${type}:${createdAt}:${emailKey}`;
 
-  const stage1SendAt = nextWorkdayAt15CET(createdAt);
+  const stage1SendAt = new Date(Date.now() + 2 * 60 * 1000).toISOString();
   const stage1Ms     = new Date(stage1SendAt).getTime();
 
   const sendAts = {
