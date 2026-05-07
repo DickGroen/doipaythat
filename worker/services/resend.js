@@ -85,6 +85,38 @@ function formatAmount(triage) {
   return "unknown";
 }
 
+// ── Directe bevestigingsemail na upload ──────────────────────────────────────
+
+export async function sendConfirmationEmail(env, { name, email, type }) {
+  const labels = TYPE_LABELS[type] || TYPE_LABELS.debt;
+
+  await sendEmail(env, {
+    to: email,
+    subject: "We've received your document — DoIPayThat",
+    html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1f2937;line-height:1.7;">
+
+      <p style="font-size:1.1rem;font-weight:700;color:#14532d;">✓ We've received your document.</p>
+
+      <p>Hi ${escapeHtml(name)},</p>
+
+      <p>We'll review your ${escapeHtml(labels.title)} carefully and send your first check by email by the next working day before 4pm.</p>
+
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px;margin:16px 0;">
+        <strong style="color:#14532d;">Why this matters:</strong>
+        <p style="color:#166534;margin-top:6px;margin-bottom:0;line-height:1.65;">
+          Our review helps you understand what to check before paying. Many people only realise they could have questioned the claim after they've already paid.
+        </p>
+      </div>
+
+      <p style="font-size:.9rem;color:#6b7280;">→ Please also check your spam folder if you don't hear from us.</p>
+
+      <p>Best regards,<br><strong>DoIPayThat</strong></p>
+
+      <p style="color:#6b7280;font-size:0.82rem;margin-top:24px;">${escapeHtml(DISCLAIMER)}</p>
+    </div>`
+  });
+}
+
 // ── Admin emails ─────────────────────────────────────────────────────────────
 
 export async function notifyAdminFree(env, { name, email, type, triage, stripeLink }) {
@@ -140,8 +172,6 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
   const amount      = formatAmount(triage);
   const stageNumber = Number(stage) || 1;
 
-  // ── Stage 1 ───────────────────────────────────────────────────────────────
-
   if (stageNumber === 1) {
     const senderPart = triage?.sender ? ` from ${escapeHtml(triage.sender)}` : "";
     const amountPart = amount !== "unknown" ? ` for ${escapeHtml(amount)}` : "";
@@ -159,8 +189,6 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
 
         <p><strong>What we noticed:</strong><br>
         ${escapeHtml(triage?.teaser || "There may be aspects of this claim worth checking before you pay.")}</p>
-
-        <p>Based on this first check, there may be aspects of this claim worth verifying before you pay.</p>
 
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
 
@@ -194,11 +222,8 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
     });
 
     await trackEvent(env, "email_sent", { type, stage: 1, kind: "free" });
-
     return;
   }
-
-  // ── Stage 2 ───────────────────────────────────────────────────────────────
 
   if (stageNumber === 2) {
     await sendEmail(env, {
@@ -234,11 +259,8 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
     });
 
     await trackEvent(env, "email_sent", { type, stage: 2, kind: "free" });
-
     return;
   }
-
-  // ── Stage 3 ───────────────────────────────────────────────────────────────
 
   await sendEmail(env, {
     to: email,
