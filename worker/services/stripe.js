@@ -41,5 +41,17 @@ export async function verifyPaidSession(env, sessionId) {
 
 export function getStripeLink(env, type) {
   const key = `STRIPE_LINK_${String(type).toUpperCase()}`;
-  return env[key] || env.STRIPE_LINK_DEBT || "https://doipaythat.co.uk";
+
+  // Use env secret if set, otherwise fall back to type-specific page
+  if (env[key]) return env[key];
+
+  const pages = {
+    debt:         'https://doipaythat.co.uk/debt/#free-check',
+    parking:      'https://doipaythat.co.uk/parking/#free-check',
+    bill:         'https://doipaythat.co.uk/bill/#free-check',
+    subscription: 'https://doipaythat.co.uk/subscription/#free-check',
+    quote:        'https://doipaythat.co.uk/quote/#free-check',
+  };
+
+  return pages[String(type).toLowerCase()] || 'https://doipaythat.co.uk';
 }
