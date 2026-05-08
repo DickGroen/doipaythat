@@ -94,7 +94,9 @@ export async function handleCron(env) {
       await deleteEntry(env, key);
       console.log(`Cron: sent and deleted ${key}`);
     } catch (err) {
-      console.error(`Cron: failed for ${key}:`, err.message);
+      console.error(`Cron: failed for ${key}:`, err.message, err.stack);
+      // Do NOT delete entry on error — retry on next cron run
+      throw err;
     }
   }
 }
