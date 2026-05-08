@@ -196,13 +196,7 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
           <li>✓ What to check (and why)</li>
           <li>✓ A ready-to-send ${escapeHtml(labels.letter)} you can use immediately</li>
         </ul>
-        <p style="margin:20px 0;">
-          <a href="${escapeHtml(stripeLink)}"
-             style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">
-            See exactly what to do — £${escapeHtml(labels.price)} →
-          </a>
-        </p>
-        <p style="font-size:0.9rem;color:#374151;">Most people prefer to understand what they're being asked to pay — before they pay it.</p>`;
+        ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">See exactly what to do — £${escapeHtml(labels.price)} →</a></p><p style="font-size:0.9rem;color:#374151;">Most people prefer to understand what they're being asked to pay — before they pay it.</p>` : ""}`;
     } else if (emailType === "soft") {
       bodyHtml = `
         <p>Hi ${escapeHtml(name)},</p>
