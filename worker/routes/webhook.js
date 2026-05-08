@@ -2,9 +2,6 @@
 
 import { json } from "../utils/response.js";
 import { getFreeCase, markPaid, enqueuePaid } from "../services/queue.js";
-import { notifyAdminPaid } from "../services/resend.js";
-import { runAnalysis } from "../services/claude.js";
-import { loadPrompts } from "../config/prompts.js";
 import { requireType } from "../config/types.js";
 
 async function trackEvent(env, event, data = {}) {
@@ -40,7 +37,6 @@ export async function handleStripeWebhook(request, env) {
   }
 
   let rawBody;
-
   try {
     rawBody = await request.text();
   } catch {
@@ -48,7 +44,6 @@ export async function handleStripeWebhook(request, env) {
   }
 
   let event;
-
   try {
     event = await verifyStripeWebhook(rawBody, signature, env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
@@ -65,7 +60,7 @@ export async function handleStripeWebhook(request, env) {
           break;
         }
 
-        // Deduplication — skip if already processed
+        // Deduplication
         if (await hasAnalysisBeenSent(env, session.id)) {
           console.log("Duplicate webhook — already processed:", session.id);
           break;
@@ -84,67 +79,38 @@ export async function handleStripeWebhook(request, env) {
 
         console.log("Payment completed:", { sessionId: session.id, email, type });
 
-        // Track payment success
         await trackEvent(env, "payment_success", {
           type,
           email,
-          value:    (session.amount_total || 4900) / 100,
-          currency: session.currency || "gbp",
+          value:      (session.amount_total || 4900) / 100,
+          currency:   session.currency || "gbp",
           session_id: session.id,
         });
 
-        // Mark as paid — stops recovery sequence
         if (email) {
           await markPaid(env, email);
         }
 
-        // Try to find free case for automatic analysis
+        // Save pending_paid entry — cron will run analysis and send email
         const saved = email ? await getFreeCase(env, { type, email }) : null;
 
         if (saved?.file_base64 && saved?.media_type && saved?.triage) {
-          console.log("Free case found — running analysis automatically");
+          await enqueuePaid(env, {
+            type,
+            name:  saved.name || name,
+            email,
+            triage:    saved.triage,
+            analysis:  null,           // cron will run analysis
+            file_base64: saved.file_base64,
+            media_type:  saved.media_type,
+          });
 
-          try {
-            const prompts  = await loadPrompts(type);
-            const triage   = saved.triage;
-
-            const analysis = await runAnalysis(env, {
-              fileBase64:   saved.file_base64,
-              mediaType:    saved.media_type,
-              route:        triage.route || "SONNET",
-              haikuPrompt:  prompts.haiku,
-              sonnetPrompt: prompts.sonnet,
-            });
-
-            await enqueuePaid(env, {
-              type,
-              name:  saved.name || name,
-              email,
-              triage,
-              analysis,
-            });
-
-            await notifyAdminPaid(env, {
-              name:  saved.name || name,
-              email,
-              type,
-              triage,
-              analysis,
-            });
-
-            // Mark as processed to prevent duplicate emails
-            await markAnalysisSent(env, session.id);
-
-            console.log("Analysis queued for:", email);
-          } catch (err) {
-            console.error("Auto analysis failed:", err.message);
-          }
+          console.log("Pending paid queued for cron:", email);
         } else {
-          // Mark as processed even without free case
-          await markAnalysisSent(env, session.id);
-          console.log("No free case found — fallback upload needed for:", email);
+          console.log("No free case found for:", email);
         }
 
+        await markAnalysisSent(env, session.id);
         break;
       }
 
@@ -166,23 +132,18 @@ export async function handleStripeWebhook(request, env) {
 }
 
 async function verifyStripeWebhook(rawBody, signatureHeader, webhookSecret) {
-  if (!webhookSecret) {
-    throw new Error("Missing STRIPE_WEBHOOK_SECRET");
-  }
+  if (!webhookSecret) throw new Error("Missing STRIPE_WEBHOOK_SECRET");
 
   const parts         = signatureHeader.split(",");
   const timestampPart = parts.find(p => p.startsWith("t="));
   const signaturePart = parts.find(p => p.startsWith("v1="));
 
-  if (!timestampPart || !signaturePart) {
-    throw new Error("Invalid Stripe signature header");
-  }
+  if (!timestampPart || !signaturePart) throw new Error("Invalid Stripe signature header");
 
   const timestamp = timestampPart.replace("t=", "");
   const signature = signaturePart.replace("v1=", "");
   const signed    = `${timestamp}.${rawBody}`;
-
-  const encoder = new TextEncoder();
+  const encoder   = new TextEncoder();
 
   const key = await crypto.subtle.importKey(
     "raw",
@@ -198,9 +159,7 @@ async function verifyStripeWebhook(rawBody, signatureHeader, webhookSecret) {
     .map(b => b.toString(16).padStart(2, "0"))
     .join("");
 
-  if (!secureCompare(expected, signature)) {
-    throw new Error("Webhook signature mismatch");
-  }
+  if (!secureCompare(expected, signature)) throw new Error("Webhook signature mismatch");
 
   return JSON.parse(rawBody);
 }
