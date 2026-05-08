@@ -21,6 +21,17 @@ async function trackEvent(env, event, data = {}) {
   }
 }
 
+async function hasAnalysisBeenSent(env, sessionId) {
+  const key = `analysis_sent:${sessionId}`;
+  const val = await env.DEBT_QUEUE.get(key);
+  return val === "1";
+}
+
+async function markAnalysisSent(env, sessionId) {
+  const key = `analysis_sent:${sessionId}`;
+  await env.DEBT_QUEUE.put(key, "1", { expirationTtl: 60 * 60 * 24 * 30 });
+}
+
 export async function handleStripeWebhook(request, env) {
   const signature = request.headers.get("stripe-signature");
 
@@ -51,6 +62,12 @@ export async function handleStripeWebhook(request, env) {
 
         if (session.payment_status !== "paid") {
           console.log("Session not paid yet:", session.id);
+          break;
+        }
+
+        // Deduplication — skip if already processed
+        if (await hasAnalysisBeenSent(env, session.id)) {
+          console.log("Duplicate webhook — already processed:", session.id);
           break;
         }
 
@@ -115,11 +132,16 @@ export async function handleStripeWebhook(request, env) {
               analysis,
             });
 
+            // Mark as processed to prevent duplicate emails
+            await markAnalysisSent(env, session.id);
+
             console.log("Analysis queued for:", email);
           } catch (err) {
             console.error("Auto analysis failed:", err.message);
           }
         } else {
+          // Mark as processed even without free case
+          await markAnalysisSent(env, session.id);
           console.log("No free case found — fallback upload needed for:", email);
         }
 
