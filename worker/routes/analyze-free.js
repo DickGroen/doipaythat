@@ -1,4 +1,5 @@
 // worker/routes/analyze-free.js
+
 import { validateUploadInput } from "../utils/validation.js";
 import { fileToBase64, safeJsonParse } from "../utils/files.js";
 import { jsonResponse } from "../utils/response.js";
@@ -51,12 +52,12 @@ export async function handleAnalyzeFree(request, env) {
   });
 
   const triage = safeJsonParse(raw) || {
-    sender:   null,
-    risk:     "medium",
-    route:    "SONNET",
-    chance:   50,
+    sender:    null,
+    risk:      "medium",
+    route:     "SONNET",
+    chance:    50,
     flagCount: 1,
-    teaser:   "Based on your document, there may be grounds to challenge this.",
+    teaser:    "Based on your document, there may be grounds to challenge this.",
   };
 
   console.log("TRIAGE:", JSON.stringify(triage));
@@ -66,51 +67,68 @@ export async function handleAnalyzeFree(request, env) {
     flags:  triage.flagCount,
   });
 
-  // Only include Stripe link for tier1 and tier2
-  const stripeLink = decision.showUpsell ? getStripeLink(env, type) : null;
-
-  // Enrich triage with decision
   triage.tier      = decision.tier;
   triage.emailType = decision.emailType;
 
-  await saveFreeCase(env, {
-    type,
-    name,
-    email,
-    triage,
-    stripeLink,
-    fileBase64: base64,
-    mediaType,
-    fileName:   file.name || null,
-    fileSize:   file.size || null,
-  });
+  const stripeLink = decision.showUpsell ? getStripeLink(env, type) : null;
 
-  await enqueueFree(env, {
-    type,
-    rawType,
-    name,
-    email,
-    triage,
-    stripeLink,
-  });
+  console.log("STRIPE LINK:", stripeLink);
+  console.log("DECISION:", JSON.stringify(decision));
+
+  try {
+    await saveFreeCase(env, {
+      type,
+      name,
+      email,
+      triage,
+      stripeLink,
+      fileBase64: base64,
+      mediaType,
+      fileName:   file.name || null,
+      fileSize:   file.size || null,
+    });
+    console.log("saveFreeCase: OK");
+  } catch (err) {
+    console.error("saveFreeCase FAILED:", err.message);
+    return jsonResponse({ ok: false, error: "saveFreeCase failed: " + err.message }, 500);
+  }
+
+  try {
+    await enqueueFree(env, {
+      type,
+      rawType,
+      name,
+      email,
+      triage,
+      stripeLink,
+    });
+    console.log("enqueueFree: OK");
+  } catch (err) {
+    console.error("enqueueFree FAILED:", err.message);
+    return jsonResponse({ ok: false, error: "enqueueFree failed: " + err.message }, 500);
+  }
 
   try {
     await sendConfirmationEmail(env, { name, email, type });
+    console.log("sendConfirmationEmail: OK");
   } catch (err) {
     console.error("Confirmation email failed:", err.message);
   }
 
   try {
     await notifyAdminFree(env, { name, email, type, rawType, triage, stripeLink });
+    console.log("notifyAdminFree: OK");
   } catch (err) {
     console.error("Admin notify failed:", err.message);
   }
 
   return jsonResponse({
-    ok:      true,
+    ok:       true,
     type,
-    triage,
+    tier:     decision.tier,
+    emailType: decision.emailType,
     stripeLink,
-    message: "You'll receive your assessment by the next business day before 4pm.",
+    triage,
+    message:  "You'll receive your assessment by the next business day before 4pm.",
   });
 }
