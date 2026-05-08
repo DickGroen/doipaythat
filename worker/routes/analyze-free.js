@@ -9,7 +9,7 @@ import { notifyAdminFree, sendConfirmationEmail } from "../services/resend.js";
 import { loadPrompts } from "../config/prompts.js";
 import { getStripeLink } from "../services/stripe.js";
 import { requireType } from "../config/types.js";
-
+ 
 function getTriageDecision({ chance, flags }) {
   const c = Number(chance) || 0;
   const f = Number(flags)  || 0;
