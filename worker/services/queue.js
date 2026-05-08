@@ -140,18 +140,20 @@ export async function enqueueFree(env, { type, rawType, name, email, triage, str
 
 // ── Paid delivery queue ──────────────────────────────────────────────────────
 
-export async function enqueuePaid(env, { type, name, email, triage, analysis }) {
+export async function enqueuePaid(env, { type, name, email, triage, analysis, file_base64, media_type }) {
   const key = `paid:${type}:${Date.now()}:${safeEmailKey(email)}`;
 
   const entry = {
-    kind:       "paid",
+    kind:        "paid",
     type,
     name,
-    email:      normalizeEmail(email),
+    email:       normalizeEmail(email),
     triage,
-    analysis,
-    created_at: new Date().toISOString(),
-    send_at:    new Date(Date.now() + PAID_SEND_DELAY_MS).toISOString(),
+    analysis:    analysis || null,
+    file_base64: file_base64 || null,
+    media_type:  media_type || null,
+    created_at:  new Date().toISOString(),
+    send_at:     new Date(Date.now() + PAID_SEND_DELAY_MS).toISOString(),
   };
 
   await env.DEBT_QUEUE.put(key, JSON.stringify(entry));
