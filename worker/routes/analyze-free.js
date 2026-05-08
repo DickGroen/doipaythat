@@ -1,5 +1,4 @@
 // worker/routes/analyze-free.js
-
 import { validateUploadInput } from "../utils/validation.js";
 import { fileToBase64, safeJsonParse } from "../utils/files.js";
 import { jsonResponse } from "../utils/response.js";
@@ -10,16 +9,27 @@ import { loadPrompts } from "../config/prompts.js";
 import { getStripeLink } from "../services/stripe.js";
 import { requireType } from "../config/types.js";
 
+function getTriageDecision({ chance, flags }) {
+  const c = Number(chance) || 0;
+  const f = Number(flags)  || 0;
+
+  if (c >= 60 && f >= 2) {
+    return { tier: "tier1", showUpsell: true,  emailType: "strong" };
+  }
+  if (c >= 40 || f === 1) {
+    return { tier: "tier2", showUpsell: true,  emailType: "soft"   };
+  }
+  return   { tier: "tier3", showUpsell: false, emailType: "trust"  };
+}
+
 export async function handleAnalyzeFree(request, env) {
   const formData = await request.formData();
-
   const file    = formData.get("file");
   const name    = String(formData.get("name")  || "").trim();
   const email   = String(formData.get("email") || "").trim();
   const rawType = String(formData.get("type")  || "").trim();
 
   let type;
-
   try {
     type = requireType(rawType);
   } catch (err) {
@@ -27,7 +37,6 @@ export async function handleAnalyzeFree(request, env) {
   }
 
   const validationError = validateUploadInput({ file, name, email, type });
-
   if (validationError) {
     return jsonResponse({ ok: false, error: validationError }, 400);
   }
@@ -42,15 +51,27 @@ export async function handleAnalyzeFree(request, env) {
   });
 
   const triage = safeJsonParse(raw) || {
-    sender: null,
-    risk:   "medium",
-    route:  "SONNET",
-    teaser: "Based on your document, there may be grounds to challenge this.",
+    sender:   null,
+    risk:     "medium",
+    route:    "SONNET",
+    chance:   50,
+    flagCount: 1,
+    teaser:   "Based on your document, there may be grounds to challenge this.",
   };
 
   console.log("TRIAGE:", JSON.stringify(triage));
 
-  const stripeLink = getStripeLink(env, type);
+  const decision = getTriageDecision({
+    chance: triage.chance,
+    flags:  triage.flagCount,
+  });
+
+  // Only include Stripe link for tier1 and tier2
+  const stripeLink = decision.showUpsell ? getStripeLink(env, type) : null;
+
+  // Enrich triage with decision
+  triage.tier      = decision.tier;
+  triage.emailType = decision.emailType;
 
   await saveFreeCase(env, {
     type,
@@ -73,7 +94,6 @@ export async function handleAnalyzeFree(request, env) {
     stripeLink,
   });
 
-  // Directe bevestigingsemail — geen AI toon, menselijk en vertrouwenwekkend
   try {
     await sendConfirmationEmail(env, { name, email, type });
   } catch (err) {
