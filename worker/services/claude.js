@@ -1,4 +1,4 @@
-const HAIKU_MODEL = "claude-haiku-4-5";
+const HAIKU_MODEL = "claude-haiku-4-5-20251001";
 const SONNET_MODEL = "claude-sonnet-4-6";
 
 export async function callClaude(env, { model, maxTokens, prompt, fileBase64, mediaType }) {
