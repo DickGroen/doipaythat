@@ -1,12 +1,11 @@
 // worker/routes/track.js
-
 import { jsonResponse } from "../utils/response.js";
+import { saveAbandoned } from "../services/queue.js";
 
 const TRACK_TTL_SECONDS = 60 * 60 * 24 * 90; // 90 days
 
 export async function handleTrack(request, env) {
   let payload;
-
   try {
     payload = await request.json();
   } catch (_) {
@@ -14,7 +13,6 @@ export async function handleTrack(request, env) {
   }
 
   const event = String(payload.event || "").trim();
-
   if (!event) {
     return jsonResponse({ ok: false, error: "Event missing" }, 400);
   }
@@ -39,6 +37,21 @@ export async function handleTrack(request, env) {
     });
   } catch (err) {
     console.error("Track KV error:", err.message);
+  }
+
+  // When Stripe link is clicked — save abandoned entry
+  if (event === "stripe_clicked" && payload.email && payload.name && payload.stripeLink) {
+    try {
+      await saveAbandoned(env, {
+        email:      payload.email,
+        name:       payload.name,
+        type:       payload.type || "debt",
+        amount:     payload.amount || null,
+        stripeLink: payload.stripeLink,
+      });
+    } catch (err) {
+      console.error("Abandoned save error:", err.message);
+    }
   }
 
   return jsonResponse({ ok: true });
