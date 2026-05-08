@@ -1,8 +1,9 @@
 // worker/services/queue.js
 
-const PAID_MARKER_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
-const FREE_CASE_TTL_SECONDS   = 60 * 60 * 24 * 3;  // 3 days
-const PAID_SEND_DELAY_MS      = 0;                  // send immediately after payment
+const PAID_MARKER_TTL_SECONDS     = 60 * 60 * 24 * 30; // 30 days
+const FREE_CASE_TTL_SECONDS       = 60 * 60 * 24 * 3;  // 3 days
+const PAID_SEND_DELAY_MS          = 0;                  // send immediately after payment
+const ABANDONED_TTL_SECONDS       = 60 * 60 * 24 * 7;  // 7 days
 
 function normalizeEmail(email) {
   return String(email || "").trim().toLowerCase();
@@ -18,6 +19,10 @@ function paidMarkerKey(email) {
 
 function freeCaseKey(type, email) {
   return `free_case:${type}:${safeEmailKey(email)}`;
+}
+
+function abandonedKey(email, stage) {
+  return `abandoned:${safeEmailKey(email)}:stage_${stage}`;
 }
 
 // Next business day at 15:00 CET (14:00 UTC)
@@ -151,6 +156,45 @@ export async function enqueuePaid(env, { type, name, email, triage, analysis }) 
 
   await env.DEBT_QUEUE.put(key, JSON.stringify(entry));
   return key;
+}
+
+// ── Abandoned checkout queue ─────────────────────────────────────────────────
+
+export async function saveAbandoned(env, { email, name, type, amount, stripeLink }) {
+  const normalized = normalizeEmail(email);
+  if (!normalized) return;
+
+  const now = Date.now();
+
+  const sendAts = {
+    1: new Date(now + 1  * 60 * 60 * 1000).toISOString(),  // +1 hour
+    2: new Date(now + 24 * 60 * 60 * 1000).toISOString(),  // +24 hours
+    3: new Date(now + 48 * 60 * 60 * 1000).toISOString(),  // +48 hours
+  };
+
+  for (const stage of [1, 2, 3]) {
+    const key = abandonedKey(normalized, stage);
+
+    // Don't overwrite if already exists (prevents duplicate entries on multiple clicks)
+    const existing = await env.DEBT_QUEUE.get(key);
+    if (existing) continue;
+
+    const entry = {
+      kind:        "abandoned",
+      stage,
+      type,
+      name,
+      email:       normalized,
+      amount:      amount || null,
+      stripe_link: stripeLink,
+      created_at:  new Date(now).toISOString(),
+      send_at:     sendAts[stage],
+    };
+
+    await env.DEBT_QUEUE.put(key, JSON.stringify(entry), {
+      expirationTtl: ABANDONED_TTL_SECONDS,
+    });
+  }
 }
 
 // ── Cron helpers ─────────────────────────────────────────────────────────────
