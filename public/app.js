@@ -8,11 +8,11 @@ const ALLOWED_EXTENSIONS = [".pdf", ".jpg", ".jpeg", ".png"];
 
 export function track(eventName, payload = {}) {
   const event = {
-    event: eventName,
-    path: window.location.pathname,
-    url: window.location.href,
+    event:    eventName,
+    path:     window.location.pathname,
+    url:      window.location.href,
     referrer: document.referrer || null,
-    ts: new Date().toISOString(),
+    ts:       new Date().toISOString(),
     ...payload
   };
 
@@ -22,18 +22,10 @@ export function track(eventName, payload = {}) {
   } catch (_) {}
 
   try {
-    const body = JSON.stringify(event);
-
-    if (navigator.sendBeacon) {
-      const blob = new Blob([body], { type: "application/json" });
-      navigator.sendBeacon(`${WORKER_URL}/track`, blob);
-      return;
-    }
-
     fetch(`${WORKER_URL}/track`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body,
+      method:    "POST",
+      headers:   { "Content-Type": "application/json" },
+      body:      JSON.stringify(event),
       keepalive: true
     }).catch(() => {});
   } catch (_) {}
@@ -70,17 +62,22 @@ export async function submitFree({ file, name, email, type, onStatus }) {
   onStatus?.("info", "Checking your document...");
 
   const formData = new FormData();
-  formData.append("file", file);
-  formData.append("name", name);
+  formData.append("file",  file);
+  formData.append("name",  name);
   formData.append("email", email);
-  formData.append("type", type);
+  formData.append("type",  type);
 
   const res = await fetch(`${WORKER_URL}/analyze-free`, {
     method: "POST",
-    body: formData
+    body:   formData
   });
 
-  const data = await res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch (_) {
+    throw new Error("Server error — please try again.");
+  }
 
   if (!res.ok || !data.ok) {
     throw new Error(data.error || "Check failed");
@@ -101,12 +98,17 @@ export async function submitAutoPaid({ type, sessionId, onStatus }) {
   onStatus?.("info", "Verifying your payment…");
 
   const res = await fetch(`${WORKER_URL}/submit-auto`, {
-    method: "POST",
+    method:  "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ type, session_id: sessionId })
+    body:    JSON.stringify({ type, session_id: sessionId })
   });
 
-  const data = await res.json().catch(() => ({}));
+  let data;
+  try {
+    data = await res.json();
+  } catch (_) {
+    data = {};
+  }
 
   if (!res.ok || !data.ok) {
     const err = new Error(data?.error || `Error ${res.status}`);
@@ -130,18 +132,23 @@ export async function submitPaid({ file, name, email, type, sessionId, onStatus 
   onStatus?.("info", "Uploading your document securely...");
 
   const formData = new FormData();
-  formData.append("file", file);
-  formData.append("name", name);
-  formData.append("email", email);
-  formData.append("type", type);
-  formData.append("session_id", sessionId); // ✅ verplicht
+  formData.append("file",       file);
+  formData.append("name",       name);
+  formData.append("email",      email);
+  formData.append("type",       type);
+  formData.append("session_id", sessionId);
 
   const res = await fetch(`${WORKER_URL}/submit`, {
     method: "POST",
-    body: formData
+    body:   formData
   });
 
-  const data = await res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch (_) {
+    throw new Error("Server error — please try again.");
+  }
 
   if (!res.ok || !data.ok) {
     throw new Error(data.error || "Upload failed");
@@ -155,10 +162,10 @@ export async function submitPaid({ file, name, email, type, sessionId, onStatus 
 export function initFaq() {
   document.querySelectorAll(".faq-q").forEach(q => {
     q.addEventListener("click", () => {
-      const item = q.closest(".faq-item");
-      const answer = item.querySelector(".faq-a");
+      const item    = q.closest(".faq-item");
+      const answer  = item.querySelector(".faq-a");
       const chevron = item.querySelector(".faq-chevron");
-      const isOpen = item.classList.contains("faq-item--open");
+      const isOpen  = item.classList.contains("faq-item--open");
 
       document.querySelectorAll(".faq-item--open").forEach(open => {
         open.classList.remove("faq-item--open");
@@ -170,21 +177,21 @@ export function initFaq() {
 
       if (!isOpen) {
         item.classList.add("faq-item--open");
-        if (answer) answer.style.maxHeight = answer.scrollHeight + "px";
+        if (answer)  answer.style.maxHeight = answer.scrollHeight + "px";
         if (chevron) chevron.style.transform = "rotate(180deg)";
       }
     });
   });
 }
 
-// ── Modal (FIXED class name) ──────────────────────────────────────────────────
+// ── Modal ─────────────────────────────────────────────────────────────────────
 
 export function initModal() {
   document.querySelectorAll("[data-open-modal]").forEach(btn => {
     btn.addEventListener("click", () => {
       const modal = document.getElementById(btn.dataset.openModal || "modal");
       if (modal) {
-        modal.classList.add("open"); // ✅ fixed
+        modal.classList.add("open");
         document.body.style.overflow = "hidden";
       }
     });
@@ -202,7 +209,7 @@ export function initModal() {
 export function closeModal(id = "modal") {
   const modal = document.getElementById(id);
   if (modal) {
-    modal.classList.remove("open"); // ✅ fixed
+    modal.classList.remove("open");
     document.body.style.overflow = "";
   }
 }
@@ -210,7 +217,7 @@ export function closeModal(id = "modal") {
 export function openModal(id = "modal") {
   const modal = document.getElementById(id);
   if (modal) {
-    modal.classList.add("open"); // ✅ fixed
+    modal.classList.add("open");
     document.body.style.overflow = "hidden";
   }
 }
@@ -228,10 +235,8 @@ export function initStickyFooter() {
     () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          const scrollY = window.scrollY;
-          const nearBottom =
-            scrollY + window.innerHeight >
-            document.documentElement.scrollHeight - 200;
+          const scrollY     = window.scrollY;
+          const nearBottom  = scrollY + window.innerHeight > document.documentElement.scrollHeight - 200;
 
           footer.classList.toggle(
             "sticky-footer--visible",
