@@ -327,6 +327,8 @@ export async function sendPaidEmail(env, { name, email, type, triage, analysis }
 // ── Abandoned checkout emails ─────────────────────────────────────────────────
 
 export async function sendAbandonedEmail(env, { name, email, type, amount, stripeLink, stage = 1 }) {
+  if (!stripeLink) return;
+
   const labels      = TYPE_LABELS[type] || TYPE_LABELS.debt;
   const stageNumber = Number(stage) || 1;
   const amountPhrase = amount ? ` — especially when £${escapeHtml(String(amount))} is involved` : "";
