@@ -209,12 +209,7 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
         <p>${escapeHtml(triage?.teaser || "There may be aspects of this claim worth checking before you pay.")}</p>
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
         <p>If you'd like a clearer picture, you can get a full analysis and a ready-to-send ${escapeHtml(labels.letter)}:</p>
-        <p style="margin:20px 0;">
-          <a href="${escapeHtml(stripeLink)}"
-             style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">
-            Check before you pay — £${escapeHtml(labels.price)} →
-          </a>
-        </p>`;
+        ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Check before you pay — £${escapeHtml(labels.price)} →</a></p>` : ""}`;
     } else {
       bodyHtml = `
         <p>Hi ${escapeHtml(name)},</p>
@@ -273,12 +268,11 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
 
   await sendEmail(env, {
     to: email,
-    subject: `Final check before you pay this`,
+    subject: `Our final reminder — before you pay`,
     html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1f2937;line-height:1.7;">
       <p>Hi ${escapeHtml(name)},</p>
-      <p>This is your final reminder about your ${escapeHtml(labels.title)}.</p>
-      <p>If you don't check the claim before paying, you could miss the chance to question it.</p>
-      <p>In many cases, once payment is made, it's much harder to challenge.</p>
+      <p>This is our final reminder before we close this follow-up.</p>
+      <p>If you haven't had a chance to review the claim yet, it's still worth checking before you pay.</p>
       <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
       <p style="margin:20px 0;">
         <a href="${escapeHtml(stripeLink)}"
@@ -344,7 +338,7 @@ export async function sendAbandonedEmail(env, { name, email, type, amount, strip
     bodyHtml = `
       <p>Hi ${escapeHtml(name)},</p>
       <p>You started checking your ${escapeHtml(labels.title)} but didn't complete it.</p>
-      <p>Before you pay, it's often worth taking a closer look — especially when the amount${escapeHtml(amountPart)} is involved.</p>
+      <p>Before you pay, it's often worth taking a closer look — especially when${escapeHtml(amountPart)} is involved.</p>
       <p>You can continue here:</p>
       <p style="margin:20px 0;">
         <a href="${escapeHtml(stripeLink)}"
