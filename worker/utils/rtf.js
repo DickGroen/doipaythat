@@ -10,7 +10,6 @@ export function rtfToBase64(rtf) {
       bytes.push(code);
     } else {
       const escaped = `\\u${code}?`;
-
       for (let j = 0; j < escaped.length; j++) {
         bytes.push(escaped.charCodeAt(j));
       }
@@ -18,10 +17,7 @@ export function rtfToBase64(rtf) {
   }
 
   let binary = "";
-
-  for (const b of bytes) {
-    binary += String.fromCharCode(b);
-  }
+  for (const b of bytes) binary += String.fromCharCode(b);
 
   return btoa(binary);
 }
@@ -44,13 +40,12 @@ function esc(value = "") {
 
 function getBlock(text, block) {
   const regex = new RegExp(`\\[${block}\\]([\\s\\S]*?)\\[\\/${block}\\]`, "i");
-  const match = String(text).match(regex);
-
+  const match = String(text || "").match(regex);
   return match ? match[1].trim() : "";
 }
 
-function cleanHeadingMarkdown(text = "") {
-  return String(text).replace(/\*\*/g, "").trim();
+function stripTags(text = "") {
+  return String(text).replace(/\[\/?[A-Z_]+\]/g, "").trim();
 }
 
 function riskLabel(risk) {
@@ -65,264 +60,177 @@ function formatAmount(triage = {}) {
   return null;
 }
 
-// ── ANALYSIS ────────────────────────────────────────────────────────────────
-
-export function makeAnalysisRtf(
-  analysis,
-  name = "",
-  email = "",
-  triage = {},
-  type = "debt"
-) {
-  const title = getBlock(analysis, "TITLE") || "Document Analysis";
-
-  let summary    = getBlock(analysis, "SUMMARY") || "";
-  let issues     = getBlock(analysis, "ISSUES") || "";
-  let assessment = getBlock(analysis, "ASSESSMENT") || "";
-  let nextSteps  = getBlock(analysis, "NEXT_STEPS") || "";
-
-  issues = cleanHeadingMarkdown(issues);
-
-  const amount  = formatAmount(triage);
-  const risk    = riskLabel(triage.risk);
-  const sender  = triage.sender || null;
-  const dateStr = new Date().toLocaleDateString("en-GB");
-
-  return `{\\rtf1\\ansi\\ansicpg1252\\deff0
-
-{\\fonttbl
-{\\f0 Arial;}
+function titleForType(type) {
+  return {
+    debt: "Dispute Letter",
+    parking: "Appeal Letter",
+    bill: "Dispute Letter",
+    subscription: "Cancellation Letter",
+    quote: "Response Letter",
+  }[type] || "Letter";
 }
 
-\\paperw11906
-\\paperh16838
-\\margl1440
-\\margr1440
-\\margt1440
-\\margb1440
+function renderFormattedText(text = "") {
+  const lines = String(text)
+    .replace(/\r/g, "")
+    .split("\n")
+    .map(l => l.trim())
+    .filter(Boolean);
 
-\\viewkind4
-\\uc1
-\\pard
+  return lines.map(line => {
+    const heading = line.match(/^\*\*(.+?)\*\*$/);
 
-{\\pard\\sb240\\sa120\\fs34\\b
-${esc(title)}
-\\b0\\par}
+    if (heading) {
+      return `{\\pard\\sb260\\sa80\\f1\\fs23\\b\\cf0 ${esc(heading[1])}\\b0\\par}`;
+    }
 
-{\\pard\\sb0\\sa60\\fs20
-${esc(name)} — ${esc(email)}
-\\par}
+    return `{\\pard\\sb80\\sa160\\f1\\fs22\\cf0 ${esc(line.replace(/\*\*/g, ""))}\\par}`;
+  }).join("\n");
+}
 
-{\\pard\\sb0\\sa260\\fs20
-${esc(type)} review – ${esc(dateStr)}
-\\par}
+function buildSections(summary, issues, assessment, nextSteps) {
+  const body = [summary, issues, assessment].filter(s => s && s.length > 60);
+  const sections = [];
 
-{\\pard\\sb260\\sa120\\fs26\\b
-Case Summary
-\\b0\\par}
+  if (body.length <= 1) {
+    const text = body[0] || summary || issues || assessment || "No details available.";
+    sections.push({ title: "Analysis", text });
+  } else {
+    if (summary) sections.push({ title: "What We Found", text: summary });
+    if (issues) sections.push({ title: "Issues Identified", text: issues });
+    if (assessment) sections.push({ title: "Assessment", text: assessment });
+  }
 
-${amount ? `
-{\\pard\\sb0\\sa80\\fs20
-\\b Claimed amount:\\b0 ${esc(amount)}
-\\par}
-` : ""}
+  if (nextSteps) sections.push({ title: "What To Do Next", text: nextSteps });
 
-{\\pard\\sb0\\sa80\\fs20
-\\b Concern level:\\b0 ${esc(risk)}
-\\par}
+  return sections;
+}
 
-${sender ? `
-{\\pard\\sb0\\sa80\\fs20
-\\b Sender:\\b0 ${esc(sender)}
-\\par}
-` : ""}
+// ── Analysis RTF ─────────────────────────────────────────────────────────────
 
-{\\pard\\sb0\\sa260\\fs20
-\\b Recommended action:\\b0 Request written evidence before paying
-\\par}
+export function makeAnalysisRtf(analysis, name = "", email = "", triage = {}, type = "debt") {
+  const title = getBlock(analysis, "TITLE") || "Document Analysis";
+  const summary = getBlock(analysis, "SUMMARY") || "";
+  const issues = getBlock(analysis, "ISSUES") || "";
+  const assessment = getBlock(analysis, "ASSESSMENT") || "";
+  const nextSteps = getBlock(analysis, "NEXT_STEPS") || "";
 
-{\\pard\\sb160\\sa260\\fs20\\i
-Before taking any action, read this review carefully. Send the letter on its own — do not include this analysis.
-\\i0\\par}
+  const amount = formatAmount(triage);
+  const risk = riskLabel(triage.risk);
+  const sender = triage.sender || null;
+  const dateStr = new Date().toLocaleDateString("en-GB");
 
-{\\pard\\sb260\\sa120\\fs26\\b
-What We Found
-\\b0\\par}
+  const summaryLines = [
+    amount ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b Claimed amount:\\b0\\tab ${esc(amount)}\\par` : null,
+    `\\pard\\sb0\\sa100\\f1\\fs22 \\b Concern level:\\b0\\tab ${esc(risk)}\\par`,
+    sender ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b Sender:\\b0\\tab ${esc(sender)}\\par` : null,
+    `\\pard\\sb0\\sa100\\f1\\fs22 \\b Recommended action:\\b0\\tab Request written evidence before paying\\par`,
+  ].filter(Boolean).join("\n");
 
-{\\pard\\sb0\\sa240\\fs22
-${esc(summary)}
-\\par}
+  const sectionsRtf = buildSections(summary, issues, assessment, nextSteps).map(s =>
+    `{\\pard\\sb400\\sa140\\f1\\fs26\\b\\cf1 ${esc(s.title)}\\b0\\cf0\\par}\n` +
+    renderFormattedText(s.text)
+  ).join("\n");
 
-{\\pard\\sb260\\sa120\\fs26\\b
-Issues Identified
-\\b0\\par}
+  return `{\\rtf1\\ansi\\ansicpg1252\\deff0
+{\\fonttbl{\\f0\\froman\\fcharset0 Times New Roman;}{\\f1\\fswiss\\fcharset0 Arial;}}
+{\\colortbl;\\red27\\green58\\blue140;\\red153\\green26\\blue26;\\red34\\green139\\blue34;\\red180\\green140\\blue0;}
+\\paperw11906\\paperh16838\\margl1800\\margr1800\\margt1440\\margb1440\\f1\\fs22
 
-{\\pard\\sb0\\sa240\\fs22
-${esc(issues)}
-\\par}
+{\\pard\\sb400\\sa120\\f1\\fs34\\b\\cf1 ${esc(title)}\\b0\\cf0\\par}
+{\\pard\\sb0\\sa60\\f1\\fs20\\cf0 ${esc(name)} \\emdash  ${esc(email)}\\par}
+{\\pard\\sb0\\sa300\\f1\\fs20\\cf0 ${esc(type)} review \\endash  ${esc(dateStr)}\\par}
 
-{\\pard\\sb260\\sa120\\fs26\\b
-Assessment
-\\b0\\par}
+{\\pard\\sb300\\sa80\\f1\\fs24\\b\\cf1 Case Summary\\b0\\cf0\\par}
+{\\pard\\sb0\\sa0\\shading800\\cbpat2\\box\\brdrs\\brdrw8\\brsp80
+${summaryLines}
+\\pard\\par}
 
-{\\pard\\sb0\\sa240\\fs22
-${esc(assessment)}
-\\par}
+{\\pard\\sb200\\sa300\\f1\\fs20\\cf4\\i Before taking any action, read this review carefully. Send the letter on its own \\emdash  do not include this analysis.\\i0\\cf0\\par}
 
-{\\pard\\sb260\\sa120\\fs26\\b
-What To Do Next
-\\b0\\par}
+${sectionsRtf}
 
-{\\pard\\sb0\\sa240\\fs22
-${esc(nextSteps)}
-\\par}
-
-{\\pard\\sb400\\sa0\\brdrb\\brdrs\\brdrw5\\brsp60\\par}
-
-{\\pard\\sb100\\sa0\\fs16\\i
-This document is for informational purposes only and does not constitute legal advice. DoIPayThat does not provide legal representation.
-\\i0\\par}
-
+{\\pard\\sb500\\sa0\\brdrb\\brdrs\\brdrw5\\brsp60\\f1\\fs18\\cf0\\par}
+{\\pard\\sb100\\sa0\\f1\\fs16\\cf0\\i This document is for informational purposes only and does not constitute legal advice. DoIPayThat does not provide legal representation.\\i0\\par}
 }`;
 }
 
-// ── LETTER ──────────────────────────────────────────────────────────────────
+// ── Letter RTF ───────────────────────────────────────────────────────────────
 
-export function makeLetterRtf(
-  analysis,
-  name = "",
-  triage = {},
-  type = "debt"
-) {
-  const today = new Date().toLocaleDateString("en-GB");
+function getCleanLetterFromAnalysis(analysis) {
+  const letter =
+    getBlock(analysis, "DISPUTE_LETTER") ||
+    getBlock(analysis, "APPEAL_LETTER") ||
+    getBlock(analysis, "RESPONSE_LETTER") ||
+    getBlock(analysis, "CANCELLATION_LETTER");
 
-  const sender = triage?.sender || "Creditor";
+  if (!letter) return "";
 
-  const amount =
-    triage?.amount_claimed ||
-    triage?.fine_amount ||
-    "";
-
-  return `{\\rtf1\\ansi\\ansicpg1252\\deff0
-
-{\\fonttbl
-{\\f0 Arial;}
+  return stripTags(letter)
+    .replace(/\*\*/g, "")
+    .replace(/This is a draft.*?legal advice\./gi, "")
+    .trim();
 }
 
-\\paperw11906
-\\paperh16838
-\\margl1440
-\\margr1440
-\\margt1440
-\\margb1440
+function fallbackLetter(triage = {}) {
+  const amount = formatAmount(triage);
+  const contractRef = triage.contract_reference || triage.reference || "[reference]";
 
-\\viewkind4
-\\uc1
-\\pard
+  return [
+    "Dear Sir or Madam,",
+    "",
+    `Re: Dispute of claimed amount / Account reference ${contractRef}`,
+    "",
+    "I am writing regarding your letter about the above claim.",
+    "",
+    "At this stage, I do not acknowledge liability for the amount claimed.",
+    "",
+    "Before any payment can be considered, please provide full written evidence of the claim, including:",
+    "",
+    "1. A copy of the original agreement, contract or invoices relied upon.",
+    "2. A full itemised breakdown of the amount claimed.",
+    "3. An explanation of how the collection fees, reminder costs and any additional charges have been calculated.",
+    "4. Written confirmation of your authority to collect this debt on behalf of the original creditor.",
+    "5. Confirmation of the date on which the debt first became due and the date of any original default.",
+    "",
+    "The contract reference appears to relate to an older claim. For that reason, please also confirm whether any payments, acknowledgements or other events have occurred since then which you say affect the enforceability of the claim.",
+    "",
+    "Until the requested documents have been provided and reviewed, I am unable to assess the validity of the amount claimed.",
+    "",
+    "Please pause collection activity and any escalation while this request for evidence is outstanding.",
+    "",
+    "This letter does not constitute an admission of liability.",
+    "",
+    "Please respond in writing.",
+  ].join("\n");
+}
 
-{\\pard\\sb120\\sa80\\fs20
-${esc(name)}
-\\par}
+export function makeLetterRtf(analysis, name = "", triage = {}, type = "debt") {
+  const title = titleForType(type);
+  const sender = triage.sender || "Creditor";
+  const dateStr = new Date().toLocaleDateString("en-GB");
+  const letterText = getCleanLetterFromAnalysis(analysis) || fallbackLetter(triage);
 
-{\\pard\\sb0\\sa80\\fs20
-[Your Address]
-\\par}
+  return `{\\rtf1\\ansi\\ansicpg1252\\deff0
+{\\fonttbl{\\f0\\froman\\fcharset0 Times New Roman;}{\\f1\\fswiss\\fcharset0 Arial;}}
+{\\colortbl;\\red27\\green58\\blue140;\\red153\\green26\\blue26;\\red34\\green139\\blue34;\\red180\\green140\\blue0;}
+\\paperw11906\\paperh16838\\margl1800\\margr1800\\margt1440\\margb1440\\f1\\fs22
 
-{\\pard\\sb0\\sa260\\fs20
-[Postcode]
-\\par}
+{\\pard\\sb400\\sa160\\f1\\fs30\\b\\cf2 ${esc(title)}\\b0\\cf0\\par}
 
-{\\pard\\sb0\\sa80\\fs20
-${esc(sender)}
-\\par}
+{\\pard\\sb0\\sa80\\f1\\fs20\\cf0 ${esc(name || "[Your Name]")}\\par}
+{\\pard\\sb0\\sa80\\f1\\fs20\\cf0 [Your Address]\\par}
+{\\pard\\sb0\\sa260\\f1\\fs20\\cf0 [Postcode]\\par}
 
-{\\pard\\sb0\\sa260\\fs20
-[Company Address]
-\\par}
+{\\pard\\sb0\\sa80\\f1\\fs20\\cf0 ${esc(sender)}\\par}
+{\\pard\\sb0\\sa260\\f1\\fs20\\cf0 [Company Address]\\par}
 
-{\\pard\\sb0\\sa260\\fs20
-${esc(today)}
-\\par}
+{\\pard\\sb0\\sa300\\f1\\fs20\\cf0 ${esc(dateStr)}\\par}
 
-{\\pard\\sb120\\sa220\\fs26\\b
-Request for clarification regarding claimed amount
-\\b0\\par}
+${renderFormattedText(letterText)}
 
-${amount ? `
-{\\pard\\sb0\\sa240\\fs20
-Claimed amount: ${esc(String(amount))}
-\\par}
-` : ""}
+{\\pard\\sb320\\sa120\\f1\\fs22\\cf0 Yours faithfully,\\par}
 
-{\\pard\\sb120\\sa180\\fs22
-Dear Sir or Madam,
-\\par}
-
-{\\pard\\sb120\\sa180\\fs22
-I am writing regarding your letter about the above claim.
-\\par}
-
-{\\pard\\sb120\\sa180\\fs22
-At this stage, I do not acknowledge liability for the amount claimed.
-\\par}
-
-{\\pard\\sb120\\sa180\\fs22
-Before any payment can be considered, please provide full written evidence of the claim, including:
-\\par}
-
-{\\pard\\li720\\sb0\\sa120\\fs22
-1. A copy of the original agreement, contract or invoices relied upon.
-\\par}
-
-{\\pard\\li720\\sb0\\sa120\\fs22
-2. A full itemised breakdown of the amount claimed.
-\\par}
-
-{\\pard\\li720\\sb0\\sa120\\fs22
-3. An explanation of how the collection fees and reminder costs have been calculated.
-\\par}
-
-{\\pard\\li720\\sb0\\sa120\\fs22
-4. Written confirmation of your authority to collect this debt on behalf of the original creditor.
-\\par}
-
-{\\pard\\li720\\sb0\\sa120\\fs22
-5. Confirmation of the date on which the debt first became due and the date of any original default.
-\\par}
-
-{\\pard\\sb120\\sa180\\fs22
-The contract reference appears to relate to an older claim. For that reason, please also confirm whether any payments, acknowledgements or other events have occurred since then which you say affect the enforceability of the claim.
-\\par}
-
-{\\pard\\sb120\\sa180\\fs22
-Until the requested documents have been provided and reviewed, I am unable to assess the validity of the amount claimed.
-\\par}
-
-{\\pard\\sb120\\sa180\\fs22
-Please pause collection activity and any escalation while this request for evidence is outstanding.
-\\par}
-
-{\\pard\\sb120\\sa180\\fs22
-This letter does not constitute an admission of liability.
-\\par}
-
-{\\pard\\sb120\\sa240\\fs22
-Please respond in writing.
-\\par}
-
-{\\pard\\sb260\\sa120\\fs22
-Yours faithfully,
-\\par}
-
-{\\pard\\sb420\\sa80\\b\\fs22
-${esc(name)}
-\\b0\\par}
-
-{\\pard\\sb400\\sa0\\brdrb\\brdrs\\brdrw5\\brsp60\\par}
-
-{\\pard\\sb100\\sa0\\fs16\\i
-This is a draft for informational purposes only and is not legal advice.
-\\i0\\par}
-
+{\\pard\\sb420\\sa80\\f1\\fs22\\b\\cf0 ${esc(name || "[Your Name]")}\\b0\\par}
 }`;
 }
