@@ -338,7 +338,7 @@ export async function sendAbandonedEmail(env, { name, email, type, amount, strip
     bodyHtml = `
       <p>Hi ${escapeHtml(name)},</p>
       <p>You started checking your ${escapeHtml(labels.title)} but didn't complete it.</p>
-      <p>Before you pay, it's often worth taking a closer look — especially when${amountPhrase}.</p>
+      <p>Before you pay, it's often worth taking a closer look${amountPhrase}.</p>
       <p>You can continue here:</p>
       <p style="margin:20px 0;">
         <a href="${escapeHtml(stripeLink)}"
