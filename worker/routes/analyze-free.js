@@ -5,30 +5,37 @@ import { fileToBase64, safeJsonParse } from "../utils/files.js";
 import { jsonResponse } from "../utils/response.js";
 import { runTriage } from "../services/claude.js";
 import { enqueueFree, saveFreeCase } from "../services/queue.js";
-import { notifyAdminFree, sendConfirmationEmail } from "../services/resend.js";
+import {
+  notifyAdminFree,
+  sendConfirmationEmail,
+  sendFreeEmail,
+} from "../services/resend.js";
 import { loadPrompts } from "../config/prompts.js";
 import { getStripeLink } from "../services/stripe.js";
 import { requireType } from "../config/types.js";
- 
+
 function getTriageDecision({ chance, flags }) {
   const c = Number(chance) || 0;
-  const f = Number(flags)  || 0;
+  const f = Number(flags) || 0;
 
   if (c >= 60 && f >= 2) {
-    return { tier: "tier1", showUpsell: true,  emailType: "strong" };
+    return { tier: "tier1", showUpsell: true, emailType: "strong" };
   }
+
   if (c >= 40 || f === 1) {
-    return { tier: "tier2", showUpsell: true,  emailType: "soft"   };
+    return { tier: "tier2", showUpsell: true, emailType: "soft" };
   }
-  return   { tier: "tier3", showUpsell: false, emailType: "trust"  };
+
+  return { tier: "tier3", showUpsell: false, emailType: "trust" };
 }
 
 export async function handleAnalyzeFree(request, env) {
   const formData = await request.formData();
-  const file    = formData.get("file");
-  const name    = String(formData.get("name")  || "").trim();
-  const email   = String(formData.get("email") || "").trim();
-  const rawType = String(formData.get("type")  || "").trim();
+
+  const file = formData.get("file");
+  const name = String(formData.get("name") || "").trim();
+  const email = String(formData.get("email") || "").trim();
+  const rawType = String(formData.get("type") || "").trim();
 
   let type;
   try {
@@ -46,28 +53,28 @@ export async function handleAnalyzeFree(request, env) {
   const prompts = await loadPrompts(type);
 
   const raw = await runTriage(env, {
-    fileBase64:   base64,
+    fileBase64: base64,
     mediaType,
     triagePrompt: prompts.triage,
   });
 
   const triage = safeJsonParse(raw) || {
-    sender:    null,
-    risk:      "medium",
-    route:     "SONNET",
-    chance:    50,
+    sender: null,
+    risk: "medium",
+    route: "SONNET",
+    chance: 50,
     flagCount: 1,
-    teaser:    "Based on your document, there may be grounds to challenge this.",
+    teaser: "Based on your document, there may be grounds to challenge this.",
   };
 
   console.log("TRIAGE:", JSON.stringify(triage));
 
   const decision = getTriageDecision({
     chance: triage.chance,
-    flags:  triage.flagCount,
+    flags: triage.flagCount,
   });
 
-  triage.tier      = decision.tier;
+  triage.tier = decision.tier;
   triage.emailType = decision.emailType;
 
   const stripeLink = decision.showUpsell ? getStripeLink(env, type) : null;
@@ -84,13 +91,17 @@ export async function handleAnalyzeFree(request, env) {
       stripeLink,
       fileBase64: base64,
       mediaType,
-      fileName:   file.name || null,
-      fileSize:   file.size || null,
+      fileName: file.name || null,
+      fileSize: file.size || null,
     });
+
     console.log("saveFreeCase: OK");
   } catch (err) {
     console.error("saveFreeCase FAILED:", err.message);
-    return jsonResponse({ ok: false, error: "saveFreeCase failed: " + err.message }, 500);
+    return jsonResponse(
+      { ok: false, error: "saveFreeCase failed: " + err.message },
+      500
+    );
   }
 
   try {
@@ -102,10 +113,14 @@ export async function handleAnalyzeFree(request, env) {
       triage,
       stripeLink,
     });
+
     console.log("enqueueFree: OK");
   } catch (err) {
     console.error("enqueueFree FAILED:", err.message);
-    return jsonResponse({ ok: false, error: "enqueueFree failed: " + err.message }, 500);
+    return jsonResponse(
+      { ok: false, error: "enqueueFree failed: " + err.message },
+      500
+    );
   }
 
   try {
@@ -116,19 +131,42 @@ export async function handleAnalyzeFree(request, env) {
   }
 
   try {
-    await notifyAdminFree(env, { name, email, type, rawType, triage, stripeLink });
+    await notifyAdminFree(env, {
+      name,
+      email,
+      type,
+      rawType,
+      triage,
+      stripeLink,
+    });
+
     console.log("notifyAdminFree: OK");
   } catch (err) {
     console.error("Admin notify failed:", err.message);
   }
 
+  try {
+    await sendFreeEmail(env, {
+      name,
+      email,
+      type,
+      triage,
+      stripeLink,
+      stage: 1,
+    });
+
+    console.log("sendFreeEmail stage 1: OK");
+  } catch (err) {
+    console.error("sendFreeEmail stage 1 failed:", err.message);
+  }
+
   return jsonResponse({
-    ok:       true,
+    ok: true,
     type,
-    tier:     decision.tier,
+    tier: decision.tier,
     emailType: decision.emailType,
     stripeLink,
     triage,
-    message:  "You'll receive your assessment by the next business day before 4pm.",
+    message: "You'll receive your assessment by email.",
   });
 }
