@@ -1,21 +1,41 @@
 // worker/utils/rtf.js
 
 export function rtfToBase64(rtf) {
-  return btoa(unescape(encodeURIComponent(rtf)));
+  const bytes = [];
+  for (let i = 0; i < rtf.length; i++) {
+    const code = rtf.charCodeAt(i);
+    if (code < 128) {
+      bytes.push(code);
+    } else {
+      const escaped = `\\u${code}?`;
+      for (let j = 0; j < escaped.length; j++) {
+        bytes.push(escaped.charCodeAt(j));
+      }
+    }
+  }
+  let binary = "";
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary);
 }
 
 function esc(value = "") {
   return String(value)
-    .replace(/\\/g, "\\\\")
-    .replace(/{/g, "\\{")
-    .replace(/}/g, "\\}")
-    .replace(/\n/g, "\\par\n");
+    .replace(/\\/g,   "\\\\")
+    .replace(/{/g,    "\\{")
+    .replace(/}/g,    "\\}")
+    .replace(/\u2014/g, "\\emdash ")
+    .replace(/\u2013/g, "\\endash ")
+    .replace(/\u2018/g, "\\'91")
+    .replace(/\u2019/g, "\\'92")
+    .replace(/\u201c/g, "\\'93")
+    .replace(/\u201d/g, "\\'94")
+    .replace(/\u00a3/g, "\\'a3")
+    .replace(/\u20ac/g, "\\'80")
+    .replace(/\n/g,   "\\par\n");
 }
 
 function stripBlocks(text = "") {
-  return String(text)
-    .replace(/\[\/?[A-Z_]+\]/g, "")
-    .trim();
+  return String(text).replace(/\[\/?[A-Z_]+\]/g, "").trim();
 }
 
 function getBlock(text, block) {
@@ -36,9 +56,8 @@ function formatAmount(triage = {}) {
   return null;
 }
 
-// Merge short/empty sections — avoid forced structure
 function buildSections(summary, issues, assessment, nextSteps) {
-  const body = [summary, issues, assessment].filter(s => s && s.length > 40);
+  const body = [summary, issues, assessment].filter(s => s && s.length > 60);
   const sections = [];
 
   if (body.length <= 1) {
@@ -69,40 +88,40 @@ export function makeAnalysisRtf(analysis, name = "", email = "", triage = {}, ty
   const sender  = triage.sender || null;
   const dateStr = new Date().toLocaleDateString("en-GB");
 
-  // Case summary rows
-  const summaryRows = [
-    amount ? `{\\pard\\sb0\\sa80\\fi-2400\\li2400\\f1\\fs20 \\b Claimed amount:\\b0   ${esc(amount)}\\par}` : null,
-    `{\\pard\\sb0\\sa80\\fi-2400\\li2400\\f1\\fs20 \\b Concern level:\\b0   ${esc(risk)}\\par}`,
-    sender ? `{\\pard\\sb0\\sa80\\fi-2400\\li2400\\f1\\fs20 \\b Sender:\\b0   ${esc(sender)}\\par}` : null,
-    `{\\pard\\sb0\\sa80\\fi-2400\\li2400\\f1\\fs20 \\b Recommended action:\\b0   Request written evidence before paying\\par}`,
+  const summaryLines = [
+    amount ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b Claimed amount:\\b0\\tab ${esc(amount)}\\par` : null,
+    `\\pard\\sb0\\sa100\\f1\\fs22 \\b Concern level:\\b0\\tab ${esc(risk)}\\par`,
+    sender ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b Sender:\\b0\\tab ${esc(sender)}\\par` : null,
+    `\\pard\\sb0\\sa100\\f1\\fs22 \\b Recommended action:\\b0\\tab Request written evidence before paying\\par`,
   ].filter(Boolean).join("\n");
 
-  // Body sections
   const sections = buildSections(summary, issues, assessment, nextSteps);
 
   const sectionsRtf = sections.map(s =>
-    `{\\pard\\sb300\\sa120\\f1\\fs24\\b ${esc(s.title)}\\par}\n` +
-    `{\\pard\\sa200\\f1\\fs22 ${esc(s.text)}\\par}`
+    `{\\pard\\sb400\\sa160\\f1\\fs26\\b\\cf1 ${esc(s.title)}\\b0\\cf0\\par}\n` +
+    `{\\pard\\sb0\\sa200\\f1\\fs22\\cf0 ${esc(s.text)}\\par}`
   ).join("\n");
 
-  return `{\\rtf1\\ansi\\deff0
+  return `{\\rtf1\\ansi\\ansicpg1252\\deff0
 {\\fonttbl{\\f0\\froman\\fcharset0 Times New Roman;}{\\f1\\fswiss\\fcharset0 Arial;}}
-{\\colortbl;\\red27\\green58\\blue140;\\red153\\green26\\blue26;\\red34\\green139\\blue34;\\red200\\green160\\blue0;}
+{\\colortbl;\\red27\\green58\\blue140;\\red153\\green26\\blue26;\\red34\\green139\\blue34;\\red180\\green140\\blue0;}
 \\paperw11906\\paperh16838\\margl1800\\margr1800\\margt1440\\margb1440\\f1\\fs22
 
-{\\pard\\sb400\\sa200\\f1\\fs32\\b\\cf1 ${esc(title)}\\par}
-{\\pard\\sb0\\sa100\\f1\\fs20\\cf0 ${esc(name)} (${esc(email)})\\par}
-{\\pard\\sb0\\sa200\\f1\\fs20\\cf0 Type: ${esc(type)} | Date: ${esc(dateStr)}\\par}
+{\\pard\\sb400\\sa120\\f1\\fs34\\b\\cf1 ${esc(title)}\\b0\\cf0\\par}
+{\\pard\\sb0\\sa60\\f1\\fs20\\cf0 ${esc(name)} \\emdash  ${esc(email)}\\par}
+{\\pard\\sb0\\sa300\\f1\\fs20\\cf0 ${esc(type)} review \\endash  ${esc(dateStr)}\\par}
 
-{\\pard\\sb300\\sa120\\f1\\fs24\\b\\cf1 Case Summary\\b0\\cf0\\par}
-${summaryRows}
+{\\pard\\sb300\\sa80\\f1\\fs24\\b\\cf1 Case Summary\\b0\\cf0\\par}
+{\\pard\\sb0\\sa0\\shading800\\cbpat2\\box\\brdrs\\brdrw8\\brsp80
+${summaryLines}
+\\pard\\par}
 
-{\\pard\\sb300\\sa80\\f1\\fs20\\cf4\\i Before taking any action, read this review carefully. Send the letter on its own \\emdash  do not include this analysis.\\i0\\cf0\\par}
+{\\pard\\sb200\\sa300\\f1\\fs20\\cf4\\i Before taking any action, read this review carefully. Send the letter on its own \\emdash  do not include this analysis.\\i0\\cf0\\par}
 
 ${sectionsRtf}
 
-{\\pard\\sb400\\sa0\\brdrb\\brdrs\\brdrw5\\brsp60\\f1\\fs18\\cf0\\par}
-{\\pard\\sb80\\sa0\\f1\\fs16\\i This document is for informational purposes only and does not constitute legal advice. DoIPayThat does not provide legal representation.\\i0\\par}
+{\\pard\\sb500\\sa0\\brdrb\\brdrs\\brdrw5\\brsp60\\f1\\fs18\\cf0\\par}
+{\\pard\\sb100\\sa0\\f1\\fs16\\cf0\\i This document is for informational purposes only and does not constitute legal advice. DoIPayThat does not provide legal representation.\\i0\\par}
 }`;
 }
 
@@ -123,14 +142,14 @@ export function makeLetterRtf(analysis, name = "", triage = {}, type = "debt") {
   const sender  = triage.sender || null;
   const dateStr = new Date().toLocaleDateString("en-GB");
 
-  return `{\\rtf1\\ansi\\deff0
+  return `{\\rtf1\\ansi\\ansicpg1252\\deff0
 {\\fonttbl{\\f0\\froman\\fcharset0 Times New Roman;}{\\f1\\fswiss\\fcharset0 Arial;}}
-{\\colortbl;\\red27\\green58\\blue140;\\red153\\green26\\blue26;\\red34\\green139\\blue34;\\red200\\green160\\blue0;}
+{\\colortbl;\\red27\\green58\\blue140;\\red153\\green26\\blue26;\\red34\\green139\\blue34;\\red180\\green140\\blue0;}
 \\paperw11906\\paperh16838\\margl1800\\margr1800\\margt1440\\margb1440\\f1\\fs22
 
-{\\pard\\sb400\\sa200\\f1\\fs28\\b\\cf2 ${esc(title)}\\par}
-{\\pard\\sb0\\sa80\\f1\\fs20\\cf0 Prepared for: ${esc(name)}${sender ? ` | Sender: ${esc(sender)}` : ""}\\par}
-{\\pard\\sb0\\sa300\\f1\\fs20\\cf4\\i Fill in your personal details where shown, check the letter before sending, and send it on its own without this document.\\i0\\par}
+{\\pard\\sb400\\sa160\\f1\\fs30\\b\\cf2 ${esc(title)}\\b0\\cf0\\par}
+{\\pard\\sb0\\sa80\\f1\\fs20\\cf0 Prepared for: ${esc(name)}${sender ? ` \\emdash  Sender: ${esc(sender)}` : ""}\\par}
+{\\pard\\sb0\\sa300\\f1\\fs20\\cf4\\i Complete the fields marked in brackets before sending. Send this letter on its own \\emdash  do not include the analysis. Keep a copy for your records.\\i0\\cf0\\par}
 
 {\\pard\\sb300\\sa200\\f1\\fs22\\cf0
 [Your Name]\\par
@@ -151,7 +170,7 @@ ${esc(name || "[Your Name]")}\\par
 [Your address]\\par
 [Date]\\par}
 
-{\\pard\\sb400\\sa0\\brdrb\\brdrs\\brdrw5\\brsp60\\f1\\fs18\\cf0\\par}
-{\\pard\\sb80\\sa0\\f1\\fs16\\i This is a draft for informational purposes only. Not legal advice.\\i0\\par}
+{\\pard\\sb500\\sa0\\brdrb\\brdrs\\brdrw5\\brsp60\\f1\\fs18\\cf0\\par}
+{\\pard\\sb100\\sa0\\f1\\fs16\\cf0\\i This is a draft for informational purposes only and is not legal advice.\\i0\\par}
 }`;
 }
