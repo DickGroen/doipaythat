@@ -224,8 +224,23 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
         <p>If you'd like a full breakdown, you can still request a full analysis.</p>
         ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Get full analysis — £${escapeHtml(labels.price)} →</a></p>` : ""}`;
     }
+    await sendEmail(env, {
+      to: email,
+      subject,
+      html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1f2937;line-height:1.7;">
+        ${bodyHtml}
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
+        <p>If you have any questions, simply reply to this email.</p>
+        <p>Best regards,<br><strong>DoIPayThat</strong></p>
+        <p style="font-size:0.8rem;color:#6b7280;margin-top:24px;">${escapeHtml(DISCLAIMER)}</p>
+      </div>`
+    });
 
-if (stageNumber === 2) {
+    await trackEvent(env, "email_sent", { type, stage: 1, kind: "free", emailType });
+    return;
+  }
+
+  if (stageNumber === 2) {
     if (!stripeLink) return; // No follow-up for tier3
 
     await sendEmail(env, {
