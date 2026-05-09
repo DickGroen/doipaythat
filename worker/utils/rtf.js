@@ -1,176 +1,149 @@
-// worker/utils/rtf.js
+// utils/rtf.js
 
-export function rtfToBase64(rtf) {
-  const bytes = [];
-  for (let i = 0; i < rtf.length; i++) {
-    const code = rtf.charCodeAt(i);
-    if (code < 128) {
-      bytes.push(code);
-    } else {
-      const escaped = `\\u${code}?`;
-      for (let j = 0; j < escaped.length; j++) {
-        bytes.push(escaped.charCodeAt(j));
-      }
-    }
-  }
-  let binary = "";
-  for (const b of bytes) binary += String.fromCharCode(b);
-  return btoa(binary);
-}
-
-function esc(value = "") {
-  return String(value)
-    .replace(/\\/g,   "\\\\")
-    .replace(/{/g,    "\\{")
-    .replace(/}/g,    "\\}")
+function rtfEscape(str = "") {
+  return String(str)
+    .replace(/\\/g, "\\\\")
+    .replace(/{/g, "\\{")
+    .replace(/}/g, "\\}")
     .replace(/\u2014/g, "\\emdash ")
     .replace(/\u2013/g, "\\endash ")
-    .replace(/\u2018/g, "\\'91")
-    .replace(/\u2019/g, "\\'92")
-    .replace(/\u201c/g, "\\'93")
-    .replace(/\u201d/g, "\\'94")
-    .replace(/\u00a3/g, "\\'a3")
-    .replace(/\u20ac/g, "\\'80")
-    .replace(/\n/g,   "\\par\n");
+    .replace(/[^\x00-\x7F]/g, c => `\\u${c.charCodeAt(0)}?`);
 }
 
-function stripBlocks(text = "") {
-  return String(text).replace(/\[\/?[A-Z_]+\]/g, "").trim();
+function cleanParagraphs(text = "") {
+  return String(text)
+    .split(/\n\s*\n/)
+    .map(p => p.trim())
+    .filter(Boolean);
 }
 
-function getBlock(text, block) {
-  const regex = new RegExp(`\\[${block}\\]([\\s\\S]*?)\\[\\/${block}\\]`, "i");
-  const match = String(text).match(regex);
-  return match ? match[1].trim() : "";
+function renderParagraphs(text = "") {
+  const paragraphs = cleanParagraphs(text);
+
+  return paragraphs.map(p => `
+{\\pard\\sb120\\sa140\\fs20
+${rtfEscape(p)}
+\\par}
+`).join("\n");
 }
 
-function riskLabel(risk) {
-  if (risk === "high") return "High";
-  if (risk === "low")  return "Low";
-  return "Moderate";
+function renderSubHeading(title = "") {
+  return `
+{\\pard\\sb240\\sa80\\b\\fs22
+${rtfEscape(title)}
+\\b0\\fs20\\par}
+`;
 }
 
-function formatAmount(triage = {}) {
-  if (triage.amount_claimed) return `\u00a3${triage.amount_claimed}`;
-  if (triage.fine_amount)    return `\u00a3${triage.fine_amount}`;
-  return null;
+function renderBulletList(items = []) {
+  return items.map(item => `
+{\\pard\\li420\\fi-220\\sb80\\sa80\\fs20
+\\bullet\\tab ${rtfEscape(item)}
+\\par}
+`).join("\n");
 }
 
-function buildSections(summary, issues, assessment, nextSteps) {
-  const body = [summary, issues, assessment].filter(s => s && s.length > 60);
-  const sections = [];
+export function makeAnalysisRtf(analysis, name, email, triage, type) {
+  const sender = triage?.sender || "Unknown";
+  const amount =
+    triage?.amount_claimed ||
+    triage?.fine_amount ||
+    "Unknown";
 
-  if (body.length <= 1) {
-    const text = body[0] || summary || issues || assessment || "No details available.";
-    sections.push({ title: "Analysis", text });
-  } else {
-    if (summary)    sections.push({ title: "What We Found",     text: summary });
-    if (issues)     sections.push({ title: "Issues Identified", text: issues });
-    if (assessment) sections.push({ title: "Assessment",        text: assessment });
-  }
+  const risk = triage?.risk || "Moderate";
 
-  if (nextSteps) sections.push({ title: "What To Do Next", text: nextSteps });
+  const today = new Date().toLocaleDateString("en-GB");
 
-  return sections;
+  const sections = analysis?.sections || {};
+
+  const whatWeFound = sections.whatWeFound || analysis?.whatWeFound || "";
+  const assessment = sections.assessment || analysis?.assessment || "";
+
+  const issues = sections.issues || analysis?.issues || [];
+
+  const nextSteps = analysis?.nextSteps || [
+    "Keep the original letter and all related documents.",
+    "Do not admit liability until the claim has been verified.",
+    "Request written evidence before making payment.",
+    "Keep all communication in writing."
+  ];
+
+  const summaryRows = `
+{\\pard\\sb20\\sa20\\fs20\\b Claimed amount:\\b0 ${rtfEscape(String(amount))}\\par}
+{\\pard\\sb20\\sa20\\fs20\\b Concern level:\\b0 ${rtfEscape(risk)}\\par}
+{\\pard\\sb20\\sa20\\fs20\\b Sender:\\b0 ${rtfEscape(sender)}\\par}
+{\\pard\\sb20\\sa20\\fs20\\b Recommended action:\\b0 Request written evidence before paying\\par}
+`;
+
+  const renderedIssues = issues.map(issue => `
+${renderSubHeading(issue.title || "Issue")}
+
+${renderParagraphs(issue.text || "")}
+`).join("\n");
+
+  return `
+{\\rtf1\\ansi\\ansicpg1252\\deff0
+
+{\\fonttbl
+{\\f0 Arial;}
 }
 
-// ── Analysis RTF ─────────────────────────────────────────────────────────────
+\\viewkind4
+\\uc1
+\\pard
 
-export function makeAnalysisRtf(analysis, name = "", email = "", triage = {}, type = "debt") {
-  const title      = getBlock(analysis, "TITLE")      || "Document Analysis";
-  const summary    = getBlock(analysis, "SUMMARY")    || "";
-  const issues     = getBlock(analysis, "ISSUES")     || "";
-  const assessment = getBlock(analysis, "ASSESSMENT") || "";
-  const nextSteps  = getBlock(analysis, "NEXT_STEPS") || "";
+{\\pard\\sb120\\sa80\\qc\\b\\fs34
+${rtfEscape(type)} claim review
+\\par}
 
-  const amount  = formatAmount(triage);
-  const risk    = riskLabel(triage.risk);
-  const sender  = triage.sender || null;
-  const dateStr = new Date().toLocaleDateString("en-GB");
+{\\pard\\sb60\\sa220\\qc\\fs20
+${rtfEscape(name)} — ${rtfEscape(email)}
+\\par}
 
-  const summaryLines = [
-    amount ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b Claimed amount:\\b0\\tab ${esc(amount)}\\par` : null,
-    `\\pard\\sb0\\sa100\\f1\\fs22 \\b Concern level:\\b0\\tab ${esc(risk)}\\par`,
-    sender ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b Sender:\\b0\\tab ${esc(sender)}\\par` : null,
-    `\\pard\\sb0\\sa100\\f1\\fs22 \\b Recommended action:\\b0\\tab Request written evidence before paying\\par`,
-  ].filter(Boolean).join("\n");
+{\\pard\\sb60\\sa320\\qc\\i\\fs18
+${rtfEscape(type)} review – ${rtfEscape(today)}
+\\par}
 
-  const sections = buildSections(summary, issues, assessment, nextSteps);
+{\\pard\\sb160\\sa140\\b\\fs28
+Case Summary
+\\b0\\par}
 
-  const sectionsRtf = sections.map(s =>
-    `{\\pard\\sb400\\sa160\\f1\\fs26\\b\\cf1 ${esc(s.title)}\\b0\\cf0\\par}\n` +
-    `{\\pard\\sb0\\sa200\\f1\\fs22\\cf0 ${esc(s.text)}\\par}`
-  ).join("\n");
-
-  return `{\\rtf1\\ansi\\ansicpg1252\\deff0
-{\\fonttbl{\\f0\\froman\\fcharset0 Times New Roman;}{\\f1\\fswiss\\fcharset0 Arial;}}
-{\\colortbl;\\red27\\green58\\blue140;\\red153\\green26\\blue26;\\red34\\green139\\blue34;\\red180\\green140\\blue0;}
-\\paperw11906\\paperh16838\\margl1800\\margr1800\\margt1440\\margb1440\\f1\\fs22
-
-{\\pard\\sb400\\sa120\\f1\\fs34\\b\\cf1 ${esc(title)}\\b0\\cf0\\par}
-{\\pard\\sb0\\sa60\\f1\\fs20\\cf0 ${esc(name)} \\emdash  ${esc(email)}\\par}
-{\\pard\\sb0\\sa300\\f1\\fs20\\cf0 ${esc(type)} review \\endash  ${esc(dateStr)}\\par}
-
-{\\pard\\sb300\\sa80\\f1\\fs24\\b\\cf1 Case Summary\\b0\\cf0\\par}
 {\\pard\\sb0\\sa0\\shading800\\cbpat2\\box\\brdrs\\brdrw8\\brsp80
-${summaryLines}
+${summaryRows}
 \\pard\\par}
 
-{\\pard\\sb200\\sa300\\f1\\fs20\\cf4\\i Before taking any action, read this review carefully. Send the letter on its own \\emdash  do not include this analysis.\\i0\\cf0\\par}
+{\\pard\\sb220\\sa180\\fs19
+Before taking any action, read this review carefully. Send the letter on its own — do not include this analysis.
+\\par}
 
-${sectionsRtf}
+{\\pard\\sb320\\sa120\\b\\fs26
+What We Found
+\\b0\\par}
 
-{\\pard\\sb500\\sa0\\brdrb\\brdrs\\brdrw5\\brsp60\\f1\\fs18\\cf0\\par}
-{\\pard\\sb100\\sa0\\f1\\fs16\\cf0\\i This document is for informational purposes only and does not constitute legal advice. DoIPayThat does not provide legal representation.\\i0\\par}
-}`;
+${renderParagraphs(whatWeFound)}
+
+{\\pard\\sb320\\sa120\\b\\fs26
+Issues Identified
+\\b0\\par}
+
+${renderedIssues}
+
+{\\pard\\sb320\\sa120\\b\\fs26
+Assessment
+\\b0\\par}
+
+${renderParagraphs(assessment)}
+
+{\\pard\\sb320\\sa120\\b\\fs26
+What To Do Next
+\\b0\\par}
+
+${renderBulletList(nextSteps)}
+
+{\\pard\\sb320\\sa120\\fs18\\i
+This document is for informational purposes only and does not constitute legal advice. DoIPayThat does not provide legal representation.
+\\i0\\par}
+
 }
-
-// ── Letter RTF ───────────────────────────────────────────────────────────────
-
-export function makeLetterRtf(analysis, name = "", triage = {}, type = "debt") {
-  const letter = getBlock(analysis, "DISPUTE_LETTER") || stripBlocks(analysis);
-
-  const titleMap = {
-    debt:         "Dispute Letter",
-    parking:      "Appeal Letter",
-    bill:         "Dispute Letter",
-    subscription: "Cancellation Letter",
-    quote:        "Response Letter",
-  };
-
-  const title   = titleMap[type] || "Letter";
-  const sender  = triage.sender || null;
-  const dateStr = new Date().toLocaleDateString("en-GB");
-
-  return `{\\rtf1\\ansi\\ansicpg1252\\deff0
-{\\fonttbl{\\f0\\froman\\fcharset0 Times New Roman;}{\\f1\\fswiss\\fcharset0 Arial;}}
-{\\colortbl;\\red27\\green58\\blue140;\\red153\\green26\\blue26;\\red34\\green139\\blue34;\\red180\\green140\\blue0;}
-\\paperw11906\\paperh16838\\margl1800\\margr1800\\margt1440\\margb1440\\f1\\fs22
-
-{\\pard\\sb400\\sa160\\f1\\fs30\\b\\cf2 ${esc(title)}\\b0\\cf0\\par}
-{\\pard\\sb0\\sa80\\f1\\fs20\\cf0 Prepared for: ${esc(name)}${sender ? ` \\emdash  Sender: ${esc(sender)}` : ""}\\par}
-{\\pard\\sb0\\sa300\\f1\\fs20\\cf4\\i Complete the fields marked in brackets before sending. Send this letter on its own \\emdash  do not include the analysis. Keep a copy for your records.\\i0\\cf0\\par}
-
-{\\pard\\sb300\\sa200\\f1\\fs22\\cf0
-[Your Name]\\par
-[Your Address]\\par
-[Postcode]\\par
-\\par
-[Company Name]\\par
-[Company Address]\\par
-\\par
-${esc(dateStr)}\\par
-\\par
-${esc(letter)}\\par
-\\par
-Yours faithfully,\\par
-\\par
-\\par
-${esc(name || "[Your Name]")}\\par
-[Your address]\\par
-[Date]\\par}
-
-{\\pard\\sb500\\sa0\\brdrb\\brdrs\\brdrw5\\brsp60\\f1\\fs18\\cf0\\par}
-{\\pard\\sb100\\sa0\\f1\\fs16\\cf0\\i This is a draft for informational purposes only and is not legal advice.\\i0\\par}
-}`;
+`;
 }
