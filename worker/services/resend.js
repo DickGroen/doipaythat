@@ -171,37 +171,41 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
   const emailType   = triage?.emailType || "strong";
 
   if (stageNumber === 1) {
+    const senderPart = triage?.sender ? ` from ${escapeHtml(triage.sender)}` : "";
+    const amountStr  = amount !== "unknown" ? escapeHtml(amount) : "";
+
     const subject = emailType === "trust"
       ? `Your document has been reviewed`
-      : emailType === "soft"
-        ? `You may want to check this before paying`
+      : amountStr
+        ? `Before you pay ${amountStr} — check this first`
         : `Before you pay — check this first`;
-
-    const senderPart = triage?.sender ? ` from ${escapeHtml(triage.sender)}` : "";
-    const amountPart = amount !== "unknown" ? ` for ${escapeHtml(amount)}` : "";
 
     let bodyHtml;
 
     if (emailType === "strong") {
       bodyHtml = `
         <p>Hi ${escapeHtml(name)},</p>
-        <p>We've checked your ${escapeHtml(labels.title)}${senderPart}${amountPart} — and there are signs you could be paying more than you should.</p>
-        <p>Before you pay anything, it's worth taking a closer look.</p>
+        <p>We checked your ${escapeHtml(labels.title)}${senderPart}${amountStr ? ` regarding the claimed amount of ${amountStr}` : ""}.</p>
+        <p>There are signs you could be paying more than you should.</p>
+        <p>Many people only realise this after they've already paid unnecessary charges or costs.</p>
+        <p>Before you pay anything, it's worth checking the claim carefully${amountStr ? ` — especially when ${amountStr} is involved` : ""}.</p>
         <p><strong>What we noticed:</strong><br>
-        ${escapeHtml(triage?.teaser || "There may be aspects of this claim worth checking before you pay.")}</p>
+        ${escapeHtml(triage?.teaser || "There may be aspects of this claim worth checking, including possible additional charges or unclear parts of the demand.")}</p>
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
         <p>If you want to know exactly what to do next, you can get a full analysis and a ready-to-send ${escapeHtml(labels.letter)}:</p>
         <ul style="padding-left:20px;margin:8px 0 16px 0;list-style:none;">
           <li>✓ Clear explanation of your situation</li>
-          <li>✓ What to check (and why)</li>
+          <li>✓ Specific points worth checking</li>
           <li>✓ A ready-to-send ${escapeHtml(labels.letter)} you can use immediately</li>
         </ul>
-        ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">See exactly what to do — £${escapeHtml(labels.price)} →</a></p><p style="font-size:0.9rem;color:#374151;">Most people prefer to understand what they're being asked to pay — before they pay it.</p>` : ""}`;
+        ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Full analysis + ${escapeHtml(labels.letter)} — £${escapeHtml(labels.price)} →</a></p>` : ""}
+        <p style="font-size:0.9rem;color:#374151;">Most people prefer to understand what they're being asked to pay — before they pay it.</p>`;
     } else if (emailType === "soft") {
       bodyHtml = `
         <p>Hi ${escapeHtml(name)},</p>
-        <p>We've taken a first look at your ${escapeHtml(labels.title)}${senderPart}${amountPart}.</p>
+        <p>We've taken a first look at your ${escapeHtml(labels.title)}${senderPart}${amountStr ? ` for ${amountStr}` : ""}.</p>
         <p>There may be aspects worth checking before you proceed with payment.</p>
+        <p>Many people only realise this after they've already paid.</p>
         <p>${escapeHtml(triage?.teaser || "There may be aspects of this claim worth checking before you pay.")}</p>
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
         <p>If you'd like a clearer picture, you can get a full analysis and a ready-to-send ${escapeHtml(labels.letter)}:</p>
@@ -212,7 +216,6 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
           </a>
         </p>`;
     } else {
-      // trust — no hard sell, no Stripe link
       bodyHtml = `
         <p>Hi ${escapeHtml(name)},</p>
         <p>We've reviewed your ${escapeHtml(labels.title)}${senderPart}.</p>
@@ -222,23 +225,7 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
         ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Get full analysis — £${escapeHtml(labels.price)} →</a></p>` : ""}`;
     }
 
-    await sendEmail(env, {
-      to: email,
-      subject,
-      html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1f2937;line-height:1.7;">
-        ${bodyHtml}
-        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
-        <p>If you have any questions, just reply to this email.</p>
-        <p>Best regards,<br><strong>DoIPayThat</strong></p>
-        <p style="font-size:0.8rem;color:#6b7280;margin-top:24px;">${escapeHtml(DISCLAIMER)}</p>
-      </div>`
-    });
-
-    await trackEvent(env, "email_sent", { type, stage: 1, kind: "free", emailType });
-    return;
-  }
-
-  if (stageNumber === 2) {
+if (stageNumber === 2) {
     if (!stripeLink) return; // No follow-up for tier3
 
     await sendEmail(env, {
