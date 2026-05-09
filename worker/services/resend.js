@@ -329,7 +329,7 @@ export async function sendPaidEmail(env, { name, email, type, triage, analysis }
 export async function sendAbandonedEmail(env, { name, email, type, amount, stripeLink, stage = 1 }) {
   const labels      = TYPE_LABELS[type] || TYPE_LABELS.debt;
   const stageNumber = Number(stage) || 1;
-  const amountPart  = amount ? ` £${amount}` : "";
+  const amountPhrase = amount ? ` — especially when £${escapeHtml(String(amount))} is involved` : "";
 
   let subject, bodyHtml;
 
@@ -338,7 +338,7 @@ export async function sendAbandonedEmail(env, { name, email, type, amount, strip
     bodyHtml = `
       <p>Hi ${escapeHtml(name)},</p>
       <p>You started checking your ${escapeHtml(labels.title)} but didn't complete it.</p>
-      <p>Before you pay, it's often worth taking a closer look — especially when${escapeHtml(amountPart)} is involved.</p>
+      <p>Before you pay, it's often worth taking a closer look — especially when${amountPhrase}.</p>
       <p>You can continue here:</p>
       <p style="margin:20px 0;">
         <a href="${escapeHtml(stripeLink)}"
@@ -369,7 +369,7 @@ export async function sendAbandonedEmail(env, { name, email, type, amount, strip
     bodyHtml = `
       <p>Hi ${escapeHtml(name)},</p>
       <p>If you don't check this now, you may end up paying unnecessarily.</p>
-      <p>This is your last chance to review everything clearly before making a decision.</p>
+      <p>This is our final reminder before we close this follow-up.</p>
       <p style="margin:20px 0;">
         <a href="${escapeHtml(stripeLink)}"
            style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">
