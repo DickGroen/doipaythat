@@ -8,21 +8,19 @@ import { handleCron }           from "./routes/cron.js";
 import { handleStripeWebhook }  from "./routes/webhook.js";
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+
     if (request.method === "OPTIONS") {
       return corsResponse();
     }
 
-    const url = new URL(request.url);
-
-    // Test endpoint — manual cron trigger (remove before going live)
-    if (url.pathname === "/api/test-cron" && request.method === "GET") {
-      try {
-        await handleCron(env);
-        return jsonResponse({ ok: true, message: "Cron ran successfully" });
-      } catch (err) {
-        return jsonResponse({ ok: false, error: err.message }, 500);
-      }
+    if (url.pathname === "/api/health") {
+      return jsonResponse({
+        ok:        true,
+        worker:    "doipaythat",
+        timestamp: new Date().toISOString(),
+      });
     }
 
     try {
@@ -41,14 +39,23 @@ export default {
       if (url.pathname === "/api/submit" && request.method === "POST") {
         return await handleSubmitPaid(request, env);
       }
-      return jsonResponse({ ok: false, error: "Endpoint not found" }, 404);
+      if (url.pathname.startsWith("/api/")) {
+        return jsonResponse(
+          { ok: false, error: `API endpoint not found: ${url.pathname}` },
+          404
+        );
+      }
+      return new Response("Not found", { status: 404 });
     } catch (err) {
-      console.error("Unhandled error:", err?.message, err?.stack);
-      return jsonResponse({ ok: false, error: err?.message || "Internal server error" }, 500);
+      console.error("UNHANDLED WORKER ERROR:", err?.message, err?.stack);
+      return jsonResponse(
+        { ok: false, error: err?.message || "Internal server error" },
+        500
+      );
     }
   },
 
   async scheduled(event, env, ctx) {
     ctx.waitUntil(handleCron(env));
-  }
+  },
 };
