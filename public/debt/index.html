@@ -121,7 +121,7 @@
     .modal__close{display:block;text-align:center;margin-top:14px;font-size:.84rem;color:var(--muted);cursor:pointer;}
     .modal__close:hover{color:var(--ink);}
     .footer-trust{padding:32px 0 16px;font-size:.85rem;color:var(--ink-3);line-height:1.75;border-top:1px solid var(--line);}
-    .disclaimer{padding:16px 0 80px;font-size:.78rem;color:var(--muted);line-height:1.7;}
+    .disclaimer{padding:16px 0 20px;font-size:.78rem;color:var(--muted);line-height:1.7;}
   </style>
 </head>
 
@@ -276,8 +276,18 @@
 
 <div class="container">
   <div class="footer-trust"><strong>DoIPayThat</strong> is a document review service focused on helping people understand debt claims before they pay. Most people prefer to check before they pay.<br>Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a></div>
-  <div class="disclaimer">DoIPayThat provides informative document analysis and response drafts. It is not legal advice and does not provide legal representation. Documents are processed only for analysis. © 2026 DoIPayThat</div>
+  <div class="disclaimer">DoIPayThat provides informative document analysis and response drafts. It is not legal advice and does not provide legal representation. Documents are processed only for analysis. &copy; 2026 DoIPayThat</div>
 </div>
+
+<footer style="border-top:1px solid var(--line);padding:20px 0;text-align:center;background:var(--white);">
+  <div class="container">
+    <p style="font-size:.78rem;color:var(--muted);margin:0;">
+      <a href="/privacy.html" style="color:var(--muted);margin:0 10px;">Privacy Policy</a>
+      <a href="/terms.html" style="color:var(--muted);margin:0 10px;">Terms of Service</a>
+      <a href="/contact.html" style="color:var(--muted);margin:0 10px;">Contact</a>
+    </p>
+  </div>
+</footer>
 
 <div class="sticky-footer" id="sticky-footer">
   <div>
@@ -294,18 +304,14 @@
       <div class="modal__title">Analysis + response draft</div>
       <div class="modal__price">£49 <span>one-off</span></div>
     </div>
-
     <div class="modal__body">
       <div class="modal__feature"><span class="check">✓</span><span>Clear assessment of your situation</span></div>
       <div class="modal__feature"><span class="check">✓</span><span>Practical next steps</span></div>
       <div class="modal__feature"><span class="check">✓</span><span>Ready-to-send response draft</span></div>
-
       <div class="modal__disclaimer">Informative analysis and response draft. Not legal advice.</div>
-
       <a href="https://buy.stripe.com/REPLACE_WITH_DEBT_STRIPE_LINK" class="modal__cta js-stripe-link" data-type="debt" data-price="49">
         Get full analysis →
       </a>
-
       <div class="modal__security">🔒 Secure payment via Stripe — card details are never stored · no subscription</div>
       <div class="modal__close" onclick="closeModal('modal')">Back</div>
     </div>
