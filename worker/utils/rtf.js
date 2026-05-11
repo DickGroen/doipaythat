@@ -2,10 +2,8 @@
 
 export function rtfToBase64(rtf) {
   const bytes = [];
-
   for (let i = 0; i < rtf.length; i++) {
     const code = rtf.charCodeAt(i);
-
     if (code < 128) {
       bytes.push(code);
     } else {
@@ -15,18 +13,16 @@ export function rtfToBase64(rtf) {
       }
     }
   }
-
   let binary = "";
   for (const b of bytes) binary += String.fromCharCode(b);
-
   return btoa(binary);
 }
 
 function esc(value = "") {
   return String(value)
-    .replace(/\\/g, "\\\\")
-    .replace(/{/g, "\\{")
-    .replace(/}/g, "\\}")
+    .replace(/\\/g,    "\\\\")
+    .replace(/{/g,     "\\{")
+    .replace(/}/g,     "\\}")
     .replace(/\u2014/g, "\\emdash ")
     .replace(/\u2013/g, "\\endash ")
     .replace(/\u2018/g, "\\'91")
@@ -35,57 +31,30 @@ function esc(value = "") {
     .replace(/\u201d/g, "\\'94")
     .replace(/\u00a3/g, "\\'a3")
     .replace(/\u20ac/g, "\\'80")
-    .replace(/\n/g, "\\par\n");
+    .replace(/\*/g,    "")
+    .replace(/\n/g,    "\\par\n");
+}
+
+function stripBlocks(text = "") {
+  return String(text).replace(/\[\/?\w+\]/g, "").trim();
 }
 
 function getBlock(text, block) {
   const regex = new RegExp(`\\[${block}\\]([\\s\\S]*?)\\[\\/${block}\\]`, "i");
-  const match = String(text || "").match(regex);
+  const match = String(text).match(regex);
   return match ? match[1].trim() : "";
-}
-
-function stripTags(text = "") {
-  return String(text).replace(/\[\/?[A-Z_]+\]/g, "").trim();
 }
 
 function riskLabel(risk) {
   if (risk === "high") return "High";
-  if (risk === "low") return "Low";
+  if (risk === "low")  return "Low";
   return "Moderate";
 }
 
 function formatAmount(triage = {}) {
-  if (triage.amount_claimed) return `£${triage.amount_claimed}`;
-  if (triage.fine_amount) return `£${triage.fine_amount}`;
+  if (triage.amount_claimed) return `\u00a3${triage.amount_claimed}`;
+  if (triage.fine_amount)    return `\u00a3${triage.fine_amount}`;
   return null;
-}
-
-function titleForType(type) {
-  return {
-    debt: "Dispute Letter",
-    parking: "Appeal Letter",
-    bill: "Dispute Letter",
-    subscription: "Cancellation Letter",
-    quote: "Response Letter",
-  }[type] || "Letter";
-}
-
-function renderFormattedText(text = "") {
-  const lines = String(text)
-    .replace(/\r/g, "")
-    .split("\n")
-    .map(l => l.trim())
-    .filter(Boolean);
-
-  return lines.map(line => {
-    const heading = line.match(/^\*\*(.+?)\*\*$/);
-
-    if (heading) {
-      return `{\\pard\\sb260\\sa80\\f1\\fs23\\b\\cf0 ${esc(heading[1])}\\b0\\par}`;
-    }
-
-    return `{\\pard\\sb80\\sa160\\f1\\fs22\\cf0 ${esc(line.replace(/\*\*/g, ""))}\\par}`;
-  }).join("\n");
 }
 
 function buildSections(summary, issues, assessment, nextSteps) {
@@ -96,9 +65,9 @@ function buildSections(summary, issues, assessment, nextSteps) {
     const text = body[0] || summary || issues || assessment || "No details available.";
     sections.push({ title: "Analysis", text });
   } else {
-    if (summary) sections.push({ title: "What We Found", text: summary });
-    if (issues) sections.push({ title: "Issues Identified", text: issues });
-    if (assessment) sections.push({ title: "Assessment", text: assessment });
+    if (summary)    sections.push({ title: "What We Found",     text: summary });
+    if (issues)     sections.push({ title: "Issues Identified", text: issues });
+    if (assessment) sections.push({ title: "Assessment",        text: assessment });
   }
 
   if (nextSteps) sections.push({ title: "What To Do Next", text: nextSteps });
@@ -106,30 +75,44 @@ function buildSections(summary, issues, assessment, nextSteps) {
   return sections;
 }
 
-// ── Analysis RTF ─────────────────────────────────────────────────────────────
+// ── Analysis RTF ──────────────────────────────────────────────────────────────
 
 export function makeAnalysisRtf(analysis, name = "", email = "", triage = {}, type = "debt") {
-  const title = getBlock(analysis, "TITLE") || "Document Analysis";
-  const summary = getBlock(analysis, "SUMMARY") || "";
-  const issues = getBlock(analysis, "ISSUES") || "";
+  const title      = getBlock(analysis, "TITLE")      || "Document Analysis";
+  const summary    = getBlock(analysis, "SUMMARY")    || "";
+  const issues     = getBlock(analysis, "ISSUES")     || "";
   const assessment = getBlock(analysis, "ASSESSMENT") || "";
-  const nextSteps = getBlock(analysis, "NEXT_STEPS") || "";
+  const nextSteps  = getBlock(analysis, "NEXT_STEPS") || "";
 
-  const amount = formatAmount(triage);
-  const risk = riskLabel(triage.risk);
-  const sender = triage.sender || null;
+  const amount  = formatAmount(triage);
+  const risk    = riskLabel(triage.risk);
+  const sender  = triage.sender || null;
   const dateStr = new Date().toLocaleDateString("en-GB");
+  const isParking = type === "parking";
 
+  // Build case summary box — parking gets vehicle/operator fields
   const summaryLines = [
-    amount ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b Claimed amount:\\b0\\tab ${esc(amount)}\\par` : null,
+    amount
+      ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b ${isParking ? "Fine amount" : "Claimed amount"}:\\b0\\tab ${esc(amount)}\\par`
+      : null,
     `\\pard\\sb0\\sa100\\f1\\fs22 \\b Concern level:\\b0\\tab ${esc(risk)}\\par`,
-    sender ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b Sender:\\b0\\tab ${esc(sender)}\\par` : null,
-    `\\pard\\sb0\\sa100\\f1\\fs22 \\b Recommended action:\\b0\\tab Request written evidence before paying\\par`,
+    sender
+      ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b ${isParking ? "Operator" : "Sender"}:\\b0\\tab ${esc(sender)}\\par`
+      : null,
+    isParking && triage.vehicle_registration
+      ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b Vehicle:\\b0\\tab ${esc(triage.vehicle_registration)}\\par`
+      : null,
+    isParking && triage.operator_type
+      ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b Operator type:\\b0\\tab ${esc(triage.operator_type === "private" ? "Private parking company" : triage.operator_type === "council" ? "Council / local authority" : triage.operator_type)}\\par`
+      : null,
+    `\\pard\\sb0\\sa100\\f1\\fs22 \\b Recommended action:\\b0\\tab ${esc(isParking ? "Do not pay before reviewing appeal grounds" : "Request written evidence before paying")}\\par`,
   ].filter(Boolean).join("\n");
 
-  const sectionsRtf = buildSections(summary, issues, assessment, nextSteps).map(s =>
-    `{\\pard\\sb400\\sa140\\f1\\fs26\\b\\cf1 ${esc(s.title)}\\b0\\cf0\\par}\n` +
-    renderFormattedText(s.text)
+  const sections = buildSections(summary, issues, assessment, nextSteps);
+
+  const sectionsRtf = sections.map(s =>
+    `{\\pard\\sb400\\sa160\\f1\\fs26\\b\\cf1 ${esc(s.title)}\\b0\\cf0\\par}\n` +
+    `{\\pard\\sb0\\sa200\\f1\\fs22\\cf0 ${esc(s.text)}\\par}`
   ).join("\n");
 
   return `{\\rtf1\\ansi\\ansicpg1252\\deff0
@@ -146,7 +129,7 @@ export function makeAnalysisRtf(analysis, name = "", email = "", triage = {}, ty
 ${summaryLines}
 \\pard\\par}
 
-{\\pard\\sb200\\sa300\\f1\\fs20\\cf4\\i Before taking any action, read this review carefully. Send the letter on its own \\emdash  do not include this analysis.\\i0\\cf0\\par}
+{\\pard\\sb200\\sa300\\f1\\fs20\\cf4\\i Before taking any action, read this review carefully. ${esc(isParking ? "Send the appeal letter on its own — do not include this analysis document." : "Send the letter on its own — do not include this analysis.")}\\i0\\cf0\\par}
 
 ${sectionsRtf}
 
@@ -155,61 +138,42 @@ ${sectionsRtf}
 }`;
 }
 
-// ── Letter RTF ───────────────────────────────────────────────────────────────
-
-function getCleanLetterFromAnalysis(analysis) {
-  const letter =
-    getBlock(analysis, "DISPUTE_LETTER") ||
-    getBlock(analysis, "APPEAL_LETTER") ||
-    getBlock(analysis, "RESPONSE_LETTER") ||
-    getBlock(analysis, "CANCELLATION_LETTER");
-
-  if (!letter) return "";
-
-  return stripTags(letter)
-    .replace(/\*\*/g, "")
-    .replace(/This is a draft.*?legal advice\./gi, "")
-    .trim();
-}
-
-function fallbackLetter(triage = {}) {
-  const amount = formatAmount(triage);
-  const contractRef = triage.contract_reference || triage.reference || "[reference]";
-
-  return [
-    "Dear Sir or Madam,",
-    "",
-    `Re: Dispute of claimed amount / Account reference ${contractRef}`,
-    "",
-    "I am writing regarding your letter about the above claim.",
-    "",
-    "At this stage, I do not acknowledge liability for the amount claimed.",
-    "",
-    "Before any payment can be considered, please provide full written evidence of the claim, including:",
-    "",
-    "1. A copy of the original agreement, contract or invoices relied upon.",
-    "2. A full itemised breakdown of the amount claimed.",
-    "3. An explanation of how the collection fees, reminder costs and any additional charges have been calculated.",
-    "4. Written confirmation of your authority to collect this debt on behalf of the original creditor.",
-    "5. Confirmation of the date on which the debt first became due and the date of any original default.",
-    "",
-    "The contract reference appears to relate to an older claim. For that reason, please also confirm whether any payments, acknowledgements or other events have occurred since then which you say affect the enforceability of the claim.",
-    "",
-    "Until the requested documents have been provided and reviewed, I am unable to assess the validity of the amount claimed.",
-    "",
-    "Please pause collection activity and any escalation while this request for evidence is outstanding.",
-    "",
-    "This letter does not constitute an admission of liability.",
-    "",
-    "Please respond in writing.",
-  ].join("\n");
-}
+// ── Letter RTF ────────────────────────────────────────────────────────────────
 
 export function makeLetterRtf(analysis, name = "", triage = {}, type = "debt") {
-  const title = titleForType(type);
-  const sender = triage.sender || "Creditor";
+  // For parking: try [LETTER] first (new prompt format), then [APPEAL_LETTER] (legacy)
+  // For other types: try [LETTER], then type-specific blocks, then fallback
+  let letter = "";
+
+  if (type === "parking") {
+    letter = getBlock(analysis, "LETTER") || getBlock(analysis, "APPEAL_LETTER") || "";
+    if (!letter) {
+      letter = parkingFallbackLetter(triage);
+    }
+  } else {
+    letter = getBlock(analysis, "LETTER")
+          || getBlock(analysis, "DISPUTE_LETTER")
+          || getBlock(analysis, "CANCELLATION_LETTER")
+          || getBlock(analysis, "RESPONSE_LETTER")
+          || stripBlocks(analysis);
+  }
+
+  const titleMap = {
+    debt:         "Dispute Letter",
+    parking:      "Appeal Letter",
+    bill:         "Dispute Letter",
+    subscription: "Cancellation Letter",
+    quote:        "Response Letter",
+  };
+
+  const title   = titleMap[type] || "Letter";
+  const sender  = triage.sender || null;
   const dateStr = new Date().toLocaleDateString("en-GB");
-  const letterText = getCleanLetterFromAnalysis(analysis) || fallbackLetter(triage);
+  const isParking = type === "parking";
+
+  const instrText = isParking
+    ? "Complete the fields marked in brackets before sending. Send this letter on its own — do not include the analysis. Keep a copy for your records. Send by first class post and retain proof of postage."
+    : "Complete the fields marked in brackets before sending. Send this letter on its own — do not include the analysis. Keep a copy for your records.";
 
   return `{\\rtf1\\ansi\\ansicpg1252\\deff0
 {\\fonttbl{\\f0\\froman\\fcharset0 Times New Roman;}{\\f1\\fswiss\\fcharset0 Arial;}}
@@ -217,20 +181,93 @@ export function makeLetterRtf(analysis, name = "", triage = {}, type = "debt") {
 \\paperw11906\\paperh16838\\margl1800\\margr1800\\margt1440\\margb1440\\f1\\fs22
 
 {\\pard\\sb400\\sa160\\f1\\fs30\\b\\cf2 ${esc(title)}\\b0\\cf0\\par}
+{\\pard\\sb0\\sa80\\f1\\fs20\\cf0 Prepared for: ${esc(name)}${sender ? ` \\emdash  ${isParking ? "Operator" : "Sender"}: ${esc(sender)}` : ""}\\par}
+{\\pard\\sb0\\sa300\\f1\\fs20\\cf4\\i ${esc(instrText)}\\i0\\cf0\\par}
 
-{\\pard\\sb0\\sa80\\f1\\fs20\\cf0 ${esc(name || "[Your Name]")}\\par}
-{\\pard\\sb0\\sa80\\f1\\fs20\\cf0 [Your Address]\\par}
-{\\pard\\sb0\\sa260\\f1\\fs20\\cf0 [Postcode]\\par}
+{\\pard\\sb300\\sa200\\f1\\fs22\\cf0
+[Your Name]\\par
+[Your Address]\\par
+[Postcode]\\par
+\\par
+${isParking ? "[Parking Operator Name]\\par[Operator Address]\\par" : "[Company Name]\\par[Company Address]\\par"}
+\\par
+${esc(dateStr)}\\par
+\\par
+${esc(letter)}\\par
+}
 
-{\\pard\\sb0\\sa80\\f1\\fs20\\cf0 ${esc(sender)}\\par}
-{\\pard\\sb0\\sa260\\f1\\fs20\\cf0 [Company Address]\\par}
-
-{\\pard\\sb0\\sa300\\f1\\fs20\\cf0 ${esc(dateStr)}\\par}
-
-${renderFormattedText(letterText)}
-
-{\\pard\\sb320\\sa120\\f1\\fs22\\cf0 Yours faithfully,\\par}
-
-{\\pard\\sb420\\sa80\\f1\\fs22\\b\\cf0 ${esc(name || "[Your Name]")}\\b0\\par}
+{\\pard\\sb500\\sa0\\brdrb\\brdrs\\brdrw5\\brsp60\\f1\\fs18\\cf0\\par}
+{\\pard\\sb100\\sa0\\f1\\fs16\\cf0\\i This is a draft for informational purposes only and is not legal advice.\\i0\\par}
 }`;
+}
+
+// ── Parking fallback letter ───────────────────────────────────────────────────
+// Used only when no [LETTER] block is present in the analysis output.
+
+function parkingFallbackLetter(triage = {}) {
+  const isCouncil  = triage.operator_type === "council";
+  const reg        = triage.vehicle_registration || "[Vehicle registration]";
+  const conDate    = triage.contravention_date   || "[date of alleged contravention]";
+  const sender     = triage.sender               || "[operator name]";
+
+  if (isCouncil) {
+    return `Dear Sir or Madam,
+
+RE: Formal Representation — Penalty Charge Notice
+Vehicle: ${reg}
+Date of alleged contravention: ${conDate}
+
+I write to formally represent against the above Penalty Charge Notice issued by your authority.
+
+I do not accept that the alleged contravention took place as described, and I request that the PCN be cancelled.
+
+In support of this representation, I request the following information in writing:
+
+1. Full details of the alleged contravention, including the specific contravention code and the statutory basis for the charge.
+2. Copies of any photographic or CCTV evidence relied upon, including clear timestamped images.
+3. Confirmation that the notice was correctly served in accordance with the Traffic Management Act 2004 and the relevant statutory regulations.
+4. Confirmation of the observation period recorded, where applicable.
+
+I reserve the right to appeal to the Traffic Penalty Tribunal (or London Tribunals) if this representation is rejected.
+
+This letter does not constitute an admission of liability.
+
+Yours faithfully,
+
+[Your full name]
+[Your address]
+[Date]`;
+  }
+
+  // Private operator fallback
+  return `Dear Sir or Madam,
+
+RE: Formal Appeal — Parking Charge Notice
+Vehicle registration: ${reg}
+Date of alleged contravention: ${conDate}
+Operator: ${sender}
+
+I write to formally appeal the above Parking Charge Notice.
+
+I do not accept that this charge is valid or enforceable, and I request that it be cancelled immediately.
+
+In support of this appeal, I request the following information in writing within 14 days:
+
+1. Full timestamped photographic evidence of the alleged contravention, including clear images of the vehicle entering and leaving the location.
+2. Confirmation of the exact date the original Parking Charge Notice was issued to the vehicle and the exact date this Notice to Keeper was sent, to allow me to assess compliance with Schedule 4 of the Protection of Freedoms Act 2012.
+3. Photographs of the signage in place at the location on the date of the alleged contravention, showing the terms and conditions clearly displayed at the point of entry, in compliance with the BPA or IPC Code of Practice.
+4. A copy of the current landowner authority contract confirming your organisation's right to issue parking charges at this specific location.
+5. Confirmation of your BPA or IPC membership number and compliance scheme.
+
+Until the above information is received and this appeal has been formally considered, I will not be making any payment.
+
+If this appeal is rejected, I will escalate to POPLA (BPA members) or the Independent Appeals Service (IPC members) as appropriate.
+
+This letter does not constitute an admission of liability.
+
+Yours faithfully,
+
+[Your full name]
+[Your address]
+[Date]`;
 }
