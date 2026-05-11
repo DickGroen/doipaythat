@@ -56,18 +56,57 @@ export function formatFileSize(bytes) {
   return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
 
+// ── Read file into ArrayBuffer (fixes stale File on iOS/Android) ──────────────
+
+function readFileAsArrayBuffer(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("Could not read file. Please try again."));
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+// ── Fetch with timeout ────────────────────────────────────────────────────────
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = 60000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(timer);
+    return res;
+  } catch (err) {
+    clearTimeout(timer);
+    if (err.name === "AbortError") {
+      throw new Error("Request timed out — please check your connection and try again.");
+    }
+    throw new Error("Network error — please check your connection and try again.");
+  }
+}
+
 // ── Triage / free upload ──────────────────────────────────────────────────────
 
 export async function submitFree({ file, name, email, type, onStatus }) {
   onStatus?.("info", "Checking your document...");
 
+  // Read file eagerly — prevents stale File reference on iOS/Android
+  let buffer;
+  try {
+    buffer = await readFileAsArrayBuffer(file);
+  } catch (err) {
+    throw new Error("Could not read file. Please try again.");
+  }
+
+  const blob = new Blob([buffer], { type: file.type || "application/octet-stream" });
+
   const formData = new FormData();
-  formData.append("file",  file);
+  formData.append("file",  blob, file.name);
   formData.append("name",  name);
   formData.append("email", email);
   formData.append("type",  type);
 
-  const res = await fetch(`${WORKER_URL}/analyze-free`, {
+  const res = await fetchWithTimeout(`${WORKER_URL}/analyze-free`, {
     method: "POST",
     body:   formData
   });
@@ -97,7 +136,7 @@ export async function submitFree({ file, name, email, type, onStatus }) {
 export async function submitAutoPaid({ type, sessionId, onStatus }) {
   onStatus?.("info", "Verifying your payment…");
 
-  const res = await fetch(`${WORKER_URL}/submit-auto`, {
+  const res = await fetchWithTimeout(`${WORKER_URL}/submit-auto`, {
     method:  "POST",
     headers: { "Content-Type": "application/json" },
     body:    JSON.stringify({ type, session_id: sessionId })
@@ -131,14 +170,24 @@ export async function submitPaid({ file, name, email, type, sessionId, onStatus 
 
   onStatus?.("info", "Uploading your document securely...");
 
+  // Read file eagerly — prevents stale File reference on iOS/Android
+  let buffer;
+  try {
+    buffer = await readFileAsArrayBuffer(file);
+  } catch (err) {
+    throw new Error("Could not read file. Please try again.");
+  }
+
+  const blob = new Blob([buffer], { type: file.type || "application/octet-stream" });
+
   const formData = new FormData();
-  formData.append("file",       file);
+  formData.append("file",       blob, file.name);
   formData.append("name",       name);
   formData.append("email",      email);
   formData.append("type",       type);
   formData.append("session_id", sessionId);
 
-  const res = await fetch(`${WORKER_URL}/submit`, {
+  const res = await fetchWithTimeout(`${WORKER_URL}/submit`, {
     method: "POST",
     body:   formData
   });
