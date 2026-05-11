@@ -1,49 +1,50 @@
-// worker/config/types.js
+// worker/config/types.js — mussichzahlen (DE)
 
-export const ALLOWED_TYPES = ["debt", "parking", "bill", "subscription", "quote"];
+const ALLOWED = new Set(["mahnung", "parkstrafe", "rechnung", "vertrag"]);
+
+export const ALLOWED_TYPES = [...ALLOWED];
 
 export const TYPE_CONFIG = {
-  debt: {
-    label:    "Debt letter",
-    letter:   "Dispute Letter",
-    filename: "Dispute-Letter.rtf",
+  mahnung: {
+    label:    "Mahnung / Inkasso",
+    letter:   "Widerspruch",
+    filename: "Widerspruch.rtf",
     price:    49,
-    currency: "GBP"
+    currency: "EUR"
   },
-  parking: {
-    label:    "Parking fine",
-    letter:   "Appeal Letter",
-    filename: "Appeal-Letter.rtf",
+  parkstrafe: {
+    label:    "Bußgeldbescheid",
+    letter:   "Einspruchsschreiben",
+    filename: "Einspruch.rtf",
     price:    19,
-    currency: "GBP"
+    currency: "EUR"
   },
-  bill: {
-    label:    "Bill",
-    letter:   "Dispute Letter",
-    filename: "Dispute-Letter.rtf",
+  rechnung: {
+    label:    "Rechnung",
+    letter:   "Widerspruchsschreiben",
+    filename: "Widerspruch.rtf",
     price:    29,
-    currency: "GBP"
+    currency: "EUR"
   },
-  subscription: {
-    label:    "Subscription charge",
-    letter:   "Cancellation Letter",
-    filename: "Cancellation-Letter.rtf",
+  vertrag: {
+    label:    "Vertrag / Kündigung",
+    letter:   "Kündigungsschreiben",
+    filename: "Kuendigungsschreiben.rtf",
     price:    29,
-    currency: "GBP"
-  },
-  quote: {
-    label:    "Quote or estimate",
-    letter:   "Response Letter",
-    filename: "Response-Letter.rtf",
-    price:    29,
-    currency: "GBP"
+    currency: "EUR"
   }
 };
 
+export function requireType(type) {
+  const t = String(type || "").trim().toLowerCase();
+  if (!ALLOWED.has(t)) throw new Error(`Unbekannter Typ: ${t}`);
+  return t;
+}
+
 export function isAllowedType(type) {
-  return ALLOWED_TYPES.includes(type);
+  return ALLOWED.has(String(type || "").trim().toLowerCase());
 }
 
 export function getTypeConfig(type) {
-  return TYPE_CONFIG[type] || TYPE_CONFIG.debt;
+  return TYPE_CONFIG[type] || TYPE_CONFIG.mahnung;
 }
