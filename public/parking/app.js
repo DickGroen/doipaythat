@@ -1,3 +1,4 @@
+// public/parking/app.js
 import {
   validateFile,
   formatFileSize,
@@ -11,7 +12,7 @@ import {
   track
 } from '../app.js';
 
-window.openModal = openModal;
+window.openModal  = openModal;
 window.closeModal = closeModal;
 
 const TYPE     = 'parking';
@@ -19,12 +20,11 @@ const PRICE    = 19;
 const CURRENCY = '£';
 
 let freeFile   = null;
-let selectedFile = null;
 let stripeLink = null;
 
 track('page_view', { type: TYPE });
 
-// ── Free triage flow ─────────────────────────────────────────────────────────
+// ── Free triage flow ──────────────────────────────────────────────────────────
 
 window.handleGratisFileSelect = function(input) {
   if (!input.files?.[0]) return;
@@ -38,14 +38,13 @@ window.handleGratisFileSelect = function(input) {
 
   if (err) {
     if (status) {
-      status.className = 'optie-status optie-status--error';
+      status.className  = 'optie-status optie-status--error';
       status.textContent = err;
     }
     return;
   }
 
   const zone = document.getElementById('gratis-upload-zone');
-
   if (zone) {
     zone.innerHTML = `
       <div class="upload-label" style="color:var(--green);">✓ ${esc(freeFile.name)}</div>
@@ -74,7 +73,7 @@ function checkFreeReady() {
 
   if (hint) {
     if (email.length > 3 && !emailOk) {
-      hint.textContent = 'Please enter a valid email address.';
+      hint.textContent  = 'Please enter a valid email address.';
       hint.style.display = 'block';
     } else {
       hint.style.display = 'none';
@@ -95,15 +94,15 @@ window.startGratisUpload = async function() {
 
   if (!freeFile || !name || !emailOk) {
     if (status) {
-      status.className = 'optie-status optie-status--error';
+      status.className  = 'optie-status optie-status--error';
       status.textContent = 'Please enter your name, a valid email address and select a file.';
     }
     return;
   }
 
   if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Checking your document…';
+    btn.disabled    = true;
+    btn.textContent = 'Checking your parking fine…';
   }
 
   try {
@@ -114,42 +113,45 @@ window.startGratisUpload = async function() {
       type: TYPE,
       onStatus: (kind, msg) => {
         if (!status) return;
-        status.className = `optie-status optie-status--${kind}`;
+        status.className  = `optie-status optie-status--${kind}`;
         status.textContent = msg;
       }
     });
 
     const triage = normalizeTriage(data.triage || {});
+
+    // stripeLink comes from API — never hardcoded
     stripeLink =
-      data.stripeLink ||
+      data.stripeLink       ||
       data.teaser?.stripeLink ||
-      triage.stripeLink ||
-      stripeLink;
+      triage.stripeLink     ||
+      null;
 
     track('free_triage_completed', { type: TYPE });
 
     renderTeaser(triage);
 
     if (status) {
-      status.className = 'optie-status optie-status--success';
+      status.className  = 'optie-status optie-status--success';
       status.textContent = 'Your first check is ready.';
     }
 
-    if (btn) {
-      btn.textContent = 'Done ✓';
-    }
+    if (btn) btn.textContent = 'Done ✓';
+
   } catch (err) {
     if (status) {
-      status.className = 'optie-status optie-status--error';
+      status.className  = 'optie-status optie-status--error';
       status.textContent = 'Error: ' + err.message;
     }
 
     if (btn) {
-      btn.disabled = false;
+      btn.disabled    = false;
       btn.textContent = 'Start free check';
     }
   }
 };
+
+// ── Triage normalisation ──────────────────────────────────────────────────────
 
 function normalizeTriage(triage) {
   const risk = ['low', 'medium', 'high'].includes(triage.risk)
@@ -165,75 +167,105 @@ function normalizeTriage(triage) {
 
 function getFallbackTeaser(risk) {
   if (risk === 'high') {
-    return 'There are strong signs this claim may not be fully correct. If you don\'t act, the situation could become significantly more expensive.';
+    return 'There are strong signs this fine may not be fully enforceable. Paying without checking could mean paying something you may not have needed to pay.';
   }
-
   if (risk === 'medium') {
-    return 'There may be aspects in this claim worth checking. Without action, you could end up paying more than necessary.';
+    return 'There may be aspects of this fine worth checking before you pay. A review takes minutes and could save you the full amount.';
   }
-
-  return 'Some details in this claim may not be fully clear. Without review, you could still risk unnecessary costs.';
+  return 'Some aspects of this fine may be worth a quick check before you pay — just to be certain.';
 }
+
+// ── Teaser rendering ──────────────────────────────────────────────────────────
 
 function renderTeaser(triage) {
   const teaser = document.getElementById('teaser');
   if (!teaser) return;
 
-  const risk   = triage.risk || 'medium';
-  const amount = triage.amount_claimed || null;
+  const risk      = triage.risk || 'medium';
+  const fineAmount = triage.amount_claimed || triage.fine_amount || null;
+  const emailType = triage.emailType || 'strong';
+  const showCta   = emailType !== 'trust' || !!stripeLink;
 
   teaser.style.display = 'block';
+  setTimeout(() => teaser.classList.add('teaser--visible'), 10);
 
-  setTimeout(() => {
-    teaser.classList.add('teaser--visible');
-  }, 10);
+  track('teaser_shown', { type: TYPE, risk, amount: fineAmount });
 
-  track('teaser_shown', {
-    type: TYPE,
-    risk,
-    amount
-  });
+  const riskLabel = {
+    high:   '🔴 Appeal grounds likely found',
+    medium: '🟠 Possible grounds worth checking',
+    low:    '🟡 Worth a quick check before paying'
+  };
 
-  teaser.innerHTML = `
-    <div class="offer-card teaser-card" style="border-color:var(--green);background:#f0fdf4;max-width:620px;margin:0 auto;">
-      <div style="font-size:1.1rem;font-weight:700;color:#14532d;margin-bottom:12px;">
-        ✓ We've received your document.
-      </div>
-      <p style="color:#166534;margin-bottom:12px;line-height:1.7;">
-        We'll review it carefully and send your first check by email by the next working day before 4pm.
-      </p>
-      <div style="background:#fff;border:1px solid #bbf7d0;border-radius:8px;padding:14px;margin-bottom:14px;">
-        <strong style="color:#14532d;">Why this matters:</strong>
-        <p style="color:#166534;margin-top:6px;margin-bottom:0;line-height:1.65;">
-          Our review helps you understand what to check before paying. Many people only realise they could have questioned the claim after they've already paid.
+  const title = document.getElementById('teaser-company');
+  if (title) {
+    title.textContent = 'Your free check is complete';
+  }
+
+  const sub = document.getElementById('teaser-sub');
+  if (sub) {
+    sub.textContent = `${riskLabel[risk] || riskLabel.medium}${fineAmount ? ` • Fine amount: ${CURRENCY}${esc(String(fineAmount))}` : ''}`;
+  }
+
+  const copy = document.getElementById('modal-dynamic-copy');
+  if (copy) {
+    copy.textContent = triage.teaser;
+  }
+
+  const financial = document.getElementById('teaser-financial');
+  if (financial) {
+    financial.innerHTML = fineAmount
+      ? `💸 <strong>Possible unnecessary payment:</strong><br>If there are valid grounds to appeal, paying now means paying <strong>${CURRENCY}${esc(String(fineAmount))}</strong> that you may not have owed.`
+      : `💸 <strong>Before you pay:</strong><br>Many parking charges are paid without checking. A review can show whether you have grounds to appeal before you hand over any money.`;
+  }
+
+  const cta = document.getElementById('teaser-cta');
+  if (cta) {
+    if (showCta) {
+      cta.innerHTML = `
+        <h3>🔍 Get the full analysis + appeal letter</h3>
+        <ul>
+          <li>✓ Every appeal ground reviewed</li>
+          <li>✓ POFA 2012 keeper liability check</li>
+          <li>✓ Ready-to-send appeal letter</li>
+          <li>✓ Clear next steps if appeal is rejected</li>
+        </ul>
+        <button class="offer-cta" onclick="goToStripe()">
+          ${ctaText(risk)}
+        </button>
+        <div style="margin-top:8px;font-size:.85rem;color:var(--muted);">
+          One-off ${CURRENCY}${PRICE} · no subscription · secure payment
+        </div>
+      `;
+    } else {
+      // trust tier — no payment CTA
+      cta.innerHTML = `
+        <p style="font-size:.9rem;color:var(--ink-3);">
+          Your check is complete. If you have any questions, you can reply to the email we sent you.
         </p>
-      </div>
-      <p style="font-size:.85rem;color:#166534;">
-        → Please also check your spam folder if you don't hear from us.
-      </p>
-      <p style="font-size:.85rem;color:#166534;margin-top:8px;">Thank you for trusting us with this.</p>
-    </div>
-  `;
+      `;
+    }
+  }
 
-  const modalLink = document.querySelector('.js-stripe-link, .modal__cta');
-  if (modalLink && stripeLink) {
-    modalLink.href = stripeLink;
+  // Update modal Stripe link dynamically
+  if (stripeLink) {
+    const modalLink = document.querySelector('.js-stripe-link, .modal__cta');
+    if (modalLink) modalLink.href = stripeLink;
   }
 
   teaser.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function ctaText(risk) {
-  if (risk === 'high') return `Check now and avoid unnecessary costs — ${CURRENCY}${PRICE} →`;
-  if (risk === 'low')  return `Get clarity with a full analysis — ${CURRENCY}${PRICE} →`;
-  return `Get full analysis + response draft — ${CURRENCY}${PRICE} →`;
+  if (risk === 'high') return `Check now — appeal grounds found · ${CURRENCY}${PRICE} →`;
+  if (risk === 'low')  return `Get full review + appeal letter · ${CURRENCY}${PRICE} →`;
+  return `Full analysis + appeal letter — ${CURRENCY}${PRICE} →`;
 }
 
+// ── Stripe redirect ────────────────────────────────────────────────────────────
+
 window.goToStripe = async function() {
-  track('stripe_clicked', {
-    type:  TYPE,
-    price: PRICE
-  });
+  track('stripe_clicked', { type: TYPE, price: PRICE });
 
   const name  = document.getElementById('gratis-name')?.value.trim()  || '';
   const email = document.getElementById('gratis-email')?.value.trim() || '';
@@ -245,15 +277,15 @@ window.goToStripe = async function() {
 
   const btn = document.querySelector('.offer-cta[onclick="goToStripe()"]');
   if (btn) {
-    btn.disabled = true;
+    btn.disabled    = true;
     btn.textContent = 'Redirecting to checkout…';
   }
 
   try {
     const res = await fetch('/api/create-checkout', {
-      method: 'POST',
+      method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body:    JSON.stringify({
         type:          TYPE,
         name,
         email,
@@ -270,16 +302,15 @@ window.goToStripe = async function() {
     }
   } catch (err) {
     if (btn) {
-      btn.disabled = false;
-      btn.textContent = ctaText(TYPE);
+      btn.disabled    = false;
+      btn.textContent = ctaText('medium');
     }
     console.error('Checkout error:', err.message);
-    // Fallback to static link if available
     if (stripeLink) window.location.href = stripeLink;
   }
 };
 
-// ── Paid upload fallback flow for thankyou.html ──────────────────────────────
+// ── Paid upload fallback flow (thankyou.html) ─────────────────────────────────
 
 if (document.getElementById('submit-btn')) {
   const fileInput = document.getElementById('real-file-input');
@@ -302,7 +333,6 @@ if (document.getElementById('submit-btn')) {
   uploadPanel?.addEventListener('drop', e => {
     e.preventDefault();
     uploadPanel.classList.remove('drag-over');
-
     if (e.dataTransfer.files?.[0]) {
       fileInput.files = e.dataTransfer.files;
       updateSelectedFile(e.dataTransfer.files[0]);
@@ -324,8 +354,6 @@ function validateSession() {
   const sessionId = params.get('session_id');
   const autoCard  = document.getElementById('auto-card');
 
-  // Hybrid B-flow: thankyou.html manages auto/fallback state.
-  // app.js must not show thankyou-app itself to avoid race condition.
   if (autoCard) return;
 
   if (sessionId?.startsWith('cs_')) {
@@ -333,9 +361,7 @@ function validateSession() {
     if (app) app.style.display = 'block';
 
     const emailEl = document.getElementById('customer-email');
-    if (emailEl && params.get('email')) {
-      emailEl.value = params.get('email');
-    }
+    if (emailEl && params.get('email')) emailEl.value = params.get('email');
   } else {
     const locked = document.getElementById('locked-screen');
     if (locked) locked.style.display = 'block';
@@ -362,22 +388,21 @@ function updateSelectedFile(file) {
 
   const btn = document.getElementById('submit-btn');
   if (btn) {
-    btn.disabled = false;
+    btn.disabled    = false;
     btn.textContent = 'Upload and start analysis';
   }
 }
 
 function clearFile() {
   selectedFile = null;
-
-  const input = document.getElementById('real-file-input');
+  const input  = document.getElementById('real-file-input');
   if (input) input.value = '';
 
   document.getElementById('selected-file')?.classList.remove('show');
 
   const btn = document.getElementById('submit-btn');
   if (btn) {
-    btn.disabled = true;
+    btn.disabled    = true;
     btn.textContent = 'Choose a file first';
   }
 }
@@ -388,7 +413,7 @@ function showStatus(msg, type) {
 
   box.classList.remove('hidden');
   box.className = 'status-box ' + type;
-  box.innerHTML = esc(msg);
+  box.innerHTML  = esc(msg);
 }
 
 async function doSubmit() {
@@ -397,11 +422,7 @@ async function doSubmit() {
   const params = new URLSearchParams(window.location.search);
   const file   = document.getElementById('real-file-input')?.files?.[0] || selectedFile;
 
-  const emailOk =
-    email &&
-    email.includes('@') &&
-    email.includes('.') &&
-    email.length > 5;
+  const emailOk = email && email.includes('@') && email.includes('.') && email.length > 5;
 
   if (!name || !emailOk || !file) {
     showStatus('Please fill in all fields correctly and select a file.', 'error');
@@ -409,9 +430,8 @@ async function doSubmit() {
   }
 
   const btn = document.getElementById('submit-btn');
-
   if (btn) {
-    btn.disabled = true;
+    btn.disabled    = true;
     btn.textContent = 'Uploading…';
   }
 
@@ -420,7 +440,7 @@ async function doSubmit() {
       file,
       name,
       email,
-      type: TYPE,
+      type:      TYPE,
       sessionId: params.get('session_id'),
       onStatus:  showStatus
     });
@@ -440,21 +460,20 @@ async function doSubmit() {
         <div class="success-screen">
           <div class="success-screen__icon">✓</div>
           <h2>Upload successful</h2>
-          <p>We will analyse your letter and send you the full review and response draft by email to <strong>${esc(email)}</strong>.</p>
+          <p>We will review your parking fine and send you the full analysis and appeal letter by email to <strong>${esc(email)}</strong>.</p>
           <p style="font-size:.82rem;color:var(--muted);">Please also check your spam folder.</p>
         </div>`;
     }
   } catch (err) {
     showStatus('Upload failed: ' + err.message, 'error');
-
     if (btn) {
-      btn.disabled = false;
+      btn.disabled    = false;
       btn.textContent = 'Upload and start analysis';
     }
   }
 }
 
-// ── Helpers ─────────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function esc(str) {
   return String(str || '')
@@ -464,7 +483,7 @@ function esc(str) {
     .replaceAll('"', '&quot;');
 }
 
-// ── Init ────────────────────────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────────────────────
 
 initFaq();
 initModal();
