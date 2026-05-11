@@ -1,9 +1,9 @@
-// worker/services/queue.js
+// worker/services/queue.js — mussichzahlen
 
-const PAID_MARKER_TTL_SECONDS     = 60 * 60 * 24 * 30; // 30 days
-const FREE_CASE_TTL_SECONDS       = 60 * 60 * 24 * 3;  // 3 days
-const PAID_SEND_DELAY_MS          = 0;                  // send immediately after payment
-const ABANDONED_TTL_SECONDS       = 60 * 60 * 24 * 7;  // 7 days
+const PAID_MARKER_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
+const FREE_CASE_TTL_SECONDS   = 60 * 60 * 24 * 3;  // 3 days
+const PAID_SEND_DELAY_MS      = 0;
+const ABANDONED_TTL_SECONDS   = 60 * 60 * 24 * 7;  // 7 days
 
 function normalizeEmail(email) {
   return String(email || "").trim().toLowerCase();
@@ -25,41 +25,39 @@ function abandonedKey(email, stage) {
   return `abandoned:${safeEmailKey(email)}:stage_${stage}`;
 }
 
-// Next business day at 15:00 CET (14:00 UTC)
 function nextWorkdayAt15CET(fromMs) {
   const d = new Date(fromMs);
   d.setUTCDate(d.getUTCDate() + 1);
   d.setUTCHours(14, 0, 0, 0);
-
   while (d.getUTCDay() === 0 || d.getUTCDay() === 6) {
     d.setUTCDate(d.getUTCDate() + 1);
   }
-
   return d.toISOString();
 }
 
-// ── Paid marker ──────────────────────────────────────────────────────────────
+// ── KV helper ─────────────────────────────────────────────────────────────────
+// Uses env.SESSIONS_KV (mussichzahlen binding)
+
+function kv(env) {
+  return env.SESSIONS_KV;
+}
+
+// ── Paid marker ───────────────────────────────────────────────────────────────
 
 export async function markPaid(env, email) {
   const normalized = normalizeEmail(email);
   if (!normalized) return;
-
-  await env.DEBT_QUEUE.put(
-    paidMarkerKey(normalized),
-    "1",
-    { expirationTtl: PAID_MARKER_TTL_SECONDS }
-  );
+  await kv(env).put(paidMarkerKey(normalized), "1", { expirationTtl: PAID_MARKER_TTL_SECONDS });
 }
 
 export async function hasPaid(env, email) {
   const normalized = normalizeEmail(email);
   if (!normalized) return false;
-
-  const value = await env.DEBT_QUEUE.get(paidMarkerKey(normalized));
+  const value = await kv(env).get(paidMarkerKey(normalized));
   return value === "1";
 }
 
-// ── Free case: stores file + triage for automatic analysis after payment ─────
+// ── Free case ─────────────────────────────────────────────────────────────────
 
 export async function saveFreeCase(env, {
   type, name, email, triage, stripeLink,
@@ -78,7 +76,7 @@ export async function saveFreeCase(env, {
     created_at:  new Date().toISOString(),
   };
 
-  await env.DEBT_QUEUE.put(
+  await kv(env).put(
     freeCaseKey(type, email),
     JSON.stringify(entry),
     { expirationTtl: FREE_CASE_TTL_SECONDS }
@@ -88,24 +86,19 @@ export async function saveFreeCase(env, {
 }
 
 export async function getFreeCase(env, { type, email }) {
-  const raw = await env.DEBT_QUEUE.get(freeCaseKey(type, email));
+  const raw = await kv(env).get(freeCaseKey(type, email));
   if (!raw) return null;
-
-  try {
-    return JSON.parse(raw);
-  } catch (_) {
-    return null;
-  }
+  try { return JSON.parse(raw); } catch (_) { return null; }
 }
 
-// ── Free recovery queue ──────────────────────────────────────────────────────
+// ── Free recovery queue ───────────────────────────────────────────────────────
 
 export async function enqueueFree(env, { type, rawType, name, email, triage, stripeLink }) {
-  const createdAt    = Date.now();
-  const emailKey     = safeEmailKey(email);
-  const baseKey      = `free:${type}:${createdAt}:${emailKey}`;
+  const createdAt = Date.now();
+  const emailKey  = safeEmailKey(email);
+  const baseKey   = `free:${type}:${createdAt}:${emailKey}`;
 
-  const stage1SendAt = new Date(Date.now() + 2 * 60 * 1000).toISOString();
+  const stage1SendAt = nextWorkdayAt15CET(createdAt);
   const stage1Ms     = new Date(stage1SendAt).getTime();
 
   const sendAts = {
@@ -115,8 +108,7 @@ export async function enqueueFree(env, { type, rawType, name, email, triage, str
   };
 
   for (const stage of [1, 2, 3]) {
-    const key = `${baseKey}:stage_${stage}`;
-
+    const key   = `${baseKey}:stage_${stage}`;
     const entry = {
       kind:        "free",
       stage,
@@ -129,20 +121,16 @@ export async function enqueueFree(env, { type, rawType, name, email, triage, str
       created_at:  new Date(createdAt).toISOString(),
       send_at:     sendAts[stage],
     };
-
-    await env.DEBT_QUEUE.put(key, JSON.stringify(entry), {
-      expirationTtl: 60 * 60 * 24 * 7,
-    });
+    await kv(env).put(key, JSON.stringify(entry), { expirationTtl: 60 * 60 * 24 * 7 });
   }
 
   return baseKey;
 }
 
-// ── Paid delivery queue ──────────────────────────────────────────────────────
+// ── Paid delivery queue ───────────────────────────────────────────────────────
 
 export async function enqueuePaid(env, { type, name, email, triage, analysis, file_base64, media_type }) {
-  const key = `paid:${type}:${Date.now()}:${safeEmailKey(email)}`;
-
+  const key   = `paid:${type}:${Date.now()}:${safeEmailKey(email)}`;
   const entry = {
     kind:        "paid",
     type,
@@ -155,30 +143,26 @@ export async function enqueuePaid(env, { type, name, email, triage, analysis, fi
     created_at:  new Date().toISOString(),
     send_at:     new Date(Date.now() + PAID_SEND_DELAY_MS).toISOString(),
   };
-
-  await env.DEBT_QUEUE.put(key, JSON.stringify(entry));
+  await kv(env).put(key, JSON.stringify(entry));
   return key;
 }
 
-// ── Abandoned checkout queue ─────────────────────────────────────────────────
+// ── Abandoned checkout queue ──────────────────────────────────────────────────
 
 export async function saveAbandoned(env, { email, name, type, amount, stripeLink }) {
   const normalized = normalizeEmail(email);
   if (!normalized) return;
 
   const now = Date.now();
-
   const sendAts = {
-    1: new Date(now + 1  * 60 * 60 * 1000).toISOString(),  // +1 hour
-    2: new Date(now + 24 * 60 * 60 * 1000).toISOString(),  // +24 hours
-    3: new Date(now + 48 * 60 * 60 * 1000).toISOString(),  // +48 hours
+    1: new Date(now + 1  * 60 * 60 * 1000).toISOString(),
+    2: new Date(now + 24 * 60 * 60 * 1000).toISOString(),
+    3: new Date(now + 48 * 60 * 60 * 1000).toISOString(),
   };
 
   for (const stage of [1, 2, 3]) {
-    const key = abandonedKey(normalized, stage);
-
-    // Don't overwrite if already exists (prevents duplicate entries on multiple clicks)
-    const existing = await env.DEBT_QUEUE.get(key);
+    const key      = abandonedKey(normalized, stage);
+    const existing = await kv(env).get(key);
     if (existing) continue;
 
     const entry = {
@@ -192,14 +176,11 @@ export async function saveAbandoned(env, { email, name, type, amount, stripeLink
       created_at:  new Date(now).toISOString(),
       send_at:     sendAts[stage],
     };
-
-    await env.DEBT_QUEUE.put(key, JSON.stringify(entry), {
-      expirationTtl: ABANDONED_TTL_SECONDS,
-    });
+    await kv(env).put(key, JSON.stringify(entry), { expirationTtl: ABANDONED_TTL_SECONDS });
   }
 }
 
-// ── Cron helpers ─────────────────────────────────────────────────────────────
+// ── Cron helpers ──────────────────────────────────────────────────────────────
 
 export async function getDueEntries(env) {
   const now = Date.now();
@@ -207,7 +188,7 @@ export async function getDueEntries(env) {
   let cursor;
 
   do {
-    const list = await env.DEBT_QUEUE.list(cursor ? { cursor } : undefined);
+    const list = await kv(env).list(cursor ? { cursor } : undefined);
     cursor = list.cursor;
 
     for (const key of list.keys) {
@@ -215,7 +196,7 @@ export async function getDueEntries(env) {
       if (key.name.startsWith("free_case:"))   continue;
 
       try {
-        const raw = await env.DEBT_QUEUE.get(key.name);
+        const raw = await kv(env).get(key.name);
         if (!raw) continue;
 
         const entry = JSON.parse(raw);
@@ -234,5 +215,5 @@ export async function getDueEntries(env) {
 }
 
 export async function deleteEntry(env, key) {
-  await env.DEBT_QUEUE.delete(key);
+  await kv(env).delete(key);
 }
