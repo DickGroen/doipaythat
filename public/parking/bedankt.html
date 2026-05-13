@@ -1,95 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parking analysis is being created | DoIPayThat</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    body{font-family:'DM Sans',sans-serif;background:#f7f9fc;color:#0f1923;margin:0;-webkit-font-smoothing:antialiased;}
-    h1,h2{font-family:'Lora',Georgia,serif;line-height:1.2;}
-    .wrap{max-width:620px;margin:70px auto;padding:0 20px;}
-    .card{background:#fff;border-radius:16px;padding:32px;box-shadow:0 12px 40px rgba(26,58,107,.1);}
-    .hidden{display:none;}
-    h1{margin-top:0;color:#1d3a6e;}
-    p{line-height:1.6;}
-    .status-box{margin-top:14px;padding:12px;border-radius:8px;background:#f3f4f6;font-size:.95rem;}
-    .status-box.error{background:#fee2e2;color:#991b1b;}
-    .status-box.success{background:#dcfce7;color:#166534;}
-    .status-box.info{background:#eef4ff;color:#1d3a6e;}
-    .input{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:8px;margin-bottom:10px;font-size:1rem;box-sizing:border-box;font-family:'DM Sans',sans-serif;}
-    .input:focus{outline:none;border-color:#1d3a6e;}
-    .upload-panel{border:2px dashed #d1d5db;border-radius:12px;padding:24px;text-align:center;cursor:pointer;margin:18px 0;background:#f9fafb;}
-    .upload-panel:hover,.upload-panel.drag-over{border-color:#1d3a6e;background:#eef4ff;}
-    .selected-file{display:none;margin:10px 0;padding:12px;background:#f3f4f6;border-radius:8px;font-size:.92rem;}
-    .selected-file.show{display:block;}
-    .selected-file a{color:#1d3a6e;font-size:.85rem;}
-    .offer-cta{display:block;width:100%;background:#1d3a6e;color:#fff;border:none;border-radius:10px;padding:15px;font-weight:700;font-size:1rem;cursor:pointer;margin-top:16px;font-family:'DM Sans',sans-serif;}
-    .offer-cta:hover{background:#2d5499;}
-    .offer-cta:disabled{opacity:.55;cursor:not-allowed;}
-    .note{font-size:.84rem;color:#6b7280;margin-top:12px;}
-    .success-icon{width:46px;height:46px;border-radius:999px;background:#dcfce7;color:#166534;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.4rem;margin-bottom:14px;}
-  </style>
-</head>
-
-<body>
-
-<div class="wrap">
-
-  <div class="card" id="auto-card">
-    <h1>Almost there…</h1>
-    <p>We are verifying your payment and starting your parking notice analysis.</p>
-    <div id="auto-status" class="status-box info">Verifying your payment…</div>
-    <p class="note">You can leave this page open. Your result will be sent by email — usually within a few minutes.</p>
-  </div>
-
-  <div class="card hidden" id="thankyou-app">
-    <h1>One more step</h1>
-    <p>We could not automatically find your original parking notice. Please upload it one more time so we can start the analysis.</p>
-
-    <input id="customer-name" class="input" placeholder="Your name" autocomplete="name">
-    <input id="customer-email" class="input" placeholder="Your email" type="email" autocomplete="email">
-
-    <div id="upload-panel" class="upload-panel">
-      <strong>Choose file</strong><br>
-      <span>PDF, JPG or PNG · max. 8 MB</span>
-      <input id="real-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
-    </div>
-
-    <div id="selected-file" class="selected-file">
-      <strong id="selected-file-name"></strong><br>
-      <span id="selected-file-meta"></span><br>
-      <a href="#" id="remove-file">Remove file</a>
-    </div>
-
-    <button id="submit-btn" class="offer-cta" disabled>
-      Choose a file first
-    </button>
-
-    <div id="status-box" class="status-box hidden"></div>
-
-    <p class="note">This upload is only needed if the automatic connection cannot be found.</p>
-  </div>
-
-  <div class="card hidden" id="locked-screen">
-    <h1>Payment not found</h1>
-    <p>Please restart the process from the parking check page.</p>
-    <div class="status-box error">No valid payment session was found.</div>
-  </div>
-
-  <div class="card hidden" id="success-screen">
-    <div class="success-icon">✓</div>
-    <h1>You are all set</h1>
-    <p>Your parking notice analysis is being prepared.</p>
-    <p>Check your inbox — your full analysis and ready-to-send appeal draft will arrive by email.</p>
-    <p class="note">Please also check your spam folder if you do not see it within a few minutes.</p>
-  </div>
-
-</div>
-
+```html
 <script type="module">
   import {
     submitAutoPaid,
@@ -97,7 +6,7 @@
     validateFile,
     formatFileSize,
     track
-  } from "../app.js";
+  } from "/app.js";
 
   const params = new URLSearchParams(window.location.search);
 
@@ -148,7 +57,10 @@
     const hasEmail = Boolean(emailEl.value.trim());
 
     submitBtn.disabled = !(hasFile && hasName && hasEmail);
-    submitBtn.textContent = hasFile ? "Start my analysis" : "Choose a file first";
+
+    submitBtn.textContent = hasFile
+      ? "Start my analysis"
+      : "Choose a file first";
   }
 
   function setFile(file) {
@@ -156,17 +68,25 @@
 
     if (error) {
       chosenFile = null;
+
       selectedFile.classList.remove("show");
+
       setStatus("error", error);
+
       updateSubmitState();
+
       return;
     }
 
     chosenFile = file;
+
     selectedFileName.textContent = file.name;
     selectedFileMeta.textContent = formatFileSize(file.size);
+
     selectedFile.classList.add("show");
+
     statusBox.classList.add("hidden");
+
     updateSubmitState();
   }
 
@@ -174,6 +94,7 @@
 
   fileInput.addEventListener("change", () => {
     const file = fileInput.files && fileInput.files[0];
+
     if (file) setFile(file);
   });
 
@@ -193,14 +114,19 @@
 
   uploadPanel.addEventListener("drop", e => {
     const file = e.dataTransfer.files && e.dataTransfer.files[0];
+
     if (file) setFile(file);
   });
 
   removeFile.addEventListener("click", e => {
     e.preventDefault();
+
     chosenFile = null;
+
     fileInput.value = "";
+
     selectedFile.classList.remove("show");
+
     updateSubmitState();
   });
 
@@ -208,7 +134,9 @@
   emailEl.addEventListener("input", updateSubmitState);
 
   submitBtn.addEventListener("click", async () => {
+
     try {
+
       submitBtn.disabled = true;
       submitBtn.textContent = "Uploading…";
 
@@ -222,23 +150,34 @@
       });
 
       track("paid_fallback_upload_completed", { type });
+
       showOnly(success);
+
     } catch (err) {
+
       track("paid_fallback_upload_failed", {
         type,
         error: err.message
       });
 
-      setStatus("error", err.message || "Upload failed. Please try again.");
+      setStatus(
+        "error",
+        err.message || "Upload failed. Please try again."
+      );
+
       submitBtn.disabled = false;
       submitBtn.textContent = "Start my analysis";
     }
   });
 
   if (!sessionId || !sessionId.startsWith("cs_")) {
+
     showOnly(locked);
+
   } else {
+
     try {
+
       autoStatus.textContent = "Verifying your payment…";
 
       await submitAutoPaid({
@@ -250,27 +189,39 @@
       });
 
       track("auto_paid_analysis_started", { type });
+
       showOnly(success);
+
     } catch (err) {
+
       if (err.needUpload) {
+
         track("auto_paid_fallback_upload_needed", {
           type,
           reason: err.message
         });
 
-        if (emailEl && params.get("email")) emailEl.value = params.get("email");
-        if (nameEl && params.get("name")) nameEl.value = params.get("name");
+        if (emailEl && params.get("email")) {
+          emailEl.value = params.get("email");
+        }
+
+        if (nameEl && params.get("name")) {
+          nameEl.value = params.get("name");
+        }
 
         showOnly(fallback);
+
         updateSubmitState();
+
       } else {
+
         autoStatus.className = "status-box error";
+
         autoStatus.textContent =
-          "Something went wrong. Please contact us at support@doipaythat.co.uk";
+          err.message ||
+          "Something went wrong. Please contact support@doipaythat.co.uk";
       }
     }
   }
 </script>
-
-</body>
-</html>
+```
