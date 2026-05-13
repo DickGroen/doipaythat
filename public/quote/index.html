@@ -1,33 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check your quote before you agree | DoIPayThat</title>
+  <meta name="description" content="Upload your quote for a free first check. See whether the price, scope or breakdown may be worth reviewing before you agree.">
+  <link rel="canonical" href="https://doipaythat.co.uk/quote/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{--ink:#0f1923;--ink-2:#2d3748;--ink-3:#4a5568;--muted:#718096;--line:#e2e8f0;--surface:#f7f9fc;--white:#ffffff;--accent:#1a3a6b;--accent-2:#2d5499;--green:#166534;--green-soft:#dcfce7;--warn:#eab308;--warn-soft:#fef9c3;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.65;color:var(--ink);background:var(--white);-webkit-font-smoothing:antialiased;}
+    h1,h2,h3{font-family:'Lora',Georgia,serif;line-height:1.2;}
+    a{color:var(--accent);}
+    .container{max-width:860px;margin:0 auto;padding:0 24px;}
+    .warning-banner{background:#fff7ed;border-bottom:2px solid #fdba74;padding:10px 0;text-align:center;font-size:.84rem;font-weight:600;color:#92400e;}
+    .header{background:var(--white);border-bottom:1px solid var(--line);padding:16px 0;position:sticky;top:0;z-index:100;}
+    .header__inner{display:flex;align-items:center;justify-content:space-between;}
+    .logo{font-family:'Lora',serif;font-size:1.15rem;font-weight:700;color:var(--accent);}
+    .logo-dot{display:inline-block;width:8px;height:8px;background:var(--accent-2);border-radius:50%;margin-right:6px;vertical-align:middle;}
+    .header-cta{background:var(--accent);color:var(--white);border:none;border-radius:8px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;text-decoration:none;}
+    .hero{padding:64px 0 48px;text-align:center;}
+    .hero h1{font-size:clamp(1.9rem,5vw,2.9rem);margin-bottom:20px;max-width:720px;margin-left:auto;margin-right:auto;}
+    .hero__sub{font-size:1.05rem;color:var(--ink-3);max-width:590px;margin:0 auto 30px;line-height:1.7;}
+    .hero-cta,.primary-btn{display:inline-block;background:var(--accent);color:var(--white);text-decoration:none;padding:17px 34px;border-radius:10px;font-size:1.05rem;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .hero-cta:hover,.primary-btn:hover,.offer-cta:hover{background:var(--accent-2);}
+    .hero-sub-note{font-size:.82rem;color:var(--muted);margin-top:10px;}
+    .trust-triggers{background:var(--green-soft);border:1px solid #bbf7d0;border-radius:12px;padding:20px 24px;margin:40px auto 0;display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:640px;}
+    @media(max-width:600px){.trust-triggers{grid-template-columns:1fr;}}
+    .trust-trigger{display:flex;align-items:flex-start;gap:10px;font-size:.87rem;color:var(--green);line-height:1.55;text-align:left;}
+    .trust-trigger strong{display:block;font-weight:700;color:#14532d;margin-bottom:2px;}
+    .section{padding:72px 0;}
+    .section--alt{background:var(--surface);}
+    .section-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent-2);margin-bottom:10px;}
+    .section h2{font-size:clamp(1.5rem,3vw,2rem);margin-bottom:32px;}
+    .value-strip{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 36px;justify-content:center;}
+    .value-item{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:100px;padding:8px 16px;font-size:.86rem;color:var(--ink-2);font-weight:500;}
+    .vi-check{color:var(--green);font-weight:700;}
+    .offer-card{background:var(--white);border:2px solid var(--accent);border-radius:16px;padding:36px 32px;max-width:580px;margin:0 auto;box-shadow:0 12px 40px rgba(26,58,107,.1);}
+    @media(max-width:600px){.offer-card{padding:24px 20px;}}
+    .offer-badge{display:inline-block;background:var(--accent);color:var(--white);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:4px 12px;border-radius:100px;margin-bottom:16px;}
+    .offer-title{font-family:'Lora',serif;font-size:1.45rem;margin-bottom:8px;}
+    .offer-desc{color:var(--ink-3);font-size:.93rem;margin-bottom:20px;line-height:1.65;}
+    .offer-list{list-style:none;margin-bottom:24px;display:grid;gap:8px;}
+    .offer-list li{display:flex;align-items:flex-start;gap:10px;font-size:.93rem;color:var(--ink-2);line-height:1.55;}
+    .offer-list li::before{content:"✓";color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px;}
+    hr.offer-divider{border:none;border-top:1px solid var(--line);margin:20px 0;}
+    .offer-price{font-size:2rem;font-weight:700;color:var(--accent);font-family:'Lora',serif;}
+    .offer-price span{font-size:.95rem;color:var(--muted);font-weight:400;font-family:'DM Sans',sans-serif;}
+    .offer-cta{display:block;background:var(--accent);color:var(--white);text-decoration:none;text-align:center;padding:17px;border-radius:10px;font-size:1.05rem;font-weight:700;margin-top:20px;border:none;width:100%;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .offer-security{text-align:center;font-size:.78rem;color:var(--muted);margin-top:10px;}
+    .offer-refund{text-align:center;font-size:.76rem;color:var(--muted);margin-top:6px;}
+    .upload-zone{border:2px dashed var(--line);border-radius:14px;padding:28px;text-align:center;cursor:pointer;background:var(--surface);transition:.2s;}
+    .upload-zone:hover{border-color:var(--accent);background:#eef4ff;}
+    .upload-label{font-weight:700;color:var(--accent);}
+    .upload-hint{font-size:.84rem;color:var(--muted);margin-top:6px;}
+    .contact-fields{display:none;flex-direction:column;gap:10px;margin-top:18px;}
+    .input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;}
+    .input:focus{outline:none;border-color:var(--accent);}
+    .input-hint{display:none;font-size:.78rem;color:#b91c1c;margin-top:-6px;margin-bottom:4px;}
+    .optie-status{font-size:.9rem;margin-top:12px;}
+    .optie-status--error{color:#b91c1c;}
+    .optie-status--success{color:var(--green);}
+    .optie-status--info{color:var(--accent);}
+    .teaser{display:none;margin-top:30px;opacity:0;transform:translateY(10px);transition:.25s ease;}
+    .teaser--visible{opacity:1;transform:translateY(0);}
+    .teaser-card{border-color:var(--warn);background:#fffdf2;}
+    .teaser-heading{font-weight:800;font-size:1.2rem;color:var(--ink);}
+    .teaser-sub{margin-top:6px;color:var(--muted);font-size:.92rem;}
+    .teaser-ai{margin:16px 0;background:var(--warn-soft);border-left:4px solid var(--warn);padding:14px;border-radius:8px;font-weight:500;color:#713f12;}
+    .teaser-financial{margin:16px 0;background:#fff7ed;border:1px solid #fed7aa;padding:14px;border-radius:10px;color:#7c2d12;}
+    .teaser-cta{margin-top:16px;}
+    .teaser-cta h3{font-size:1.2rem;margin-bottom:10px;}
+    .teaser-cta ul{list-style:none;margin:10px 0 16px;display:grid;gap:7px;}
+    .teaser-cta li{font-size:.92rem;color:var(--ink-2);}
+    .teaser-trust{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;font-size:.8rem;color:var(--muted);}
+    .teaser-trust span{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 10px;}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+    @media(max-width:640px){.steps{grid-template-columns:1fr;}}
+    .step__num{font-family:'Lora',serif;font-size:2.2rem;font-weight:700;color:var(--line);margin-bottom:10px;line-height:1;}
+    .step__title{font-weight:700;margin-bottom:6px;font-size:.98rem;}
+    .step__desc{font-size:.87rem;color:var(--ink-3);line-height:1.65;}
+    .trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+    @media(max-width:680px){.trust-grid{grid-template-columns:1fr;}}
+    .trust-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:20px;}
+    .trust-item__label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);margin-bottom:8px;}
+    .trust-item__text{font-size:.87rem;color:var(--ink-3);line-height:1.65;}
+    .fit-rows{display:grid;gap:10px;max-width:560px;}
+    .fit-row{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;background:var(--green-soft);border:1px solid #bbf7d0;border-radius:10px;font-size:.93rem;color:#14532d;}
+    .fit-row span:first-child{font-weight:700;flex-shrink:0;}
+    .faq-list{display:grid;gap:4px;}
+    .faq-item{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--white);}
+    .faq-q{display:flex;align-items:center;justify-content:space-between;padding:17px 20px;cursor:pointer;font-weight:600;font-size:.93rem;user-select:none;gap:12px;}
+    .faq-q:hover{background:var(--surface);}
+    .faq-chevron{flex-shrink:0;color:var(--muted);transition:transform .25s;}
+    .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:.9rem;color:var(--ink-3);line-height:1.7;padding:0 20px;}
+    .faq-item--open .faq-a{max-height:300px;padding:0 20px 17px;}
+    .faq-item--open .faq-chevron{transform:rotate(180deg);}
+    .final-cta{background:var(--accent);color:var(--white);padding:72px 0;text-align:center;}
+    .final-cta h2{color:var(--white);font-size:clamp(1.6rem,3.5vw,2.1rem);margin-bottom:12px;}
+    .final-cta p{color:rgba(255,255,255,.75);margin-bottom:32px;}
+    .final-cta-btn{display:inline-block;background:var(--white);color:var(--accent);text-decoration:none;padding:17px 40px;border-radius:10px;font-size:1.05rem;font-weight:700;}
+    .final-cta-note{color:rgba(255,255,255,.6);font-size:.8rem;margin-top:12px;}
+    .sticky-footer{position:fixed;bottom:0;left:0;right:0;background:var(--ink);color:var(--white);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;transform:translateY(100%);transition:transform .3s ease;z-index:200;}
+    .sticky-footer.visible,.sticky-footer--visible{transform:translateY(0);}
+    .sticky-footer__text{font-size:.9rem;font-weight:600;}
+    .sticky-footer__sub{font-size:.76rem;color:rgba(255,255,255,.6);margin-top:2px;}
+    .sticky-cta{background:var(--white);color:var(--accent);border:none;border-radius:8px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;text-decoration:none;}
+    @media(max-width:500px){.sticky-footer{flex-direction:column;text-align:center;}.sticky-cta{width:100%;}}
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,25,35,.6);backdrop-filter:blur(4px);z-index:300;display:none;align-items:center;justify-content:center;padding:24px;}
+    .modal-overlay.open,.modal-overlay.modal--open{display:flex;}
+    .modal{background:var(--white);border-radius:16px;max-width:480px;width:100%;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.2);}
+    .modal__header{background:var(--accent);color:var(--white);padding:28px 28px 24px;}
+    .modal__eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;opacity:.7;margin-bottom:8px;}
+    .modal__title{font-family:'Lora',serif;font-size:1.25rem;font-weight:700;margin-bottom:8px;}
+    .modal__price{font-size:1.6rem;font-weight:700;font-family:'Lora',serif;}
+    .modal__price span{font-size:.95rem;opacity:.7;font-weight:400;font-family:'DM Sans',sans-serif;}
+    .modal__body{padding:24px 28px;}
+    .modal__feature{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;font-size:.92rem;color:var(--ink-2);}
+    .modal__feature .check{color:var(--green);font-weight:700;flex-shrink:0;}
+    .modal__disclaimer{background:var(--surface);border-radius:8px;padding:10px 14px;font-size:.8rem;color:var(--muted);margin:16px 0;line-height:1.55;}
+    .modal__cta{display:block;background:var(--accent);color:var(--white);text-decoration:none;text-align:center;padding:16px;border-radius:10px;font-size:1rem;font-weight:700;margin-bottom:10px;}
+    .modal__security{text-align:center;font-size:.78rem;color:var(--muted);}
+    .modal__close{display:block;text-align:center;margin-top:14px;font-size:.84rem;color:var(--muted);cursor:pointer;}
+    .modal__close:hover{color:var(--ink);}
+    .footer-trust{padding:32px 0 16px;font-size:.85rem;color:var(--ink-3);line-height:1.75;border-top:1px solid var(--line);}
+    .disclaimer{padding:16px 0 20px;font-size:.78rem;color:var(--muted);line-height:1.7;}
+  </style>
+</head>
+
+<body>
+
+<div class="warning-banner">⏱️ Check before you agree — quotes can contain unclear scope, missing breakdowns or extra costs</div>
+
+<header class="header">
+  <div class="container">
+    <div class="header__inner">
+      <div class="logo"><span class="logo-dot"></span>DoIPayThat</div>
+      <a href="#free-check" class="header-cta">Free check</a>
+    </div>
+  </div>
+</header>
+
 <section class="hero">
   <div class="container">
-    <div class="hero__eyebrow">Quote Check</div>
+    <h1>Before you agree to a quote, check whether it is clear</h1>
+    <p class="hero__sub">Upload your quote, estimate or proposal and get a free first check. If there are points worth reviewing, you can choose a full analysis with a ready-to-send clarification letter.</p>
+    <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">Many people agree first and only later realise they could have asked for a breakdown, scope clarification or written confirmation.</p>
+    <a href="#free-check" class="hero-cta">Start free check →</a>
+    <div class="hero-sub-note">PDF, JPG or PNG · no subscription · full analysis optional</div>
 
-    <h1>Are you overpaying for this quote?</h1>
+    <div class="trust-triggers">
+      <div class="trust-trigger"><span>●</span><div><strong>Scope and breakdown</strong>Labour, materials, VAT and what is included should be clear before you agree.</div></div>
+      <div class="trust-trigger"><span>●</span><div><strong>Possible extra costs</strong>Open-ended wording or missing details may lead to confusion later.</div></div>
+    </div>
+  </div>
+</section>
 
-    <p class="hero__sub">
-      Upload your quote and see whether the price is fair before you agree.
-    </p>
+<section class="section" id="free-check">
+  <div class="container" style="max-width:620px;">
+    <div class="offer-card" id="free-card">
+      <div class="offer-badge">Start free</div>
+      <div class="offer-title">Free first check</div>
+      <p class="offer-desc">Upload your quote and receive a first assessment of whether further clarification may be useful before you decide what to do.</p>
 
-    <div class="value-strip">
-      <div class="value-item">✓ Free first check</div>
-      <div class="value-item">✓ Avoid overpaying</div>
-      <div class="value-item">✓ Result within 24 hours</div>
+      <div id="gratis-upload-zone" class="upload-zone" onclick="this.querySelector('input').click()">
+        <div class="upload-label">Choose file</div>
+        <div class="upload-hint">PDF, JPG or PNG · max. 8 MB</div>
+        <input type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="handleGratisFileSelect(this)">
+      </div>
+
+      <div id="gratis-contact-fields" class="contact-fields">
+        <input id="gratis-name" class="input" placeholder="Your name">
+        <input id="gratis-email" class="input" placeholder="Your email" type="email" autocomplete="email">
+        <div id="gratis-email-hint" class="input-hint"></div>
+        <button id="gratis-btn" onclick="startGratisUpload()" disabled class="offer-cta">Start free check</button>
+      </div>
+
+      <div id="gratis-status" class="optie-status"></div>
+      <div class="offer-security">🔒 Your document is processed securely for analysis and is not shared with third parties.</div>
     </div>
 
-    <div class="upload-section" id="upload-area">
-      <div class="upload-icon">📄</div>
-      <div class="upload-label">Upload your quote</div>
-      <div class="upload-hint">PDF, JPG or PNG · max. 10 MB</div>
-      <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png" />
-    </div>
-
-    <div class="cta-wrap">
-      <button class="cta-main" id="free-check-btn">
-        Check my quote for free
-      </button>
-      <div class="cta-sub">
-        No obligation. You see a free indication first.
+    <div id="teaser" class="teaser">
+      <div class="offer-card teaser-card">
+        <div id="teaser-company" class="teaser-heading"></div>
+        <div id="teaser-sub" class="teaser-sub"></div>
+        <div id="modal-dynamic-copy" class="teaser-ai"></div>
+        <div id="teaser-financial" class="teaser-financial"></div>
+        <div id="teaser-cta" class="teaser-cta"></div>
+        <div class="teaser-trust">
+          <span>No subscription</span><span>Secure payment via Stripe</span><span>Result by email</span>
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="value-strip">
+      <span class="value-item"><span class="vi-check">✓</span> Price breakdown</span>
+      <span class="value-item"><span class="vi-check">✓</span> Scope review</span>
+      <span class="value-item"><span class="vi-check">✓</span> Extra cost check</span>
+      <span class="value-item"><span class="vi-check">✓</span> Response draft</span>
+      <span class="value-item"><span class="vi-check">✓</span> One-off £29</span>
+    </div>
+
+    <div class="offer-card">
+      <div class="offer-badge">After first check</div>
+      <div class="offer-title">Full analysis + clarification letter</div>
+      <p class="offer-desc">We review the quote for possible unclear areas and prepare a professional response draft. You stay in control and decide what to do next.</p>
+
+      <ul class="offer-list">
+        <li>Review of labour, materials, VAT and other cost lines</li>
+        <li>Check whether scope and exclusions appear clear</li>
+        <li>Review of possible additional costs or open-ended wording</li>
+        <li>Check for pressure wording or short validity periods</li>
+        <li>Clear next steps in plain English</li>
+        <li>Ready-to-send clarification letter</li>
+      </ul>
+
+      <hr class="offer-divider">
+      <div class="offer-price">£29 <span>one-off · no subscription</span></div>
+      <a href="#free-check" class="offer-cta">Start with free check →</a>
+      <div class="offer-security">🔒 Secure payment via Stripe — card details are never stored</div>
+      <div class="offer-refund">If the analysis is incomplete: money back.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-label">How it works</div>
+    <h2>Three steps to clarity</h2>
+    <div class="steps">
+      <div class="step"><div class="step__num">01</div><div class="step__title">Upload your quote</div><div class="step__desc">Upload your quote, estimate, proposal or cost breakdown.</div></div>
+      <div class="step"><div class="step__num">02</div><div class="step__title">Get a free first check</div><div class="step__desc">See whether the quote may contain points worth clarifying.</div></div>
+      <div class="step"><div class="step__num">03</div><div class="step__title">Optional full analysis</div><div class="step__desc">If you want more detail, get the full analysis plus a ready-to-send clarification letter.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-label">What we check</div>
+    <h2>Common quote issues</h2>
+    <div class="trust-grid">
+      <div class="trust-item"><div class="trust-item__label">Cost breakdown</div><div class="trust-item__text">Labour, materials, VAT, call-out fees and other costs should be clear before you agree.</div></div>
+      <div class="trust-item"><div class="trust-item__label">Scope of work</div><div class="trust-item__text">It should be clear what is included, what is excluded and whether extra work could cost more.</div></div>
+      <div class="trust-item"><div class="trust-item__label">Terms and pressure</div><div class="trust-item__text">Short deadlines, deposits, guarantees and cancellation terms may require clarification.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-label">Is this for you?</div>
+    <h2>Use this if</h2>
+    <div class="fit-rows">
+      <div class="fit-row"><span>✓</span><span>You received a quote, estimate or proposal and want to understand it before agreeing</span></div>
+      <div class="fit-row"><span>✓</span><span>You are unsure what is included or whether extra costs could arise</span></div>
+      <div class="fit-row"><span>✓</span><span>You want a professional response draft requesting clarification</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-label">Frequently asked questions</div>
+    <h2>Things people usually ask</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">What can I upload? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">You can upload quotes, estimates, proposals or cost breakdowns for trades, repairs, services, renovation, professional work and similar documents.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Will this tell me the exact market price? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">No. The review gives a practical document-based assessment of whether the quote appears clear, unclear or worth questioning. It does not guarantee a market valuation.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Can this guarantee a lower price? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">No. The review helps you ask better questions and request clarification. Any price change is up to the provider.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Is this legal advice? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">No. DoIPayThat provides informational document analysis and response drafts. It does not provide legal advice or legal representation.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="container">
+    <h2>Check before you agree</h2>
+    <p>Quote received? Start with a free first check.</p>
+    <a href="#free-check" class="final-cta-btn">Free check →</a>
+    <div class="final-cta-note">PDF, JPG or PNG · no subscription · full analysis optional</div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="footer-trust"><strong>DoIPayThat</strong> helps people understand quotes before they decide what to do.<br>Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a></div>
+  <div class="disclaimer">DoIPayThat provides informational quote analysis and response drafts. It is not legal, financial, valuation or trade advice and does not provide legal representation. Documents are processed for analysis. &copy; 2026 DoIPayThat</div>
+</div>
+
+<footer style="border-top:1px solid var(--line);padding:20px 0;text-align:center;background:var(--white);">
+  <div class="container">
+    <p style="font-size:.78rem;color:var(--muted);margin:0;">
+      <a href="/privacy.html" style="color:var(--muted);margin:0 10px;">Privacy Policy</a>
+      <a href="/terms.html" style="color:var(--muted);margin:0 10px;">Terms of Service</a>
+      <a href="/contact.html" style="color:var(--muted);margin:0 10px;">Contact</a>
+    </p>
+  </div>
+</footer>
+
+<div class="sticky-footer" id="sticky-footer">
+  <div>
+    <div class="sticky-footer__text">Quote received? Check before you agree.</div>
+    <div class="sticky-footer__sub">Free first check · full analysis optional</div>
+  </div>
+  <a href="#free-check" class="sticky-cta">Free check →</a>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal__header">
+      <div class="modal__eyebrow">Full analysis</div>
+      <div class="modal__title">Analysis + clarification letter</div>
+      <div class="modal__price">£29 <span>one-off</span></div>
+    </div>
+    <div class="modal__body">
+      <div class="modal__feature"><span class="check">✓</span><span>Review of price breakdown and scope</span></div>
+      <div class="modal__feature"><span class="check">✓</span><span>Clear questions to ask before agreeing</span></div>
+      <div class="modal__feature"><span class="check">✓</span><span>Ready-to-send clarification letter</span></div>
+      <div class="modal__disclaimer">Informational quote analysis and response draft. Not legal, financial or trade advice.</div>
+      <a href="https://buy.stripe.com/REPLACE_WITH_QUOTE_STRIPE_LINK" class="modal__cta js-stripe-link" data-type="quote" data-price="29">Get full analysis →</a>
+      <div class="modal__security">🔒 Secure payment via Stripe — card details are never stored · no subscription</div>
+      <div class="modal__close" onclick="closeModal('modal')">Back</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleFaq(el){
+    const item = el.closest('.faq-item');
+    const isOpen = item.classList.contains('faq-item--open');
+    document.querySelectorAll('.faq-item--open').forEach(i => i.classList.remove('faq-item--open'));
+    if(!isOpen) item.classList.add('faq-item--open');
+  }
+</script>
+
+<script type="module" src="./app.js"></script>
+
+</body>
+</html>
