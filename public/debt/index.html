@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Do you have to pay this? | DoIPayThat</title>
-  <meta name="description" content="Upload your debt letter for a free first check. See whether the claim may be worth reviewing before you pay.">
+  <title>Check your debt letter before you pay | DoIPayThat</title>
+  <meta name="description" content="Upload your debt letter for a free first check. See whether the claim may be worth reviewing before you decide what to do.">
   <link rel="canonical" href="https://doipaythat.co.uk/debt/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,6 +93,14 @@
     .fit-rows{display:grid;gap:10px;max-width:560px;}
     .fit-row{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;background:var(--green-soft);border:1px solid #bbf7d0;border-radius:10px;font-size:.93rem;color:#14532d;}
     .fit-row span:first-child{font-weight:700;flex-shrink:0;}
+    .faq-list{display:grid;gap:4px;}
+    .faq-item{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--white);}
+    .faq-q{display:flex;align-items:center;justify-content:space-between;padding:17px 20px;cursor:pointer;font-weight:600;font-size:.93rem;user-select:none;gap:12px;}
+    .faq-q:hover{background:var(--surface);}
+    .faq-chevron{flex-shrink:0;color:var(--muted);transition:transform .25s;}
+    .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:.9rem;color:var(--ink-3);line-height:1.7;padding:0 20px;}
+    .faq-item--open .faq-a{max-height:300px;padding:0 20px 17px;}
+    .faq-item--open .faq-chevron{transform:rotate(180deg);}
     .final-cta{background:var(--accent);color:var(--white);padding:72px 0;text-align:center;}
     .final-cta h2{color:var(--white);font-size:clamp(1.6rem,3.5vw,2.1rem);margin-bottom:12px;}
     .final-cta p{color:rgba(255,255,255,.75);margin-bottom:32px;}
@@ -127,7 +135,7 @@
 
 <body>
 
-<div class="warning-banner">⚠️ You could be paying more than you should.<br><span style="font-weight:400;">Debt letters often include unclear charges or missing proof.</span></div>
+<div class="warning-banner">⏱️ Check before you pay — debt letters can be unclear or incomplete</div>
 
 <header class="header">
   <div class="container">
@@ -140,15 +148,15 @@
 
 <section class="hero">
   <div class="container">
-    <h1>Do you have to pay this — or are you about to pay too much?</h1>
-    <p style="font-size:.95rem;color:var(--muted);margin-bottom:8px;">Many people only realise this after they've already paid.</p>
-    <p class="hero__sub">Upload your debt letter and see if you're being asked to pay more than you should — before you pay. If there are signs worth reviewing, get the full analysis plus a ready-to-send response draft.</p>
+    <h1>Before you pay a debt letter, check whether the claim is clear</h1>
+    <p class="hero__sub">Upload your letter and get a free first check. If there are points worth reviewing, you can choose a full analysis with a ready-to-send response draft.</p>
+    <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">Many people pay first and only later realise they could have asked for proof, clarification or a breakdown.</p>
     <a href="#free-check" class="hero-cta">Start free check →</a>
     <div class="hero-sub-note">PDF, JPG or PNG · no subscription · full analysis optional</div>
 
     <div class="trust-triggers">
-      <div class="trust-trigger"><span>🔴</span><div><strong>Collection fees</strong>Added charges can be unclear or disproportionate.</div></div>
-      <div class="trust-trigger"><span>🔴</span><div><strong>Proof matters</strong>You should understand who is claiming payment and why.</div></div>
+      <div class="trust-trigger"><span>●</span><div><strong>Proof and authority</strong>It should be clear who is asking for payment and why.</div></div>
+      <div class="trust-trigger"><span>●</span><div><strong>Fees and breakdowns</strong>Added charges should be explained before you decide what to do.</div></div>
     </div>
   </div>
 </section>
@@ -158,7 +166,7 @@
     <div class="offer-card" id="free-card">
       <div class="offer-badge">Start free</div>
       <div class="offer-title">Free first check</div>
-      <p class="offer-desc">Upload your debt letter and see if you're being asked to pay more than you should — before you pay anything.</p>
+      <p class="offer-desc">Upload your debt letter, collection letter or payment demand. You will receive a first assessment of whether further review may be useful.</p>
 
       <div id="gratis-upload-zone" class="upload-zone" onclick="this.querySelector('input').click()">
         <div class="upload-label">Choose file</div>
@@ -176,7 +184,7 @@
       </div>
 
       <div id="gratis-status" class="optie-status"></div>
-      <div class="offer-security">🔒 Your document is processed securely and never shared with third parties.</div>
+      <div class="offer-security">🔒 Your document is processed securely for analysis and is not shared with third parties.</div>
     </div>
 
     <div id="teaser" class="teaser">
@@ -199,9 +207,9 @@
 <section class="section section--alt">
   <div class="container">
     <div class="value-strip">
-      <span class="value-item"><span class="vi-check">✓</span> Debt proof check</span>
+      <span class="value-item"><span class="vi-check">✓</span> Proof check</span>
       <span class="value-item"><span class="vi-check">✓</span> Fee review</span>
-      <span class="value-item"><span class="vi-check">✓</span> Collection authority</span>
+      <span class="value-item"><span class="vi-check">✓</span> Creditor clarity</span>
       <span class="value-item"><span class="vi-check">✓</span> Response draft</span>
       <span class="value-item"><span class="vi-check">✓</span> One-off £49</span>
     </div>
@@ -209,15 +217,15 @@
     <div class="offer-card">
       <div class="offer-badge">After first check</div>
       <div class="offer-title">Full analysis + response draft</div>
-      <p class="offer-desc">We review the document for possible points worth checking and prepare a practical response draft. You decide what to do next.</p>
+      <p class="offer-desc">We review the document for possible points worth checking and prepare a practical response draft. You stay in control and decide what to do next.</p>
 
       <ul class="offer-list">
-        <li>Review of the claimed amount and added fees</li>
+        <li>Review of the amount claimed and added fees</li>
         <li>Check whether proof or authority appears unclear</li>
         <li>Assessment of possible warning signs</li>
-        <li>Clear next steps</li>
+        <li>Clear next steps in plain English</li>
         <li>Ready-to-send response draft</li>
-        <li>Result by email — usually within a few minutes</li>
+        <li>Result by email</li>
       </ul>
 
       <hr class="offer-divider">
@@ -235,8 +243,8 @@
     <h2>Three steps to clarity</h2>
     <div class="steps">
       <div class="step"><div class="step__num">01</div><div class="step__title">Upload your letter</div><div class="step__desc">Upload your debt letter, collection letter or payment demand.</div></div>
-      <div class="step"><div class="step__num">02</div><div class="step__title">Get a free first check</div><div class="step__desc">See whether you could be paying more than you should.</div></div>
-      <div class="step"><div class="step__num">03</div><div class="step__title">Optional full analysis</div><div class="step__desc">If you want, get the full analysis plus a ready-to-send response draft.</div></div>
+      <div class="step"><div class="step__num">02</div><div class="step__title">Get a free first check</div><div class="step__desc">See whether the claim may contain points worth reviewing.</div></div>
+      <div class="step"><div class="step__num">03</div><div class="step__title">Optional full analysis</div><div class="step__desc">If you want more detail, get the full analysis plus a ready-to-send response draft.</div></div>
     </div>
   </div>
 </section>
@@ -247,8 +255,8 @@
     <h2>Common debt-letter issues</h2>
     <div class="trust-grid">
       <div class="trust-item"><div class="trust-item__label">Proof of debt</div><div class="trust-item__text">Does the document clearly explain what the claim is based on?</div></div>
-      <div class="trust-item"><div class="trust-item__label">Added fees</div><div class="trust-item__text">Are collection charges or admin fees clearly explained?</div></div>
-      <div class="trust-item"><div class="trust-item__label">Authority to collect</div><div class="trust-item__text">Is it clear that the sender is entitled to collect the debt?</div></div>
+      <div class="trust-item"><div class="trust-item__label">Added fees</div><div class="trust-item__text">Are collection charges, admin fees or interest clearly explained?</div></div>
+      <div class="trust-item"><div class="trust-item__label">Authority to collect</div><div class="trust-item__text">Is it clear that the sender is entitled to collect or act on the claim?</div></div>
     </div>
   </div>
 </section>
@@ -260,7 +268,32 @@
     <div class="fit-rows">
       <div class="fit-row"><span>✓</span><span>You received a debt letter, collection letter or payment demand</span></div>
       <div class="fit-row"><span>✓</span><span>You are unsure whether the amount is right</span></div>
-      <div class="fit-row"><span>✓</span><span>You want to know what to ask before paying</span></div>
+      <div class="fit-row"><span>✓</span><span>You want to know what to ask before paying or responding</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-label">Frequently asked questions</div>
+    <h2>Things people usually ask</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Is this legal advice? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">No. DoIPayThat provides informational document analysis and response drafts. It does not provide legal advice or legal representation.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Do I have to buy the full analysis? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">No. The free first check is free. The full analysis is optional and is only useful if you want a more detailed review and response draft.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Will this tell me not to pay? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">No. The review helps you understand what may need checking. It does not guarantee that a claim is wrong or that payment is unnecessary.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">What happens to my document? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">Your document is processed for the purpose of the review. It is not shared with third parties for marketing.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -268,15 +301,15 @@
 <section class="final-cta">
   <div class="container">
     <h2>Check before you pay</h2>
-    <p>You could be paying more than you should. Start with a free first check.</p>
+    <p>Debt letter received? Start with a free first check.</p>
     <a href="#free-check" class="final-cta-btn">Free check →</a>
     <div class="final-cta-note">PDF, JPG or PNG · no subscription · full analysis optional</div>
   </div>
 </section>
 
 <div class="container">
-  <div class="footer-trust"><strong>DoIPayThat</strong> is a document review service focused on helping people understand debt claims before they pay. Most people prefer to check before they pay.<br>Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a></div>
-  <div class="disclaimer">DoIPayThat provides informative document analysis and response drafts. It is not legal advice and does not provide legal representation. Documents are processed only for analysis. &copy; 2026 DoIPayThat</div>
+  <div class="footer-trust"><strong>DoIPayThat</strong> helps people understand payment demands before they decide what to do.<br>Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a></div>
+  <div class="disclaimer">DoIPayThat provides informational document analysis and response drafts. It is not legal advice and does not provide legal representation. Documents are processed for analysis. &copy; 2026 DoIPayThat</div>
 </div>
 
 <footer style="border-top:1px solid var(--line);padding:20px 0;text-align:center;background:var(--white);">
@@ -305,10 +338,10 @@
       <div class="modal__price">£49 <span>one-off</span></div>
     </div>
     <div class="modal__body">
-      <div class="modal__feature"><span class="check">✓</span><span>Clear assessment of your situation</span></div>
+      <div class="modal__feature"><span class="check">✓</span><span>Clear assessment of your document</span></div>
       <div class="modal__feature"><span class="check">✓</span><span>Practical next steps</span></div>
       <div class="modal__feature"><span class="check">✓</span><span>Ready-to-send response draft</span></div>
-      <div class="modal__disclaimer">Informative analysis and response draft. Not legal advice.</div>
+      <div class="modal__disclaimer">Informational analysis and response draft. Not legal advice.</div>
       <a href="https://buy.stripe.com/REPLACE_WITH_DEBT_STRIPE_LINK" class="modal__cta js-stripe-link" data-type="debt" data-price="49">
         Get full analysis →
       </a>
@@ -317,6 +350,15 @@
     </div>
   </div>
 </div>
+
+<script>
+  function toggleFaq(el){
+    const item = el.closest('.faq-item');
+    const isOpen = item.classList.contains('faq-item--open');
+    document.querySelectorAll('.faq-item--open').forEach(i => i.classList.remove('faq-item--open'));
+    if(!isOpen) item.classList.add('faq-item--open');
+  }
+</script>
 
 <script type="module" src="./app.js"></script>
 
