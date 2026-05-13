@@ -4,32 +4,78 @@ import { json } from "../utils/response.js";
 import { getFreeCase, markPaid, enqueuePaid } from "../services/queue.js";
 import { requireType } from "../config/types.js";
 
+const ALLOWED_TYPES = ["debt", "parking", "bill", "subscription", "quote"];
+
 async function trackEvent(env, event, data = {}) {
   try {
-    const id  = crypto.randomUUID();
+    const id = crypto.randomUUID();
     const key = `track:${data.type || "unknown"}:${event}:${Date.now()}:${id}`;
-    await env.DEBT_QUEUE.put(key, JSON.stringify({
-      event,
-      ...data,
-      received_at: new Date().toISOString(),
-    }), { expirationTtl: 60 * 60 * 24 * 90 });
+
+    await env.DEBT_QUEUE.put(
+      key,
+      JSON.stringify({
+        event,
+        ...data,
+        received_at: new Date().toISOString(),
+      }),
+      { expirationTtl: 60 * 60 * 24 * 90 }
+    );
   } catch (err) {
     console.error("Track error:", err.message);
   }
 }
 
 async function hasAnalysisBeenSent(env, sessionId) {
+  if (!sessionId) return false;
+
   const key = `analysis_sent:${sessionId}`;
   const val = await env.DEBT_QUEUE.get(key);
+
   return val === "1";
 }
 
 async function markAnalysisSent(env, sessionId) {
+  if (!sessionId) return;
+
   const key = `analysis_sent:${sessionId}`;
-  await env.DEBT_QUEUE.put(key, "1", { expirationTtl: 60 * 60 * 24 * 30 });
+
+  await env.DEBT_QUEUE.put(key, "1", {
+    expirationTtl: 60 * 60 * 24 * 30,
+  });
 }
 
-export async function handleStripeWebhook(request, env) {
+async function findFreeCase(env, email, preferredType = null) {
+  if (!email) {
+    return { saved: null, type: null };
+  }
+
+  const orderedTypes = [];
+
+  if (preferredType) {
+    orderedTypes.push(preferredType);
+  }
+
+  for (const type of ALLOWED_TYPES) {
+    if (!orderedTypes.includes(type)) {
+      orderedTypes.push(type);
+    }
+  }
+
+  for (const type of orderedTypes) {
+    const saved = await getFreeCase(env, { type, email });
+
+    if (saved) {
+      console.log(`FREE CASE FOUND: type=${type}, email=${email}`);
+      return { saved, type };
+    }
+  }
+
+  console.warn(`NO FREE CASE FOUND for email=${email}`);
+
+  return { saved: null, type: null };
+}
+
+export async function handleStripeWebhook(request, env, ctx) {
   const signature = request.headers.get("stripe-signature");
 
   if (!signature) {
@@ -37,6 +83,7 @@ export async function handleStripeWebhook(request, env) {
   }
 
   let rawBody;
+
   try {
     rawBody = await request.text();
   } catch {
@@ -44,106 +91,190 @@ export async function handleStripeWebhook(request, env) {
   }
 
   let event;
+
   try {
-    event = await verifyStripeWebhook(rawBody, signature, env.STRIPE_WEBHOOK_SECRET);
+    event = await verifyStripeWebhook(
+      rawBody,
+      signature,
+      env.STRIPE_WEBHOOK_SECRET
+    );
   } catch (err) {
+    console.error("Invalid webhook signature:", err.message);
     return json({ ok: false, error: "Invalid webhook signature" }, 400);
   }
 
-  try {
-    switch (event.type) {
-      case "checkout.session.completed": {
-        const session = event.data.object;
+  const work = handleStripeEvent(event, env).catch((err) => {
+    console.error("Webhook background processing failed:", err.message, err.stack);
+  });
 
-        if (session.payment_status !== "paid") {
-          console.log("Session not paid yet:", session.id);
-          break;
-        }
-
-        // Deduplication
-        if (await hasAnalysisBeenSent(env, session.id)) {
-          console.log("Duplicate webhook — already processed:", session.id);
-          break;
-        }
-
-        const email   = session.metadata?.email || session.customer_details?.email || null;
-        const name    = session.metadata?.name  || session.customer_details?.name  || "Customer";
-        const rawType = session.metadata?.type  || "debt";
-
-        let type;
-        try {
-          type = requireType(rawType);
-        } catch {
-          type = "debt";
-        }
-
-        console.log("Payment completed:", { sessionId: session.id, email, type });
-
-        await trackEvent(env, "payment_success", {
-          type,
-          email,
-          value:      (session.amount_total || 4900) / 100,
-          currency:   session.currency || "gbp",
-          session_id: session.id,
-        });
-
-        if (email) {
-          await markPaid(env, email);
-        }
-
-        // Save pending_paid entry — cron will run analysis and send email
-        const saved = email ? await getFreeCase(env, { type, email }) : null;
-
-        if (saved?.file_base64 && saved?.media_type && saved?.triage) {
-          await enqueuePaid(env, {
-            type,
-            name:  saved.name || name,
-            email,
-            triage:    saved.triage,
-            analysis:  null,           // cron will run analysis
-            file_base64: saved.file_base64,
-            media_type:  saved.media_type,
-          });
-
-          console.log("Pending paid queued for cron:", email);
-        } else {
-          console.log("No free case found for:", email);
-        }
-
-        await markAnalysisSent(env, session.id);
-        break;
-      }
-
-      case "payment_intent.succeeded": {
-        console.log("Payment intent succeeded:", event.data.object.id);
-        break;
-      }
-
-      default: {
-        console.log("Unhandled Stripe event:", event.type);
-      }
-    }
-
-    return json({ ok: true });
-  } catch (err) {
-    console.error("Webhook processing error:", err);
-    return json({ ok: false, error: "Webhook processing failed" }, 500);
+  if (ctx?.waitUntil) {
+    ctx.waitUntil(work);
+  } else {
+    await work;
   }
+
+  return json({ ok: true });
+}
+
+async function handleStripeEvent(event, env) {
+  if (event.type !== "checkout.session.completed") {
+    console.log("Webhook event skipped:", event.type);
+    return;
+  }
+
+  const session = event.data.object;
+
+  if (session.payment_status !== "paid") {
+    console.log("Session not paid yet:", session.id);
+    return;
+  }
+
+  if (await hasAnalysisBeenSent(env, session.id)) {
+    console.log("Duplicate webhook — already processed:", session.id);
+    return;
+  }
+
+  const email =
+    session.metadata?.email ||
+    session.customer_details?.email ||
+    session.customer_email ||
+    null;
+
+  const name =
+    session.metadata?.name ||
+    session.customer_details?.name ||
+    "Customer";
+
+  const rawType =
+    session.metadata?.type ||
+    session.metadata?.product ||
+    null;
+
+  let preferredType = null;
+
+  if (rawType) {
+    try {
+      preferredType = requireType(rawType);
+    } catch {
+      preferredType = null;
+    }
+  }
+
+  const currency = String(session.currency || "gbp").toUpperCase();
+  const value = Number(session.amount_total || 0) / 100;
+
+  console.log("WEBHOOK PAID:", {
+    session_id: session.id,
+    email,
+    payment_status: session.payment_status,
+    preferredType,
+    value,
+    currency,
+  });
+
+  if (!email) {
+    console.error("No email found in webhook session:", session.id);
+
+    await env.DEBT_QUEUE.put(
+      `paid_missing_email:${session.id}:${Date.now()}`,
+      JSON.stringify({
+        session_id: session.id,
+        reason: "paid_but_no_email_found",
+        received_at: new Date().toISOString(),
+      }),
+      { expirationTtl: 60 * 60 * 24 * 30 }
+    );
+
+    return;
+  }
+
+  await markPaid(env, email);
+
+  await trackEvent(env, "payment_success", {
+    type: preferredType || "unknown",
+    email,
+    value,
+    currency,
+    session_id: session.id,
+  });
+
+  const { saved, type } = await findFreeCase(env, email, preferredType);
+
+  if (!saved?.file_base64 || !saved?.media_type || !saved?.triage) {
+    console.error("NO USABLE FREE CASE FOUND:", {
+      email,
+      session_id: session.id,
+      preferredType,
+    });
+
+    await env.DEBT_QUEUE.put(
+      `paid_missing_free_case:${email}:${Date.now()}`,
+      JSON.stringify({
+        name,
+        email,
+        preferredType,
+        session_id: session.id,
+        value,
+        currency,
+        reason: "paid_but_no_saved_free_case",
+        received_at: new Date().toISOString(),
+      }),
+      { expirationTtl: 60 * 60 * 24 * 30 }
+    );
+
+    return;
+  }
+
+  const customerName = saved.name || name;
+  const finalType = type || preferredType || saved.type || "debt";
+
+  await enqueuePaid(env, {
+    type: finalType,
+    rawType: rawType || finalType,
+    name: customerName,
+    email,
+    sessionId: session.id,
+    payment: {
+      sessionId: session.id,
+      value,
+      currency,
+      payment_status: session.payment_status,
+    },
+    triage: saved.triage,
+    analysis: null,
+    file_base64: saved.file_base64,
+    media_type: saved.media_type,
+    fileName: saved.fileName || saved.file_name || null,
+    fileSize: saved.fileSize || saved.file_size || null,
+  });
+
+  console.log("PAID QUEUED FOR CRON:", {
+    email,
+    type: finalType,
+    session_id: session.id,
+  });
+
+  await markAnalysisSent(env, session.id);
 }
 
 async function verifyStripeWebhook(rawBody, signatureHeader, webhookSecret) {
-  if (!webhookSecret) throw new Error("Missing STRIPE_WEBHOOK_SECRET");
+  if (!webhookSecret) {
+    throw new Error("Missing STRIPE_WEBHOOK_SECRET");
+  }
 
-  const parts         = signatureHeader.split(",");
-  const timestampPart = parts.find(p => p.startsWith("t="));
-  const signaturePart = parts.find(p => p.startsWith("v1="));
+  const parts = signatureHeader.split(",");
+  const timestampPart = parts.find((p) => p.startsWith("t="));
+  const signatureParts = parts
+    .filter((p) => p.startsWith("v1="))
+    .map((p) => p.replace("v1=", ""));
 
-  if (!timestampPart || !signaturePart) throw new Error("Invalid Stripe signature header");
+  if (!timestampPart || signatureParts.length === 0) {
+    throw new Error("Invalid Stripe signature header");
+  }
 
   const timestamp = timestampPart.replace("t=", "");
-  const signature = signaturePart.replace("v1=", "");
-  const signed    = `${timestamp}.${rawBody}`;
-  const encoder   = new TextEncoder();
+  const signed = `${timestamp}.${rawBody}`;
+  const encoder = new TextEncoder();
 
   const key = await crypto.subtle.importKey(
     "raw",
@@ -156,19 +287,30 @@ async function verifyStripeWebhook(rawBody, signatureHeader, webhookSecret) {
   const result = await crypto.subtle.sign("HMAC", key, encoder.encode(signed));
 
   const expected = [...new Uint8Array(result)]
-    .map(b => b.toString(16).padStart(2, "0"))
+    .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
 
-  if (!secureCompare(expected, signature)) throw new Error("Webhook signature mismatch");
+  const matched = signatureParts.some((signature) =>
+    secureCompare(expected, signature)
+  );
+
+  if (!matched) {
+    throw new Error("Webhook signature mismatch");
+  }
 
   return JSON.parse(rawBody);
 }
 
 function secureCompare(a, b) {
-  if (a.length !== b.length) return false;
+  if (!a || !b || a.length !== b.length) {
+    return false;
+  }
+
   let result = 0;
+
   for (let i = 0; i < a.length; i++) {
     result |= a.charCodeAt(i) ^ b.charCodeAt(i);
   }
+
   return result === 0;
 }
