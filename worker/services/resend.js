@@ -146,49 +146,69 @@ export async function sendConfirmationEmail(env, { name, email, type }) {
 // ── Admin emails ──────────────────────────────────────────────────────────────
 
 export async function notifyAdminFree(env, { name, email, type, triage, stripeLink }) {
-  const amount = formatAmount(triage, type) || "unknown";
+  const labels   = TYPE_LABELS[type] || TYPE_LABELS.debt;
+  const amount   = formatAmount(triage, type) || "unknown";
+  const riskLbl  = { low: "Low", medium: "Medium", high: "High" }[triage?.risk] || triage?.risk || "unknown";
+  const tier     = triage?.tier ? triage.tier.charAt(0).toUpperCase() + triage.tier.slice(1) : "unknown";
+  const route    = triage?.route || "unknown";
+  const isParking = type === "parking";
+
+  const grounds = isParking ? parkingGrounds(triage) : [];
+  const groundsHtml = grounds.length
+    ? grounds.map(g => `<li>${escapeHtml(g)}</li>`).join("")
+    : "";
 
   await sendEmail(env, {
     to:      env.ADMIN_EMAIL,
     subject: `[DoIPayThat] Free check: ${name} (${type})`,
-    html:    `<div style="font-family:Arial,sans-serif;">
+    html:    `<div style="font-family:Arial,sans-serif;max-width:600px;">
       <p style="background:#f3f4f6;padding:10px;border-radius:6px;font-size:0.85rem;">
         📬 Free lead — recovery sequence queued for <strong>${escapeHtml(email)}</strong>
       </p>
-      <h3>Free check — ${escapeHtml(type)}</h3>
-      <p><strong>Name:</strong> ${escapeHtml(name)}</p>
-      <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-      <p><strong>Sender:</strong> ${escapeHtml(triage?.sender || "unknown")}</p>
-      <p><strong>Amount:</strong> ${escapeHtml(String(amount))}</p>
-      <p><strong>Risk:</strong> ${escapeHtml(triage?.risk || "")}</p>
-      <p><strong>Chance:</strong> ${escapeHtml(String(triage?.chance ?? "unknown"))}</p>
-      <p><strong>Flags:</strong> ${escapeHtml(String(triage?.flagCount ?? "unknown"))}</p>
-      <p><strong>Email type:</strong> ${escapeHtml(triage?.emailType || "unknown")}</p>
-      ${type === "parking" ? `
-      <p><strong>Operator type:</strong> ${escapeHtml(triage?.operator_type || "unknown")}</p>
-      <p><strong>Vehicle:</strong> ${escapeHtml(triage?.vehicle_registration || "unknown")}</p>
-      ` : ""}
-      <p><strong>Stripe link:</strong> ${stripeLink ? "YES" : "NO"}</p>
+      <h3>Free check — ${escapeHtml(labels.title)}</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">
+        <tr><td style="padding:6px 10px;font-weight:bold;width:40%;">Name</td><td style="padding:6px 10px;">${escapeHtml(name)}</td></tr>
+        <tr style="background:#f9fafb;"><td style="padding:6px 10px;font-weight:bold;">Email</td><td style="padding:6px 10px;">${escapeHtml(email)}</td></tr>
+        <tr><td style="padding:6px 10px;font-weight:bold;">Sender</td><td style="padding:6px 10px;">${escapeHtml(triage?.sender || "unknown")}</td></tr>
+        <tr style="background:#f9fafb;"><td style="padding:6px 10px;font-weight:bold;">Amount</td><td style="padding:6px 10px;font-weight:bold;color:#1d3a6e;">${escapeHtml(String(amount))}</td></tr>
+        <tr><td style="padding:6px 10px;font-weight:bold;">Risk</td><td style="padding:6px 10px;">${escapeHtml(riskLbl)}</td></tr>
+        <tr style="background:#f9fafb;"><td style="padding:6px 10px;font-weight:bold;">Chance</td><td style="padding:6px 10px;">${escapeHtml(String(triage?.chance ?? "?"))}%</td></tr>
+        <tr><td style="padding:6px 10px;font-weight:bold;">Flag count</td><td style="padding:6px 10px;">${escapeHtml(String(triage?.flagCount ?? "?"))}</td></tr>
+        <tr style="background:#f9fafb;"><td style="padding:6px 10px;font-weight:bold;">Email type</td><td style="padding:6px 10px;">${escapeHtml(triage?.emailType || "unknown")}</td></tr>
+        <tr><td style="padding:6px 10px;font-weight:bold;">Tier</td><td style="padding:6px 10px;">${escapeHtml(tier)}</td></tr>
+        <tr style="background:#f9fafb;"><td style="padding:6px 10px;font-weight:bold;">Route</td><td style="padding:6px 10px;">${escapeHtml(route)}</td></tr>
+        ${isParking ? `
+        <tr><td style="padding:6px 10px;font-weight:bold;">Operator type</td><td style="padding:6px 10px;">${escapeHtml(triage?.operator_type || "unknown")}</td></tr>
+        <tr style="background:#f9fafb;"><td style="padding:6px 10px;font-weight:bold;">Vehicle</td><td style="padding:6px 10px;">${escapeHtml(triage?.vehicle_registration || "unknown")}</td></tr>
+        ` : ""}
+        ${stripeLink ? `<tr><td style="padding:6px 10px;font-weight:bold;">Stripe</td><td style="padding:6px 10px;"><a href="${escapeHtml(stripeLink)}">${escapeHtml(stripeLink)}</a></td></tr>` : ""}
+      </table>
+      ${groundsHtml ? `<p style="margin-top:16px;"><strong>Parking grounds identified:</strong></p><ul style="font-size:0.9rem;">${groundsHtml}</ul>` : ""}
     </div>`
   });
 }
 
 export async function notifyAdminPaid(env, { name, email, type, triage, analysis }) {
+  const labels      = TYPE_LABELS[type] || TYPE_LABELS.debt;
   const analysisRtf = makeAnalysisRtf(analysis, name, email, triage, type);
+  const riskLbl     = { low: "Low", medium: "Medium", high: "High" }[triage?.risk] || triage?.risk || "unknown";
 
   await sendEmail(env, {
     to:      env.ADMIN_EMAIL,
     subject: `[DoIPayThat] PAID: ${name} (${type})`,
-    html:    `<div style="font-family:Arial,sans-serif;">
+    html:    `<div style="font-family:Arial,sans-serif;max-width:600px;">
       <p style="background:#f3f4f6;padding:10px;border-radius:6px;font-size:0.85rem;">
         💰 Paid customer — recovery sequence stopped
       </p>
-      <h3>Paid analysis — ${escapeHtml(type)}</h3>
-      <p><strong>Name:</strong> ${escapeHtml(name)}</p>
-      <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-      <p><strong>Sender:</strong> ${escapeHtml(triage?.sender || "unknown")}</p>
-      <p><strong>Amount:</strong> ${escapeHtml(String(formatAmount(triage, type) || "unknown"))}</p>
-      <p><strong>Risk:</strong> ${escapeHtml(triage?.risk || "")}</p>
+      <h3>Paid analysis — ${escapeHtml(labels.title)}</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">
+        <tr><td style="padding:6px 10px;font-weight:bold;width:40%;">Name</td><td style="padding:6px 10px;">${escapeHtml(name)}</td></tr>
+        <tr style="background:#f9fafb;"><td style="padding:6px 10px;font-weight:bold;">Email</td><td style="padding:6px 10px;">${escapeHtml(email)}</td></tr>
+        <tr><td style="padding:6px 10px;font-weight:bold;">Sender</td><td style="padding:6px 10px;">${escapeHtml(triage?.sender || "unknown")}</td></tr>
+        <tr style="background:#f9fafb;"><td style="padding:6px 10px;font-weight:bold;">Amount</td><td style="padding:6px 10px;font-weight:bold;color:#1d3a6e;">${escapeHtml(String(formatAmount(triage, type) || "unknown"))}</td></tr>
+        <tr><td style="padding:6px 10px;font-weight:bold;">Risk</td><td style="padding:6px 10px;">${escapeHtml(riskLbl)}</td></tr>
+        <tr style="background:#f9fafb;"><td style="padding:6px 10px;font-weight:bold;">Tier</td><td style="padding:6px 10px;">${escapeHtml(String(triage?.tier || "unknown"))}</td></tr>
+      </table>
     </div>`,
     attachments: [
       { filename: "Analysis.rtf", content: rtfToBase64(analysisRtf) }
