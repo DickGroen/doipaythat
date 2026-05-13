@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Analysis is being created | DoIPayThat</title>
-  <link rel="stylesheet" href="../styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -40,23 +39,21 @@
 
 <div class="wrap">
 
-  <!-- B-flow: automatic analysis without second upload -->
   <div class="card" id="auto-card">
     <h1>Almost there…</h1>
-    <p>We're verifying your payment and starting your full analysis. You'll have everything you need to respond with confidence.</p>
+    <p>We are verifying your payment and starting your full analysis.</p>
     <div id="auto-status" class="status-box info">Verifying your payment…</div>
     <p class="note">You can leave this page open. Your result will be sent by email — usually within a few minutes.</p>
   </div>
 
-  <!-- A-flow fallback: only shown if automatic link cannot be found -->
   <div class="card hidden" id="thankyou-app">
     <h1>One more step</h1>
-    <p>We couldn't automatically find your original file. Please upload your document one more time so we can start the analysis.</p>
+    <p>We could not automatically find your original file. Please upload your document one more time so we can start the analysis.</p>
 
     <input id="customer-name" class="input" placeholder="Your name" autocomplete="name">
     <input id="customer-email" class="input" placeholder="Your email" type="email" autocomplete="email">
 
-    <div id="upload-panel" class="upload-panel" onclick="document.getElementById('real-file-input').click()">
+    <div id="upload-panel" class="upload-panel">
       <strong>Choose file</strong><br>
       <span>PDF, JPG or PNG · max. 8 MB</span>
       <input id="real-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
@@ -74,83 +71,206 @@
 
     <div id="status-box" class="status-box hidden"></div>
 
-    <p class="note">This upload is only needed if the automatic link cannot be found.</p>
+    <p class="note">This upload is only needed if the automatic connection cannot be found.</p>
   </div>
 
-  <!-- No valid session -->
   <div class="card hidden" id="locked-screen">
     <h1>Payment not found</h1>
     <p>Please restart the process from the payment page.</p>
     <div class="status-box error">No valid payment session was found.</div>
   </div>
 
-  <!-- Success -->
   <div class="card hidden" id="success-screen">
     <div class="success-icon">✓</div>
-    <h1>You're all set</h1>
-    <p>Your analysis is being prepared. You'll receive everything you need to understand the situation and respond with confidence.</p>
+    <h1>You are all set</h1>
+    <p>Your analysis is being prepared.</p>
     <p>Check your inbox — your full analysis and ready-to-send response letter will arrive by email.</p>
-    <p class="note">Please also check your spam folder if you don't see it within a few minutes.</p>
+    <p class="note">Please also check your spam folder if you do not see it within a few minutes.</p>
   </div>
 
 </div>
 
 <script type="module">
-  import { submitAutoPaid, track } from '../app.js';
+  import {
+    submitAutoPaid,
+    submitPaid,
+    validateFile,
+    formatFileSize,
+    track
+  } from "../app.js";
 
-  const params    = new URLSearchParams(window.location.search);
-  const sessionId = params.get('session_id');
-  const type      = params.get('type') || 'debt';
+  const params = new URLSearchParams(window.location.search);
 
-  const autoCard   = document.getElementById('auto-card');
-  const autoStatus = document.getElementById('auto-status');
-  const fallback   = document.getElementById('thankyou-app');
-  const locked     = document.getElementById('locked-screen');
-  const success    = document.getElementById('success-screen');
+  const sessionId = params.get("session_id");
+  const type = params.get("type") || "debt";
 
-  track('paid_thankyou_view', { type, has_session: Boolean(sessionId) });
+  const autoCard = document.getElementById("auto-card");
+  const autoStatus = document.getElementById("auto-status");
+  const fallback = document.getElementById("thankyou-app");
+  const locked = document.getElementById("locked-screen");
+  const success = document.getElementById("success-screen");
+
+  const nameEl = document.getElementById("customer-name");
+  const emailEl = document.getElementById("customer-email");
+  const uploadPanel = document.getElementById("upload-panel");
+  const fileInput = document.getElementById("real-file-input");
+  const selectedFile = document.getElementById("selected-file");
+  const selectedFileName = document.getElementById("selected-file-name");
+  const selectedFileMeta = document.getElementById("selected-file-meta");
+  const removeFile = document.getElementById("remove-file");
+  const submitBtn = document.getElementById("submit-btn");
+  const statusBox = document.getElementById("status-box");
+
+  let chosenFile = null;
+
+  track("paid_thankyou_view", {
+    type,
+    has_session: Boolean(sessionId)
+  });
 
   function showOnly(el) {
     [autoCard, fallback, locked, success].forEach(node => {
-      if (node) node.classList.add('hidden');
+      if (node) node.classList.add("hidden");
     });
-    if (el) el.classList.remove('hidden');
+
+    if (el) el.classList.remove("hidden");
   }
 
-  if (!sessionId || !sessionId.startsWith('cs_')) {
+  function setStatus(kind, message) {
+    statusBox.className = `status-box ${kind || ""}`;
+    statusBox.textContent = message;
+    statusBox.classList.remove("hidden");
+  }
+
+  function updateSubmitState() {
+    const hasFile = Boolean(chosenFile);
+    const hasName = Boolean(nameEl.value.trim());
+    const hasEmail = Boolean(emailEl.value.trim());
+
+    submitBtn.disabled = !(hasFile && hasName && hasEmail);
+    submitBtn.textContent = hasFile ? "Start my analysis" : "Choose a file first";
+  }
+
+  function setFile(file) {
+    const error = validateFile(file);
+
+    if (error) {
+      chosenFile = null;
+      selectedFile.classList.remove("show");
+      setStatus("error", error);
+      updateSubmitState();
+      return;
+    }
+
+    chosenFile = file;
+    selectedFileName.textContent = file.name;
+    selectedFileMeta.textContent = formatFileSize(file.size);
+    selectedFile.classList.add("show");
+    statusBox.classList.add("hidden");
+    updateSubmitState();
+  }
+
+  uploadPanel.addEventListener("click", () => fileInput.click());
+
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files && fileInput.files[0];
+    if (file) setFile(file);
+  });
+
+  ["dragenter", "dragover"].forEach(eventName => {
+    uploadPanel.addEventListener(eventName, e => {
+      e.preventDefault();
+      uploadPanel.classList.add("drag-over");
+    });
+  });
+
+  ["dragleave", "drop"].forEach(eventName => {
+    uploadPanel.addEventListener(eventName, e => {
+      e.preventDefault();
+      uploadPanel.classList.remove("drag-over");
+    });
+  });
+
+  uploadPanel.addEventListener("drop", e => {
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file) setFile(file);
+  });
+
+  removeFile.addEventListener("click", e => {
+    e.preventDefault();
+    chosenFile = null;
+    fileInput.value = "";
+    selectedFile.classList.remove("show");
+    updateSubmitState();
+  });
+
+  nameEl.addEventListener("input", updateSubmitState);
+  emailEl.addEventListener("input", updateSubmitState);
+
+  submitBtn.addEventListener("click", async () => {
+    try {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Uploading…";
+
+      await submitPaid({
+        file: chosenFile,
+        name: nameEl.value.trim(),
+        email: emailEl.value.trim(),
+        type,
+        sessionId,
+        onStatus: setStatus
+      });
+
+      track("paid_fallback_upload_completed", { type });
+      showOnly(success);
+    } catch (err) {
+      track("paid_fallback_upload_failed", {
+        type,
+        error: err.message
+      });
+
+      setStatus("error", err.message || "Upload failed. Please try again.");
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Start my analysis";
+    }
+  });
+
+  if (!sessionId || !sessionId.startsWith("cs_")) {
     showOnly(locked);
   } else {
     try {
-      autoStatus.textContent = 'Verifying your payment…';
+      autoStatus.textContent = "Verifying your payment…";
 
       await submitAutoPaid({
         type,
         sessionId,
-        onStatus: (_, msg) => { autoStatus.textContent = msg; }
+        onStatus: (_, msg) => {
+          autoStatus.textContent = msg;
+        }
       });
 
-      track('auto_paid_analysis_started', { type });
+      track("auto_paid_analysis_started", { type });
       showOnly(success);
-
     } catch (err) {
       if (err.needUpload) {
-        track('auto_paid_fallback_upload_needed', { type, reason: err.message });
+        track("auto_paid_fallback_upload_needed", {
+          type,
+          reason: err.message
+        });
+
+        if (emailEl && params.get("email")) emailEl.value = params.get("email");
+        if (nameEl && params.get("name")) nameEl.value = params.get("name");
+
         showOnly(fallback);
-
-        const emailEl = document.getElementById('customer-email');
-        const nameEl  = document.getElementById('customer-name');
-
-        if (emailEl && params.get('email')) emailEl.value = params.get('email');
-        if (nameEl  && params.get('name'))  nameEl.value  = params.get('name');
+        updateSubmitState();
       } else {
-        autoStatus.className   = 'status-box error';
-        autoStatus.textContent = 'Something went wrong. Please contact us at support@doipaythat.co.uk';
+        autoStatus.className = "status-box error";
+        autoStatus.textContent =
+          "Something went wrong. Please contact us at support@doipaythat.co.uk";
       }
     }
   }
 </script>
-
-<script type="module" src="./app.js"></script>
 
 </body>
 </html>
