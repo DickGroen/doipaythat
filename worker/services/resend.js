@@ -246,7 +246,7 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
 
       let bodyHtml;
 
-      if (emailType === "stark") {
+      if (emailType === "stark" || emailType === "strong") {
         bodyHtml = `
           <p>Hi ${escapeHtml(name)},</p>
           <p>We've taken a first look at your parking fine${senderPart}${amountStr ? ` for ${amountStr}` : ""}.</p>
@@ -381,10 +381,12 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
       ? `<p>Hi ${escapeHtml(name)},</p>
          <p>Just a reminder about your parking fine.</p>
          <p>Many people pay parking charges without checking — and later discover they had valid grounds to appeal. Once you pay, that option is gone.</p>
+         ${parkingGrounds(triage)[0] ? `<p style="background:#fef3c7;border:1px solid #fbbf24;padding:12px;border-radius:6px;font-size:0.9rem;"><strong>Worth noting:</strong> ${escapeHtml(parkingGrounds(triage)[0])}</p>` : ""}
          <p>A full review and ready-to-send appeal letter is still available for £${escapeHtml(labels.price)}:</p>`
       : `<p>Hi ${escapeHtml(name)},</p>
          <p>Just a quick reminder about your ${escapeHtml(labels.title)}.</p>
          <p>Many people end up paying more than they should simply because they don't check first.</p>
+         ${triage?.teaser ? `<p style="background:#fef3c7;border:1px solid #fbbf24;padding:12px;border-radius:6px;font-size:0.9rem;"><strong>From your initial review:</strong> ${escapeHtml(triage.teaser)}</p>` : ""}
          <p>You've already taken the first step — now you can see exactly what to do next.</p>`;
 
     await sendEmail(env, {
@@ -422,9 +424,11 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
       <p>Hi ${escapeHtml(name)},</p>
       ${isParking
         ? `<p>This is our final reminder about your parking fine.</p>
-           <p>If you haven't checked yet, it's still worth a look before you pay. Many fines that appear legitimate on the surface contain procedural errors that make them worth challenging.</p>`
+           <p>If you haven't checked yet, it's still worth a look before you pay. Many fines that appear legitimate on the surface contain procedural errors that make them worth challenging.</p>
+           ${parkingGrounds(triage)[0] ? `<p style="background:#fef3c7;border:1px solid #fbbf24;padding:12px;border-radius:6px;font-size:0.9rem;"><strong>Worth noting:</strong> ${escapeHtml(parkingGrounds(triage)[0])}</p>` : ""}`
         : `<p>This is our final reminder before we close this follow-up.</p>
-           <p>If you haven't had a chance to review the claim yet, it's still worth checking before you pay.</p>`}
+           <p>If you haven't had a chance to review the claim yet, it's still worth checking before you pay.</p>
+           ${triage?.teaser ? `<p style="background:#fef3c7;border:1px solid #fbbf24;padding:12px;border-radius:6px;font-size:0.9rem;"><strong>From your initial review:</strong> ${escapeHtml(triage.teaser)}</p>` : ""}`}
       <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
       <p style="margin:20px 0;">
         <a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">
@@ -468,6 +472,8 @@ export async function sendPaidEmail(env, { name, email, type, triage, analysis }
         <li>✓ <strong>Analysis.rtf</strong> — full breakdown with findings and next steps</li>
         <li>✓ <strong>${escapeHtml(labels.filename)}</strong> — ready-to-send ${escapeHtml(labels.letter)}</li>
       </ul>
+      <p><strong>Important:</strong> Please read the analysis before sending the letter.</p>
+      <p style="font-size:0.9rem;color:#6b7280;">The attached RTF files can be opened in Microsoft Word, LibreOffice or similar word processors.</p>
       <p style="background:#f0fdf4;border-left:4px solid #22c55e;padding:12px;border-radius:4px;font-size:0.9rem;">
         💡 Tip: ${escapeHtml(tip)}
       </p>
