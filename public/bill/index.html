@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>You could be paying too much on this bill | DoIPayThat</title>
-  <meta name="description" content="Upload your bill for a free first check. See whether you could be paying more than you should.">
+  <title>Check your bill before you pay | DoIPayThat</title>
+  <meta name="description" content="Upload your bill for a free first check. See whether the amount, charges or breakdown may be worth reviewing before you decide what to do.">
   <link rel="canonical" href="https://doipaythat.co.uk/bill/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,6 +92,14 @@
     .fit-rows{display:grid;gap:10px;max-width:560px;}
     .fit-row{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;background:var(--green-soft);border:1px solid #bbf7d0;border-radius:10px;font-size:.93rem;color:#14532d;}
     .fit-row span:first-child{font-weight:700;flex-shrink:0;}
+    .faq-list{display:grid;gap:4px;}
+    .faq-item{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--white);}
+    .faq-q{display:flex;align-items:center;justify-content:space-between;padding:17px 20px;cursor:pointer;font-weight:600;font-size:.93rem;user-select:none;gap:12px;}
+    .faq-q:hover{background:var(--surface);}
+    .faq-chevron{flex-shrink:0;color:var(--muted);transition:transform .25s;}
+    .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:.9rem;color:var(--ink-3);line-height:1.7;padding:0 20px;}
+    .faq-item--open .faq-a{max-height:300px;padding:0 20px 17px;}
+    .faq-item--open .faq-chevron{transform:rotate(180deg);}
     .final-cta{background:var(--accent);color:var(--white);padding:72px 0;text-align:center;}
     .final-cta h2{color:var(--white);font-size:clamp(1.6rem,3.5vw,2.1rem);margin-bottom:12px;}
     .final-cta p{color:rgba(255,255,255,.75);margin-bottom:32px;}
@@ -125,7 +133,7 @@
 </head>
 <body>
 
-<div class="warning-banner">⚠️ You could be paying more than you should on this bill.<br><span style="font-weight:400;">Many bills contain errors — estimated readings, wrong tariffs or hidden charges.</span></div>
+<div class="warning-banner">⏱️ Check before you pay — bills can contain unclear charges, estimates or duplicate items</div>
 
 <header class="header">
   <div class="container">
@@ -138,14 +146,15 @@
 
 <section class="hero">
   <div class="container">
-    <h1>You could be paying more than you should on this bill.</h1>
-    <p style="font-size:.95rem;color:var(--muted);margin-bottom:8px;">Many people only realise this after they've already paid.</p>
-    <p class="hero__sub">Upload your bill and get a free first check. If there are issues worth disputing, get the full analysis plus a ready-to-send dispute letter.</p>
+    <h1>Before you pay a bill, check whether the charges are clear</h1>
+    <p class="hero__sub">Upload your bill and get a free first check. If there are points worth reviewing, you can choose a full analysis with a ready-to-send dispute letter.</p>
+    <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">Many people pay first and only later realise they could have asked for a breakdown, correction or supporting evidence.</p>
     <a href="#free-check" class="hero-cta">Start free check →</a>
     <div class="hero-sub-note">PDF, JPG or PNG · no subscription · full analysis optional</div>
+
     <div class="trust-triggers">
-      <div class="trust-trigger"><span>🔴</span><div><strong>Estimated readings</strong>Bills based on estimates are often higher than actual usage.</div></div>
-      <div class="trust-trigger"><span>🔴</span><div><strong>Wrong tariffs</strong>Incorrect tariffs or standing charges are common billing errors.</div></div>
+      <div class="trust-trigger"><span>●</span><div><strong>Readings and tariffs</strong>Estimated readings, wrong tariffs or standing charges may need checking.</div></div>
+      <div class="trust-trigger"><span>●</span><div><strong>Breakdowns and fees</strong>Duplicate items, exit fees or unclear charges should be explained.</div></div>
     </div>
   </div>
 </section>
@@ -155,21 +164,25 @@
     <div class="offer-card" id="free-card">
       <div class="offer-badge">Start free</div>
       <div class="offer-title">Free first check</div>
-      <p class="offer-desc">Upload your bill and see if you could be paying too much — before you pay anything.</p>
+      <p class="offer-desc">Upload your bill and receive a first assessment of whether further review may be useful before you decide what to do.</p>
+
       <div id="gratis-upload-zone" class="upload-zone" onclick="this.querySelector('input').click()">
         <div class="upload-label">Choose file</div>
         <div class="upload-hint">PDF, JPG or PNG · max. 8 MB</div>
         <input type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="handleGratisFileSelect(this)">
       </div>
+
       <div id="gratis-contact-fields" class="contact-fields">
         <input id="gratis-name" class="input" placeholder="Your name">
         <input id="gratis-email" class="input" placeholder="Your email" type="email" autocomplete="email">
         <div id="gratis-email-hint" class="input-hint"></div>
         <button id="gratis-btn" onclick="startGratisUpload()" disabled class="offer-cta">Start free check</button>
       </div>
+
       <div id="gratis-status" class="optie-status"></div>
-      <div class="offer-security">🔒 Your document is processed securely and never shared with third parties.</div>
+      <div class="offer-security">🔒 Your document is processed securely for analysis and is not shared with third parties.</div>
     </div>
+
     <div id="teaser" class="teaser">
       <div class="offer-card teaser-card">
         <div id="teaser-company" class="teaser-heading"></div>
@@ -190,22 +203,25 @@
     <div class="value-strip">
       <span class="value-item"><span class="vi-check">✓</span> Reading check</span>
       <span class="value-item"><span class="vi-check">✓</span> Tariff review</span>
-      <span class="value-item"><span class="vi-check">✓</span> Hidden charges</span>
+      <span class="value-item"><span class="vi-check">✓</span> Charge breakdown</span>
       <span class="value-item"><span class="vi-check">✓</span> Dispute letter</span>
       <span class="value-item"><span class="vi-check">✓</span> One-off £29</span>
     </div>
+
     <div class="offer-card">
       <div class="offer-badge">After first check</div>
       <div class="offer-title">Full analysis + dispute letter</div>
-      <p class="offer-desc">We check your bill for every possible error and prepare a ready-to-send dispute letter.</p>
+      <p class="offer-desc">We review the bill for possible issues and prepare a professional response draft. You stay in control and decide what to do next.</p>
+
       <ul class="offer-list">
-        <li>Estimated vs actual readings</li>
-        <li>Wrong tariff or standing charges</li>
-        <li>Unlawful exit or termination fees</li>
-        <li>Duplicate charges</li>
-        <li>Ofgem / Ofwat / Ofcom compliance</li>
-        <li>Result by email — usually within a few minutes</li>
+        <li>Review of estimated readings and usage figures</li>
+        <li>Check for unclear tariffs, standing charges or adjustments</li>
+        <li>Review of duplicate charges or missing breakdowns</li>
+        <li>Check for exit fees or unclear added costs</li>
+        <li>Clear next steps in plain English</li>
+        <li>Ready-to-send dispute letter</li>
       </ul>
+
       <hr class="offer-divider">
       <div class="offer-price">£29 <span>one-off · no subscription</span></div>
       <a href="#free-check" class="offer-cta">Start with free check →</a>
@@ -220,9 +236,9 @@
     <div class="section-label">How it works</div>
     <h2>Three steps to clarity</h2>
     <div class="steps">
-      <div class="step"><div class="step__num">01</div><div class="step__title">Upload your bill</div><div class="step__desc">Upload your energy, water, phone or tradesperson bill.</div></div>
-      <div class="step"><div class="step__num">02</div><div class="step__title">Get a free first check</div><div class="step__desc">See whether you could be paying more than you should.</div></div>
-      <div class="step"><div class="step__num">03</div><div class="step__title">Optional full analysis</div><div class="step__desc">If you want, get the full analysis plus a ready-to-send dispute letter.</div></div>
+      <div class="step"><div class="step__num">01</div><div class="step__title">Upload your bill</div><div class="step__desc">Upload your energy, water, phone, service or tradesperson bill.</div></div>
+      <div class="step"><div class="step__num">02</div><div class="step__title">Get a free first check</div><div class="step__desc">See whether the bill may contain points worth reviewing.</div></div>
+      <div class="step"><div class="step__num">03</div><div class="step__title">Optional full analysis</div><div class="step__desc">If you want more detail, get the full analysis plus a ready-to-send dispute letter.</div></div>
     </div>
   </div>
 </section>
@@ -230,11 +246,11 @@
 <section class="section section--alt">
   <div class="container">
     <div class="section-label">What we check</div>
-    <h2>Common billing errors</h2>
+    <h2>Common billing issues</h2>
     <div class="trust-grid">
-      <div class="trust-item"><div class="trust-item__label">Estimated readings</div><div class="trust-item__text">Bills based on estimated usage are often higher than actual usage.</div></div>
-      <div class="trust-item"><div class="trust-item__label">Wrong tariffs</div><div class="trust-item__text">Incorrect tariffs or standing charges are common billing errors.</div></div>
-      <div class="trust-item"><div class="trust-item__label">Hidden charges</div><div class="trust-item__text">Exit fees, admin charges or duplicate items may not be clearly explained.</div></div>
+      <div class="trust-item"><div class="trust-item__label">Estimated readings</div><div class="trust-item__text">Bills based on estimated usage may need checking against actual usage or meter readings.</div></div>
+      <div class="trust-item"><div class="trust-item__label">Tariffs and charges</div><div class="trust-item__text">Tariffs, standing charges, adjustments or exit fees should be clearly explained.</div></div>
+      <div class="trust-item"><div class="trust-item__label">Duplicate items</div><div class="trust-item__text">Repeated periods, unexplained line items or unclear additions may require clarification.</div></div>
     </div>
   </div>
 </section>
@@ -245,8 +261,33 @@
     <h2>Use this if</h2>
     <div class="fit-rows">
       <div class="fit-row"><span>✓</span><span>You received a bill that looks higher than expected</span></div>
-      <div class="fit-row"><span>✓</span><span>You want to check the charges before you pay</span></div>
-      <div class="fit-row"><span>✓</span><span>You want a ready-to-send dispute letter if something is wrong</span></div>
+      <div class="fit-row"><span>✓</span><span>You want to understand the charges before you pay</span></div>
+      <div class="fit-row"><span>✓</span><span>You want a professional response draft if clarification is needed</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-label">Frequently asked questions</div>
+    <h2>Things people usually ask</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">What bills can I upload? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">You can upload energy, water, telecoms, service, tradesperson and similar bills where you want to understand the charges before deciding what to do.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Is this legal advice? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">No. DoIPayThat provides informational document analysis and response drafts. It does not provide legal advice or legal representation.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Do I have to buy the full analysis? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">No. The free first check is free. The full analysis is optional and is only useful if you want a more detailed review and dispute letter.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Will this prove the bill is wrong? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">No. The review helps identify points that may require clarification. It does not guarantee that a bill is wrong or that payment is unnecessary.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -254,15 +295,15 @@
 <section class="final-cta">
   <div class="container">
     <h2>Check before you pay</h2>
-    <p>You could be paying more than you should. Start with a free first check.</p>
+    <p>Bill received? Start with a free first check.</p>
     <a href="#free-check" class="final-cta-btn">Free check →</a>
     <div class="final-cta-note">PDF, JPG or PNG · no subscription · full analysis optional</div>
   </div>
 </section>
 
 <div class="container">
-  <div class="footer-trust"><strong>DoIPayThat</strong> is a document review service focused on helping people understand bills before they pay. Most people prefer to check before they pay.<br>Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a></div>
-  <div class="disclaimer">DoIPayThat provides informative document analysis and dispute letter drafts. It is not legal advice. Documents are processed only for analysis. &copy; 2026 DoIPayThat</div>
+  <div class="footer-trust"><strong>DoIPayThat</strong> helps people understand bills before they decide what to do.<br>Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a></div>
+  <div class="disclaimer">DoIPayThat provides informational document analysis and response drafts. It is not legal advice and does not provide legal representation. Documents are processed for analysis. &copy; 2026 DoIPayThat</div>
 </div>
 
 <footer style="border-top:1px solid var(--line);padding:20px 0;text-align:center;background:var(--white);">
@@ -291,16 +332,25 @@
       <div class="modal__price">£29 <span>one-off</span></div>
     </div>
     <div class="modal__body">
-      <div class="modal__feature"><span class="check">✓</span><span>Estimated readings, wrong tariffs and hidden charges checked</span></div>
-      <div class="modal__feature"><span class="check">✓</span><span>Ofgem / Ofwat / Ofcom compliance</span></div>
+      <div class="modal__feature"><span class="check">✓</span><span>Review of readings, tariffs and added charges</span></div>
+      <div class="modal__feature"><span class="check">✓</span><span>Clear explanation and next steps</span></div>
       <div class="modal__feature"><span class="check">✓</span><span>Ready-to-send dispute letter</span></div>
-      <div class="modal__disclaimer">Informative analysis and response draft. Not legal advice.</div>
+      <div class="modal__disclaimer">Informational analysis and response draft. Not legal advice.</div>
       <a href="https://buy.stripe.com/REPLACE_WITH_BILL_STRIPE_LINK" class="modal__cta js-stripe-link" data-type="bill" data-price="29">Get full analysis →</a>
       <div class="modal__security">🔒 Secure payment via Stripe — card details are never stored · no subscription</div>
       <div class="modal__close" onclick="closeModal('modal')">Back</div>
     </div>
   </div>
 </div>
+
+<script>
+  function toggleFaq(el){
+    const item = el.closest('.faq-item');
+    const isOpen = item.classList.contains('faq-item--open');
+    document.querySelectorAll('.faq-item--open').forEach(i => i.classList.remove('faq-item--open'));
+    if(!isOpen) item.classList.add('faq-item--open');
+  }
+</script>
 
 <script type="module" src="./app.js"></script>
 </body>
