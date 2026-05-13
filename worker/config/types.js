@@ -1,4 +1,3 @@
-```js
 // worker/config/types.js — doipaythat
 
 export const VALID_TYPES = [
@@ -32,4 +31,3 @@ export function requireType(type) {
 export function getTypeLabel(type) {
   return TYPE_LABELS[type] || "Document";
 }
-```
