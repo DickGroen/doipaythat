@@ -1,307 +1,1062 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>You may not have to keep paying for this subscription | DoIPayThat</title>
-  <meta name="description" content="Upload your contract for a free first check. See if there are grounds to cancel before you pay more.">
-  <link rel="canonical" href="https://doipaythat.co.uk/subscription/">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Subscription cancellation check | DoIPayThat</title>
+
+  <meta
+    name="description"
+    content="Upload your subscription contract, renewal notice or cancellation issue for a free first check. See whether there may be points worth reviewing before you keep paying."
+  />
+
+  <link rel="canonical" href="https://doipaythat.co.uk/subscription/" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
   <style>
-    :root{--ink:#0f1923;--ink-2:#2d3748;--ink-3:#4a5568;--muted:#718096;--line:#e2e8f0;--surface:#f7f9fc;--white:#ffffff;--accent:#1a3a6b;--accent-2:#2d5499;--green:#166534;--green-soft:#dcfce7;--warn:#eab308;--warn-soft:#fef9c3;}
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    html{scroll-behavior:smooth;}
-    body{font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.65;color:var(--ink);background:var(--white);-webkit-font-smoothing:antialiased;}
-    h1,h2,h3{font-family:'Lora',Georgia,serif;line-height:1.2;}
-    a{color:var(--accent);}
-    .container{max-width:860px;margin:0 auto;padding:0 24px;}
-    .warning-banner{background:#fff7ed;border-bottom:2px solid #fdba74;padding:10px 0;text-align:center;font-size:.84rem;font-weight:600;color:#92400e;}
-    .header{background:var(--white);border-bottom:1px solid var(--line);padding:16px 0;position:sticky;top:0;z-index:100;}
-    .header__inner{display:flex;align-items:center;justify-content:space-between;}
-    .logo{font-family:'Lora',serif;font-size:1.15rem;font-weight:700;color:var(--accent);}
-    .logo-dot{display:inline-block;width:8px;height:8px;background:var(--accent-2);border-radius:50%;margin-right:6px;vertical-align:middle;}
-    .header-cta{background:var(--accent);color:var(--white);border:none;border-radius:8px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;text-decoration:none;}
-    .hero{padding:64px 0 48px;text-align:center;}
-    .hero h1{font-size:clamp(1.9rem,5vw,2.9rem);margin-bottom:20px;max-width:720px;margin-left:auto;margin-right:auto;}
-    .hero__sub{font-size:1.05rem;color:var(--ink-3);max-width:590px;margin:0 auto 30px;line-height:1.7;}
-    .hero-cta,.primary-btn{display:inline-block;background:var(--accent);color:var(--white);text-decoration:none;padding:17px 34px;border-radius:10px;font-size:1.05rem;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
-    .hero-cta:hover,.primary-btn:hover,.offer-cta:hover{background:var(--accent-2);}
-    .hero-sub-note{font-size:.82rem;color:var(--muted);margin-top:10px;}
-    .trust-triggers{background:var(--green-soft);border:1px solid #bbf7d0;border-radius:12px;padding:20px 24px;margin:40px auto 0;display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:640px;}
-    @media(max-width:600px){.trust-triggers{grid-template-columns:1fr;}}
-    .trust-trigger{display:flex;align-items:flex-start;gap:10px;font-size:.87rem;color:var(--green);line-height:1.55;}
-    .trust-trigger strong{display:block;font-weight:700;color:#14532d;margin-bottom:2px;}
-    .section{padding:72px 0;}
-    .section--alt{background:var(--surface);}
-    .section-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent-2);margin-bottom:10px;}
-    .section h2{font-size:clamp(1.5rem,3vw,2rem);margin-bottom:32px;}
-    .value-strip{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 36px;justify-content:center;}
-    .value-item{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:100px;padding:8px 16px;font-size:.86rem;color:var(--ink-2);font-weight:500;}
-    .vi-check{color:var(--green);font-weight:700;}
-    .offer-card{background:var(--white);border:2px solid var(--accent);border-radius:16px;padding:36px 32px;max-width:580px;margin:0 auto;box-shadow:0 12px 40px rgba(26,58,107,.1);}
-    @media(max-width:600px){.offer-card{padding:24px 20px;}}
-    .offer-badge{display:inline-block;background:var(--accent);color:var(--white);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:4px 12px;border-radius:100px;margin-bottom:16px;}
-    .offer-title{font-family:'Lora',serif;font-size:1.45rem;margin-bottom:8px;}
-    .offer-desc{color:var(--ink-3);font-size:.93rem;margin-bottom:20px;line-height:1.65;}
-    .offer-list{list-style:none;margin-bottom:24px;display:grid;gap:8px;}
-    .offer-list li{display:flex;align-items:flex-start;gap:10px;font-size:.93rem;color:var(--ink-2);line-height:1.55;}
-    .offer-list li::before{content:"checkmark";color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px;}
-    hr.offer-divider{border:none;border-top:1px solid var(--line);margin:20px 0;}
-    .offer-price{font-size:2rem;font-weight:700;color:var(--accent);font-family:'Lora',serif;}
-    .offer-price span{font-size:.95rem;color:var(--muted);font-weight:400;font-family:'DM Sans',sans-serif;}
-    .offer-cta{display:block;background:var(--accent);color:var(--white);text-decoration:none;text-align:center;padding:17px;border-radius:10px;font-size:1.05rem;font-weight:700;margin-top:20px;border:none;width:100%;cursor:pointer;font-family:'DM Sans',sans-serif;}
-    .offer-security{text-align:center;font-size:.78rem;color:var(--muted);margin-top:10px;}
-    .offer-refund{text-align:center;font-size:.76rem;color:var(--muted);margin-top:6px;}
-    .upload-zone{border:2px dashed var(--line);border-radius:14px;padding:28px;text-align:center;cursor:pointer;background:var(--surface);transition:.2s;}
-    .upload-zone:hover{border-color:var(--accent);background:#eef4ff;}
-    .upload-label{font-weight:700;color:var(--accent);}
-    .upload-hint{font-size:.84rem;color:var(--muted);margin-top:6px;}
-    .contact-fields{display:none;flex-direction:column;gap:10px;margin-top:18px;}
-    .input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;}
-    .input:focus{outline:none;border-color:var(--accent);}
-    .input-hint{display:none;font-size:.78rem;color:#b91c1c;margin-top:-6px;margin-bottom:4px;}
-    .optie-status{font-size:.9rem;margin-top:12px;}
-    .optie-status--error{color:#b91c1c;}
-    .optie-status--success{color:var(--green);}
-    .optie-status--info{color:var(--accent);}
-    .teaser{display:none;margin-top:30px;opacity:0;transform:translateY(10px);transition:.25s ease;}
-    .teaser--visible{opacity:1;transform:translateY(0);}
-    .teaser-card{border-color:var(--warn);background:#fffdf2;}
-    .teaser-heading{font-weight:800;font-size:1.2rem;color:var(--ink);}
-    .teaser-sub{margin-top:6px;color:var(--muted);font-size:.92rem;}
-    .teaser-ai{margin:16px 0;background:var(--warn-soft);border-left:4px solid var(--warn);padding:14px;border-radius:8px;font-weight:500;color:#713f12;}
-    .teaser-financial{margin:16px 0;background:#fff7ed;border:1px solid #fed7aa;padding:14px;border-radius:10px;color:#7c2d12;}
-    .teaser-cta{margin-top:16px;}
-    .teaser-cta h3{font-size:1.2rem;margin-bottom:10px;}
-    .teaser-cta ul{list-style:none;margin:10px 0 16px;display:grid;gap:7px;}
-    .teaser-cta li{font-size:.92rem;color:var(--ink-2);}
-    .teaser-trust{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;font-size:.8rem;color:var(--muted);}
-    .teaser-trust span{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 10px;}
-    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
-    @media(max-width:640px){.steps{grid-template-columns:1fr;}}
-    .step__num{font-family:'Lora',serif;font-size:2.2rem;font-weight:700;color:var(--line);margin-bottom:10px;line-height:1;}
-    .step__title{font-weight:700;margin-bottom:6px;font-size:.98rem;}
-    .step__desc{font-size:.87rem;color:var(--ink-3);line-height:1.65;}
-    .trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-    @media(max-width:680px){.trust-grid{grid-template-columns:1fr;}}
-    .trust-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:20px;}
-    .trust-item__label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);margin-bottom:8px;}
-    .trust-item__text{font-size:.87rem;color:var(--ink-3);line-height:1.65;}
-    .fit-rows{display:grid;gap:10px;max-width:560px;}
-    .fit-row{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;background:var(--green-soft);border:1px solid #bbf7d0;border-radius:10px;font-size:.93rem;color:#14532d;}
-    .fit-row span:first-child{font-weight:700;flex-shrink:0;}
-    .final-cta{background:var(--accent);color:var(--white);padding:72px 0;text-align:center;}
-    .final-cta h2{color:var(--white);font-size:clamp(1.6rem,3.5vw,2.1rem);margin-bottom:12px;}
-    .final-cta p{color:rgba(255,255,255,.75);margin-bottom:32px;}
-    .final-cta-btn{display:inline-block;background:var(--white);color:var(--accent);text-decoration:none;padding:17px 40px;border-radius:10px;font-size:1.05rem;font-weight:700;}
-    .final-cta-note{color:rgba(255,255,255,.6);font-size:.8rem;margin-top:12px;}
-    .sticky-footer{position:fixed;bottom:0;left:0;right:0;background:var(--ink);color:var(--white);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;transform:translateY(100%);transition:transform .3s ease;z-index:200;}
-    .sticky-footer.visible,.sticky-footer--visible{transform:translateY(0);}
-    .sticky-footer__text{font-size:.9rem;font-weight:600;}
-    .sticky-footer__sub{font-size:.76rem;color:rgba(255,255,255,.6);margin-top:2px;}
-    .sticky-cta{background:var(--white);color:var(--accent);border:none;border-radius:8px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;text-decoration:none;}
-    @media(max-width:500px){.sticky-footer{flex-direction:column;text-align:center;}.sticky-cta{width:100%;}}
-    .modal-overlay{position:fixed;inset:0;background:rgba(15,25,35,.6);backdrop-filter:blur(4px);z-index:300;display:none;align-items:center;justify-content:center;padding:24px;}
-    .modal-overlay.open,.modal-overlay.modal--open{display:flex;}
-    .modal{background:var(--white);border-radius:16px;max-width:480px;width:100%;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.2);}
-    .modal__header{background:var(--accent);color:var(--white);padding:28px 28px 24px;}
-    .modal__eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;opacity:.7;margin-bottom:8px;}
-    .modal__title{font-family:'Lora',serif;font-size:1.25rem;font-weight:700;margin-bottom:8px;}
-    .modal__price{font-size:1.6rem;font-weight:700;font-family:'Lora',serif;}
-    .modal__price span{font-size:.95rem;opacity:.7;font-weight:400;font-family:'DM Sans',sans-serif;}
-    .modal__body{padding:24px 28px;}
-    .modal__feature{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;font-size:.92rem;color:var(--ink-2);}
-    .modal__feature .check{color:var(--green);font-weight:700;flex-shrink:0;}
-    .modal__disclaimer{background:var(--surface);border-radius:8px;padding:10px 14px;font-size:.8rem;color:var(--muted);margin:16px 0;line-height:1.55;}
-    .modal__cta{display:block;background:var(--accent);color:var(--white);text-decoration:none;text-align:center;padding:16px;border-radius:10px;font-size:1rem;font-weight:700;margin-bottom:10px;}
-    .modal__security{text-align:center;font-size:.78rem;color:var(--muted);}
-    .modal__close{display:block;text-align:center;margin-top:14px;font-size:.84rem;color:var(--muted);cursor:pointer;}
-    .modal__close:hover{color:var(--ink);}
-    .footer-trust{padding:32px 0 16px;font-size:.85rem;color:var(--ink-3);line-height:1.75;border-top:1px solid var(--line);}
-    .disclaimer{padding:16px 0 20px;font-size:.78rem;color:var(--muted);line-height:1.7;}
+    :root{
+      --ink:#0f1923;
+      --ink-2:#2d3748;
+      --ink-3:#4a5568;
+      --muted:#718096;
+      --line:#e2e8f0;
+      --surface:#f7f9fc;
+      --white:#ffffff;
+      --accent:#1a3a6b;
+      --accent-2:#2d5499;
+      --green:#166534;
+      --green-soft:#dcfce7;
+      --warn:#eab308;
+      --warn-soft:#fef9c3;
+    }
+
+    *,
+    *::before,
+    *::after{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:'DM Sans',sans-serif;
+      font-size:16px;
+      line-height:1.65;
+      color:var(--ink);
+      background:var(--white);
+      -webkit-font-smoothing:antialiased;
+    }
+
+    h1,h2,h3{
+      font-family:'Lora',Georgia,serif;
+      line-height:1.2;
+    }
+
+    a{
+      color:var(--accent);
+    }
+
+    .container{
+      max-width:860px;
+      margin:0 auto;
+      padding:0 24px;
+    }
+
+    .warning-banner{
+      background:#fff7ed;
+      border-bottom:2px solid #fdba74;
+      padding:10px 0;
+      text-align:center;
+      font-size:.84rem;
+      font-weight:600;
+      color:#92400e;
+    }
+
+    .header{
+      background:var(--white);
+      border-bottom:1px solid var(--line);
+      padding:16px 0;
+      position:sticky;
+      top:0;
+      z-index:100;
+    }
+
+    .header__inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .logo{
+      font-family:'Lora',serif;
+      font-size:1.15rem;
+      font-weight:700;
+      color:var(--accent);
+    }
+
+    .logo-dot{
+      display:inline-block;
+      width:8px;
+      height:8px;
+      background:var(--accent-2);
+      border-radius:50%;
+      margin-right:6px;
+      vertical-align:middle;
+    }
+
+    .header-cta{
+      background:var(--accent);
+      color:var(--white);
+      border:none;
+      border-radius:8px;
+      padding:10px 20px;
+      font-family:'DM Sans',sans-serif;
+      font-size:.88rem;
+      font-weight:700;
+      cursor:pointer;
+      text-decoration:none;
+    }
+
+    .hero{
+      padding:64px 0 48px;
+      text-align:center;
+    }
+
+    .hero h1{
+      font-size:clamp(1.9rem,5vw,2.9rem);
+      margin-bottom:20px;
+      max-width:760px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .hero__sub{
+      font-size:1.05rem;
+      color:var(--ink-3);
+      max-width:620px;
+      margin:0 auto 30px;
+      line-height:1.7;
+    }
+
+    .hero-cta,
+    .primary-btn{
+      display:inline-block;
+      background:var(--accent);
+      color:var(--white);
+      text-decoration:none;
+      padding:17px 34px;
+      border-radius:10px;
+      font-size:1.05rem;
+      font-weight:700;
+      border:none;
+      cursor:pointer;
+      font-family:'DM Sans',sans-serif;
+    }
+
+    .hero-cta:hover,
+    .primary-btn:hover,
+    .offer-cta:hover{
+      background:var(--accent-2);
+    }
+
+    .hero-sub-note{
+      font-size:.82rem;
+      color:var(--muted);
+      margin-top:10px;
+    }
+
+    .trust-triggers{
+      background:var(--green-soft);
+      border:1px solid #bbf7d0;
+      border-radius:12px;
+      padding:20px 24px;
+      margin:40px auto 0;
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:16px;
+      max-width:700px;
+    }
+
+    @media(max-width:600px){
+      .trust-triggers{
+        grid-template-columns:1fr;
+      }
+    }
+
+    .trust-trigger{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      font-size:.87rem;
+      color:var(--green);
+      line-height:1.55;
+    }
+
+    .trust-trigger strong{
+      display:block;
+      font-weight:700;
+      color:#14532d;
+      margin-bottom:2px;
+    }
+
+    .section{
+      padding:72px 0;
+    }
+
+    .section--alt{
+      background:var(--surface);
+    }
+
+    .section-label{
+      font-size:.72rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      color:var(--accent-2);
+      margin-bottom:10px;
+    }
+
+    .section h2{
+      font-size:clamp(1.5rem,3vw,2rem);
+      margin-bottom:32px;
+    }
+
+    .value-strip{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:0 0 36px;
+      justify-content:center;
+    }
+
+    .value-item{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:100px;
+      padding:8px 16px;
+      font-size:.86rem;
+      color:var(--ink-2);
+      font-weight:500;
+    }
+
+    .vi-check{
+      color:var(--green);
+      font-weight:700;
+    }
+
+    .offer-card{
+      background:var(--white);
+      border:2px solid var(--accent);
+      border-radius:16px;
+      padding:36px 32px;
+      max-width:580px;
+      margin:0 auto;
+      box-shadow:0 12px 40px rgba(26,58,107,.1);
+    }
+
+    @media(max-width:600px){
+      .offer-card{
+        padding:24px 20px;
+      }
+    }
+
+    .offer-badge{
+      display:inline-block;
+      background:var(--accent);
+      color:var(--white);
+      font-size:.72rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      padding:4px 12px;
+      border-radius:100px;
+      margin-bottom:16px;
+    }
+
+    .offer-title{
+      font-family:'Lora',serif;
+      font-size:1.45rem;
+      margin-bottom:8px;
+    }
+
+    .offer-desc{
+      color:var(--ink-3);
+      font-size:.93rem;
+      margin-bottom:20px;
+      line-height:1.65;
+    }
+
+    .offer-list{
+      list-style:none;
+      margin-bottom:24px;
+      display:grid;
+      gap:8px;
+    }
+
+    .offer-list li{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      font-size:.93rem;
+      color:var(--ink-2);
+      line-height:1.55;
+    }
+
+    .offer-list li::before{
+      content:"✓";
+      color:var(--green);
+      font-weight:700;
+      flex-shrink:0;
+      margin-top:1px;
+    }
+
+    hr.offer-divider{
+      border:none;
+      border-top:1px solid var(--line);
+      margin:20px 0;
+    }
+
+    .offer-price{
+      font-size:2rem;
+      font-weight:700;
+      color:var(--accent);
+      font-family:'Lora',serif;
+    }
+
+    .offer-price span{
+      font-size:.95rem;
+      color:var(--muted);
+      font-weight:400;
+      font-family:'DM Sans',sans-serif;
+    }
+
+    .offer-cta{
+      display:block;
+      background:var(--accent);
+      color:var(--white);
+      text-decoration:none;
+      text-align:center;
+      padding:17px;
+      border-radius:10px;
+      font-size:1.05rem;
+      font-weight:700;
+      margin-top:20px;
+      border:none;
+      width:100%;
+      cursor:pointer;
+      font-family:'DM Sans',sans-serif;
+    }
+
+    .offer-security{
+      text-align:center;
+      font-size:.78rem;
+      color:var(--muted);
+      margin-top:10px;
+    }
+
+    .offer-refund{
+      text-align:center;
+      font-size:.76rem;
+      color:var(--muted);
+      margin-top:6px;
+    }
+
+    .upload-zone{
+      border:2px dashed var(--line);
+      border-radius:14px;
+      padding:28px;
+      text-align:center;
+      cursor:pointer;
+      background:var(--surface);
+      transition:.2s;
+    }
+
+    .upload-zone:hover{
+      border-color:var(--accent);
+      background:#eef4ff;
+    }
+
+    .upload-label{
+      font-weight:700;
+      color:var(--accent);
+    }
+
+    .upload-hint{
+      font-size:.84rem;
+      color:var(--muted);
+      margin-top:6px;
+    }
+
+    .contact-fields{
+      display:none;
+      flex-direction:column;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .input{
+      width:100%;
+      padding:13px 14px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      font-family:'DM Sans',sans-serif;
+      font-size:1rem;
+    }
+
+    .input:focus{
+      outline:none;
+      border-color:var(--accent);
+    }
+
+    .input-hint{
+      display:none;
+      font-size:.78rem;
+      color:#b91c1c;
+      margin-top:-6px;
+      margin-bottom:4px;
+    }
+
+    .optie-status{
+      font-size:.9rem;
+      margin-top:12px;
+    }
+
+    .teaser{
+      display:none;
+      margin-top:30px;
+      opacity:0;
+      transform:translateY(10px);
+      transition:.25s ease;
+    }
+
+    .teaser--visible{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .teaser-card{
+      border-color:var(--warn);
+      background:#fffdf2;
+    }
+
+    .steps{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:28px;
+    }
+
+    @media(max-width:640px){
+      .steps{
+        grid-template-columns:1fr;
+      }
+    }
+
+    .step__num{
+      font-family:'Lora',serif;
+      font-size:2.2rem;
+      font-weight:700;
+      color:var(--line);
+      margin-bottom:10px;
+      line-height:1;
+    }
+
+    .step__title{
+      font-weight:700;
+      margin-bottom:6px;
+      font-size:.98rem;
+    }
+
+    .step__desc{
+      font-size:.87rem;
+      color:var(--ink-3);
+      line-height:1.65;
+    }
+
+    .trust-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+    }
+
+    @media(max-width:680px){
+      .trust-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    .trust-item{
+      background:var(--white);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:20px;
+    }
+
+    .trust-item__label{
+      font-size:.72rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.07em;
+      color:var(--accent);
+      margin-bottom:8px;
+    }
+
+    .trust-item__text{
+      font-size:.87rem;
+      color:var(--ink-3);
+      line-height:1.65;
+    }
+
+    .fit-rows{
+      display:grid;
+      gap:10px;
+      max-width:560px;
+    }
+
+    .fit-row{
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      padding:14px 18px;
+      background:var(--green-soft);
+      border:1px solid #bbf7d0;
+      border-radius:10px;
+      font-size:.93rem;
+      color:#14532d;
+    }
+
+    .fit-row span:first-child{
+      font-weight:700;
+      flex-shrink:0;
+    }
+
+    .faq{
+      display:grid;
+      gap:16px;
+      max-width:760px;
+    }
+
+    .faq-item{
+      background:var(--white);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:20px;
+    }
+
+    .faq-item h3{
+      font-size:1rem;
+      margin-bottom:8px;
+    }
+
+    .faq-item p{
+      font-size:.92rem;
+      color:var(--ink-3);
+      line-height:1.7;
+    }
+
+    .final-cta{
+      background:var(--accent);
+      color:var(--white);
+      padding:72px 0;
+      text-align:center;
+    }
+
+    .final-cta h2{
+      color:var(--white);
+      font-size:clamp(1.6rem,3.5vw,2.1rem);
+      margin-bottom:12px;
+    }
+
+    .final-cta p{
+      color:rgba(255,255,255,.75);
+      margin-bottom:32px;
+    }
+
+    .final-cta-btn{
+      display:inline-block;
+      background:var(--white);
+      color:var(--accent);
+      text-decoration:none;
+      padding:17px 40px;
+      border-radius:10px;
+      font-size:1.05rem;
+      font-weight:700;
+    }
+
+    .final-cta-note{
+      color:rgba(255,255,255,.6);
+      font-size:.8rem;
+      margin-top:12px;
+    }
+
+    .footer-trust{
+      padding:32px 0 16px;
+      font-size:.85rem;
+      color:var(--ink-3);
+      line-height:1.75;
+      border-top:1px solid var(--line);
+    }
+
+    .disclaimer{
+      padding:16px 0 20px;
+      font-size:.78rem;
+      color:var(--muted);
+      line-height:1.7;
+    }
   </style>
 </head>
+
 <body>
 
-<div class="warning-banner">&#9888;&#65039; You may not have to pay this parking fine.<br><span style="font-weight:400;">Many parking fines contain errors — NtK timing, signage or procedural issues.</span></div>
+<div class="warning-banner">
+  ⏱️ Before you keep paying — check whether the renewal or cancellation terms are clear
+</div>
 
 <header class="header">
   <div class="container">
     <div class="header__inner">
-      <div class="logo"><span class="logo-dot"></span>DoIPayThat</div>
-      <a href="#free-check" class="header-cta">Free check</a>
+      <div class="logo">
+        <span class="logo-dot"></span>DoIPayThat
+      </div>
+
+      <a href="#free-check" class="header-cta">
+        Free check
+      </a>
     </div>
   </div>
 </header>
 
 <section class="hero">
   <div class="container">
-    <h1>You may not have to keep paying for this subscription.</h1>
-    <p style="font-size:.95rem;color:var(--muted);margin-bottom:8px;">You could be paying every month for something you don't have to. Many people only realise this after months of unnecessary payments.</p>
-    <p class="hero__sub">Upload your contract and get a free first check. If there are grounds to cancel, get the full analysis plus a ready-to-send cancellation letter.</p>
-    <a href="#free-check" class="hero-cta">Start free check &#8594;</a>
-    <div class="hero-sub-note">PDF, JPG or PNG &middot; no subscription &middot; full analysis optional</div>
+
+    <h1>
+      Before you keep paying for a subscription, check whether the terms are clear
+    </h1>
+
+    <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">
+      Many people continue paying because they are unsure whether they can cancel, dispute a charge or stop an auto-renewal.
+    </p>
+
+    <p class="hero__sub">
+      Upload your gym contract, broadband subscription, software subscription, streaming service or renewal notice and get a free first check before you keep paying.
+    </p>
+
+    <a href="#free-check" class="hero-cta">
+      Start free check →
+    </a>
+
+    <div class="hero-sub-note">
+      PDF, JPG or PNG · no subscription · full analysis optional
+    </div>
+
     <div class="trust-triggers">
-      <div class="trust-trigger"><span>&#128308;</span><div><strong>Auto-renewal rules</strong>Many auto-renewals require proper notice &mdash; often not given.</div></div>
-      <div class="trust-trigger"><span>&#128308;</span><div><strong>Unfair terms</strong>Contract terms that are unclear or one-sided may not be enforceable.</div></div>
+
+      <div class="trust-trigger">
+        <span>●</span>
+        <div>
+          <strong>Renewal and notice periods</strong>
+          Renewal terms, notice periods and price increases may need checking before you continue paying.
+        </div>
+      </div>
+
+      <div class="trust-trigger">
+        <span>●</span>
+        <div>
+          <strong>Cancellation terms</strong>
+          Cancellation routes, fees and unclear contract wording may require clarification.
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
 <section class="section" id="free-check">
   <div class="container" style="max-width:620px;">
+
     <div class="offer-card" id="free-card">
-      <div class="offer-badge">Start free</div>
-      <div class="offer-title">Free first check</div>
-      <p class="offer-desc">Upload your contract and see if you could stop paying &mdash; before you pay anything more.</p>
+
+      <div class="offer-badge">
+        Start free
+      </div>
+
+      <div class="offer-title">
+        Free first check
+      </div>
+
+      <p class="offer-desc">
+        Upload your subscription contract or renewal notice and see whether there may be points worth reviewing before you continue paying.
+      </p>
+
       <div id="gratis-upload-zone" class="upload-zone" onclick="this.querySelector('input').click()">
-        <div class="upload-label">Choose file</div>
-        <div class="upload-hint">PDF, JPG or PNG &middot; max. 8 MB</div>
-        <input type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="handleGratisFileSelect(this)">
+
+        <div class="upload-label">
+          Choose file
+        </div>
+
+        <div class="upload-hint">
+          PDF, JPG or PNG · max. 8 MB
+        </div>
+
+        <input
+          type="file"
+          accept=".pdf,.jpg,.jpeg,.png"
+          style="display:none;"
+          onchange="handleGratisFileSelect(this)"
+        />
       </div>
+
       <div id="gratis-contact-fields" class="contact-fields">
-        <input id="gratis-name" class="input" placeholder="Your name">
-        <input id="gratis-email" class="input" placeholder="Your email" type="email" autocomplete="email">
+
+        <input
+          id="gratis-name"
+          class="input"
+          placeholder="Your name"
+        />
+
+        <input
+          id="gratis-email"
+          class="input"
+          placeholder="Your email"
+          type="email"
+          autocomplete="email"
+        />
+
         <div id="gratis-email-hint" class="input-hint"></div>
-        <button id="gratis-btn" onclick="startGratisUpload()" disabled class="offer-cta">Start free check</button>
+
+        <button
+          id="gratis-btn"
+          onclick="startGratisUpload()"
+          disabled
+          class="offer-cta"
+        >
+          Start free check
+        </button>
+
       </div>
+
       <div id="gratis-status" class="optie-status"></div>
-      <div class="offer-security">&#128274; Your document is processed securely and never shared with third parties.</div>
+
+      <div class="offer-security">
+        🔒 Your document is processed securely and never shared with third parties.
+      </div>
+
     </div>
+
     <div id="teaser" class="teaser">
       <div class="offer-card teaser-card">
+
         <div id="teaser-company" class="teaser-heading"></div>
         <div id="teaser-sub" class="teaser-sub"></div>
         <div id="modal-dynamic-copy" class="teaser-ai"></div>
         <div id="teaser-financial" class="teaser-financial"></div>
         <div id="teaser-cta" class="teaser-cta"></div>
-        <div class="teaser-trust">
-          <span>No subscription</span><span>Secure payment via Stripe</span><span>Result by email</span>
-        </div>
+
       </div>
     </div>
+
   </div>
 </section>
 
 <section class="section section--alt">
   <div class="container">
+
     <div class="value-strip">
-      <span class="value-item"><span class="vi-check">&#10003;</span> Auto-renewal check</span>
-      <span class="value-item"><span class="vi-check">&#10003;</span> Cooling-off rights</span>
-      <span class="value-item"><span class="vi-check">&#10003;</span> Unfair terms</span>
-      <span class="value-item"><span class="vi-check">&#10003;</span> Cancellation letter</span>
-      <span class="value-item"><span class="vi-check">&#10003;</span> One-off &pound;29</span>
+      <span class="value-item"><span class="vi-check">✓</span> Auto-renewal review</span>
+      <span class="value-item"><span class="vi-check">✓</span> Notice period review</span>
+      <span class="value-item"><span class="vi-check">✓</span> Contract wording review</span>
+      <span class="value-item"><span class="vi-check">✓</span> Cancellation letter</span>
+      <span class="value-item"><span class="vi-check">✓</span> One-off £29</span>
     </div>
+
     <div class="offer-card">
-      <div class="offer-badge">After first check</div>
-      <div class="offer-title">Full analysis + cancellation letter</div>
-      <p class="offer-desc">We check every ground to cancel and prepare a ready-to-send cancellation letter.</p>
+
+      <div class="offer-badge">
+        After first check
+      </div>
+
+      <div class="offer-title">
+        Full analysis + cancellation letter
+      </div>
+
+      <p class="offer-desc">
+        We review the subscription terms for possible cancellation or dispute points and prepare a professional response draft. You stay in control and decide what to do next.
+      </p>
+
       <ul class="offer-list">
-        <li>Auto-renewal validity (Consumer Contracts Regulations 2013)</li>
-        <li>14-day cooling-off rights</li>
-        <li>Unfair contract terms (Consumer Rights Act 2015)</li>
-        <li>Price increase exit rights</li>
+        <li>Review of renewal terms and notice periods</li>
+        <li>Review of cancellation routes and deadlines</li>
+        <li>Review of unclear or one-sided wording</li>
+        <li>Review of price increases or ongoing charges</li>
         <li>Ready-to-send cancellation letter</li>
-        <li>Result by email &mdash; usually within a few minutes</li>
+        <li>Result by email — usually within a few minutes</li>
       </ul>
+
       <hr class="offer-divider">
-      <div class="offer-price">&pound;29 <span>one-off &middot; no subscription</span></div>
-      <a href="#free-check" class="offer-cta">Start with free check &#8594;</a>
-      <div class="offer-security">&#128274; Secure payment via Stripe &mdash; card details are never stored</div>
-      <div class="offer-refund">If the analysis is incomplete: money back.</div>
+
+      <div class="offer-price">
+        £29
+        <span>one-off · no subscription</span>
+      </div>
+
+      <a href="#free-check" class="offer-cta">
+        Start with free check →
+      </a>
+
+      <div class="offer-security">
+        🔒 Secure payment via Stripe — card details are never stored
+      </div>
+
+      <div class="offer-refund">
+        If the analysis is incomplete: money back.
+      </div>
+
     </div>
   </div>
 </section>
 
 <section class="section">
   <div class="container">
-    <div class="section-label">How it works</div>
-    <h2>Three steps to clarity</h2>
+
+    <div class="section-label">
+      How it works
+    </div>
+
+    <h2>
+      Three steps to clarity
+    </h2>
+
     <div class="steps">
-      <div class="step"><div class="step__num">01</div><div class="step__title">Upload your contract</div><div class="step__desc">Upload your subscription contract, renewal notice or cancellation demand.</div></div>
-      <div class="step"><div class="step__num">02</div><div class="step__title">Get a free first check</div><div class="step__desc">See whether there are grounds to cancel or dispute the charges.</div></div>
-      <div class="step"><div class="step__num">03</div><div class="step__title">Optional full analysis</div><div class="step__desc">Get the full analysis plus a ready-to-send cancellation letter.</div></div>
+
+      <div class="step">
+        <div class="step__num">01</div>
+        <div class="step__title">Upload your document</div>
+        <div class="step__desc">
+          Upload your subscription agreement, renewal notice or cancellation issue.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step__num">02</div>
+        <div class="step__title">Get a free first check</div>
+        <div class="step__desc">
+          See whether there may be points worth reviewing before you continue paying.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step__num">03</div>
+        <div class="step__title">Optional full analysis</div>
+        <div class="step__desc">
+          Get the full analysis plus a ready-to-send cancellation letter.
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
 <section class="section section--alt">
   <div class="container">
-    <div class="section-label">What we check</div>
-    <h2>Common cancellation grounds</h2>
+
+    <div class="section-label">
+      What we check
+    </div>
+
+    <h2>
+      Common subscription issues
+    </h2>
+
     <div class="trust-grid">
-      <div class="trust-item"><div class="trust-item__label">Auto-renewal</div><div class="trust-item__text">Auto-renewals require proper advance notice under Consumer Contracts Regulations &mdash; often not given.</div></div>
-      <div class="trust-item"><div class="trust-item__label">Cooling-off rights</div><div class="trust-item__text">You may have 14-day cooling-off rights under Consumer Contracts Regulations 2013.</div></div>
-      <div class="trust-item"><div class="trust-item__label">Unfair terms</div><div class="trust-item__text">Contract terms that are unclear, hidden or one-sided may not be enforceable under Consumer Rights Act 2015.</div></div>
+
+      <div class="trust-item">
+        <div class="trust-item__label">
+          Auto-renewals
+        </div>
+
+        <div class="trust-item__text">
+          Renewal terms and notice periods are not always clearly explained.
+        </div>
+      </div>
+
+      <div class="trust-item">
+        <div class="trust-item__label">
+          Ongoing charges
+        </div>
+
+        <div class="trust-item__text">
+          Price increases, recurring charges or cancellation routes may require clarification.
+        </div>
+      </div>
+
+      <div class="trust-item">
+        <div class="trust-item__label">
+          Contract wording
+        </div>
+
+        <div class="trust-item__text">
+          Unclear wording or one-sided terms can make subscriptions difficult to understand.
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
 <section class="section">
   <div class="container">
-    <div class="section-label">Is this for you?</div>
-    <h2>Use this if</h2>
+
+    <div class="section-label">
+      Is this for you?
+    </div>
+
+    <h2>
+      Use this if
+    </h2>
+
     <div class="fit-rows">
-      <div class="fit-row"><span>&#10003;</span><span>You have a subscription or contract you want to cancel</span></div>
-      <div class="fit-row"><span>&#10003;</span><span>You are unsure whether the terms are enforceable</span></div>
-      <div class="fit-row"><span>&#10003;</span><span>You want a ready-to-send cancellation letter</span></div>
+
+      <div class="fit-row">
+        <span>✓</span>
+        <span>You want to cancel a subscription or membership</span>
+      </div>
+
+      <div class="fit-row">
+        <span>✓</span>
+        <span>You are unsure whether the renewal terms are clear</span>
+      </div>
+
+      <div class="fit-row">
+        <span>✓</span>
+        <span>You want a ready-to-send cancellation letter</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+
+    <div class="section-label">
+      FAQ
+    </div>
+
+    <h2>
+      Frequently asked questions
+    </h2>
+
+    <div class="faq">
+
+      <div class="faq-item">
+        <h3>
+          What types of subscriptions can I upload?
+        </h3>
+
+        <p>
+          Gym memberships, broadband contracts, software subscriptions, streaming services, coaching contracts and other recurring payment agreements.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>
+          Do you cancel the subscription for me?
+        </h3>
+
+        <p>
+          No. You receive an informative analysis and a ready-to-send cancellation letter. You decide whether to send it.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>
+          Is this legal advice?
+        </h3>
+
+        <p>
+          No. DoIPayThat provides informative document analysis and response drafts. It is not a law firm and does not provide legal representation.
+        </p>
+      </div>
+
     </div>
   </div>
 </section>
 
 <section class="final-cta">
   <div class="container">
-    <h2>Check before you pay</h2>
-    <p>You may not have to keep paying. Start with a free first check.</p>
-    <a href="#free-check" class="final-cta-btn">Free check &#8594;</a>
-    <div class="final-cta-note">PDF, JPG or PNG &middot; no subscription &middot; full analysis optional</div>
+
+    <h2>
+      Check before you keep paying
+    </h2>
+
+    <p>
+      Start with a free first check before you continue paying for a subscription or membership.
+    </p>
+
+    <a href="#free-check" class="final-cta-btn">
+      Free check →
+    </a>
+
+    <div class="final-cta-note">
+      PDF, JPG or PNG · no subscription · full analysis optional
+    </div>
+
   </div>
 </section>
 
 <div class="container">
-  <div class="footer-trust"><strong>DoIPayThat</strong> is a document review service focused on helping people understand subscriptions and contracts before they pay more.<br>Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a></div>
-  <div class="disclaimer">DoIPayThat provides informative document analysis and cancellation letter drafts. It is not legal advice. Documents are processed only for analysis. &copy; 2026 DoIPayThat</div>
+
+  <div class="footer-trust">
+    <strong>DoIPayThat</strong> is a document review service focused on helping people understand subscription and renewal terms before they continue paying.
+    <br />
+    Questions?
+    <a href="mailto:support@doipaythat.co.uk">
+      support@doipaythat.co.uk
+    </a>
+  </div>
+
+  <div class="disclaimer">
+    DoIPayThat provides informative document analysis and cancellation letter drafts. It is not legal advice and does not provide legal representation. Documents are processed only for analysis. © 2026 DoIPayThat
+  </div>
+
 </div>
 
 <footer style="border-top:1px solid var(--line);padding:20px 0;text-align:center;background:var(--white);">
   <div class="container">
+
     <p style="font-size:.78rem;color:var(--muted);margin:0;">
-      <a href="/privacy.html" style="color:var(--muted);margin:0 10px;">Privacy Policy</a>
-      <a href="/terms.html" style="color:var(--muted);margin:0 10px;">Terms of Service</a>
-      <a href="/contact.html" style="color:var(--muted);margin:0 10px;">Contact</a>
+
+      <a href="/privacy.html" style="color:var(--muted);margin:0 10px;">
+        Privacy Policy
+      </a>
+
+      <a href="/terms.html" style="color:var(--muted);margin:0 10px;">
+        Terms of Service
+      </a>
+
+      <a href="/contact.html" style="color:var(--muted);margin:0 10px;">
+        Contact
+      </a>
+
     </p>
   </div>
 </footer>
 
-<div class="sticky-footer" id="sticky-footer">
-  <div>
-    <div class="sticky-footer__text">Stuck in a subscription? Check before you pay more.</div>
-    <div class="sticky-footer__sub">Free first check &middot; full analysis optional</div>
-  </div>
-  <a href="#free-check" class="sticky-cta">Free check &#8594;</a>
-</div>
-
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <div class="modal__header">
-      <div class="modal__eyebrow">Full analysis</div>
-      <div class="modal__title">Analysis + cancellation letter</div>
-      <div class="modal__price">&pound;29 <span>one-off</span></div>
-    </div>
-    <div class="modal__body">
-      <div class="modal__feature"><span class="check">&#10003;</span><span>Auto-renewal validity and cooling-off rights checked</span></div>
-      <div class="modal__feature"><span class="check">&#10003;</span><span>Unfair terms under Consumer Rights Act 2015</span></div>
-      <div class="modal__feature"><span class="check">&#10003;</span><span>Ready-to-send cancellation letter</span></div>
-      <div class="modal__disclaimer">Informative analysis and response draft. Not legal advice.</div>
-      <a href="https://buy.stripe.com/REPLACE_WITH_SUBSCRIPTION_STRIPE_LINK" class="modal__cta js-stripe-link" data-type="subscription" data-price="29">Get full analysis &#8594;</a>
-      <div class="modal__security">&#128274; Secure payment via Stripe &mdash; card details are never stored &middot; no subscription</div>
-      <div class="modal__close" onclick="closeModal('modal')">Back</div>
-    </div>
-  </div>
-</div>
-
 <script type="module" src="./app.js"></script>
+
 </body>
 </html>
