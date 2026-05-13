@@ -1,9 +1,15 @@
-// worker/services/queue.js — mussichzahlen
+// worker/services/queue.js — doipaythat
 
 const PAID_MARKER_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
-const FREE_CASE_TTL_SECONDS   = 60 * 60 * 24 * 3;  // 3 days
-const PAID_SEND_DELAY_MS      = 0;
-const ABANDONED_TTL_SECONDS   = 60 * 60 * 24 * 7;  // 7 days
+const FREE_CASE_TTL_SECONDS = 60 * 60 * 24 * 3; // 3 days
+const FREE_TRIAGE_TTL_SECONDS = 60 * 60 * 24 * 14; // 14 days
+const QUEUE_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
+const ABANDONED_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
+const PAID_SEND_DELAY_MS = 0;
+
+function kv(env) {
+  return env.DEBT_QUEUE || env.SESSIONS_KV;
+}
 
 function normalizeEmail(email) {
   return String(email || "").trim().toLowerCase();
@@ -17,6 +23,10 @@ function paidMarkerKey(email) {
   return `paid_marker:${normalizeEmail(email)}`;
 }
 
+function freeTriageKey(type, email) {
+  return `free_triage:${type}:${safeEmailKey(email)}`;
+}
+
 function freeCaseKey(type, email) {
   return `free_case:${type}:${safeEmailKey(email)}`;
 }
@@ -25,62 +35,106 @@ function abandonedKey(email, stage) {
   return `abandoned:${safeEmailKey(email)}:stage_${stage}`;
 }
 
-function nextWorkdayAt15CET(fromMs) {
+function isTier3({ triage, tier, emailType } = {}) {
+  return (
+    tier === "tier3" ||
+    emailType === "trust" ||
+    triage?.tier === "tier3" ||
+    triage?.emailType === "trust"
+  );
+}
+
+function nextWorkdayAt15UK(fromMs = Date.now()) {
   const d = new Date(fromMs);
   d.setUTCDate(d.getUTCDate() + 1);
-  d.setUTCHours(14, 0, 0, 0);
+  d.setUTCHours(15, 0, 0, 0);
+
   while (d.getUTCDay() === 0 || d.getUTCDay() === 6) {
     d.setUTCDate(d.getUTCDate() + 1);
   }
+
   return d.toISOString();
 }
 
-// ── KV helper ─────────────────────────────────────────────────────────────────
-// Uses env.SESSIONS_KV (mussichzahlen binding)
-
-function kv(env) {
-  return env.SESSIONS_KV;
+function addHours(ms, hours) {
+  return new Date(ms + hours * 60 * 60 * 1000).toISOString();
 }
-
-// ── Paid marker ───────────────────────────────────────────────────────────────
 
 export async function markPaid(env, email) {
   const normalized = normalizeEmail(email);
   if (!normalized) return;
-  await kv(env).put(paidMarkerKey(normalized), "1", { expirationTtl: PAID_MARKER_TTL_SECONDS });
+
+  await kv(env).put(paidMarkerKey(normalized), "1", {
+    expirationTtl: PAID_MARKER_TTL_SECONDS,
+  });
 }
 
 export async function hasPaid(env, email) {
   const normalized = normalizeEmail(email);
   if (!normalized) return false;
+
   const value = await kv(env).get(paidMarkerKey(normalized));
   return value === "1";
 }
 
-// ── Free case ─────────────────────────────────────────────────────────────────
+export async function saveFreeTriage(env, { type, rawType, name, email, triage, stripeLink }) {
+  const entry = {
+    type,
+    rawType: rawType || type,
+    name,
+    email: normalizeEmail(email),
+    triage,
+    stripe_link: stripeLink || null,
+    created_at: new Date().toISOString(),
+  };
+
+  await kv(env).put(freeTriageKey(type, email), JSON.stringify(entry), {
+    expirationTtl: FREE_TRIAGE_TTL_SECONDS,
+  });
+
+  return entry;
+}
+
+export async function getFreeTriage(env, { type, email }) {
+  const raw = await kv(env).get(freeTriageKey(type, email));
+  if (!raw) return null;
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
 
 export async function saveFreeCase(env, {
-  type, name, email, triage, stripeLink,
-  fileBase64, mediaType, fileName, fileSize,
+  type,
+  rawType,
+  name,
+  email,
+  triage,
+  stripeLink,
+  fileBase64,
+  mediaType,
+  fileName,
+  fileSize,
 }) {
   const entry = {
     type,
+    rawType: rawType || type,
     name,
-    email:       normalizeEmail(email),
+    email: normalizeEmail(email),
     triage,
-    stripe_link: stripeLink,
-    file_base64: fileBase64,
-    media_type:  mediaType,
-    file_name:   fileName || null,
-    file_size:   fileSize || null,
-    created_at:  new Date().toISOString(),
+    stripe_link: stripeLink || null,
+    file_base64: fileBase64 || null,
+    media_type: mediaType || null,
+    file_name: fileName || null,
+    file_size: fileSize || null,
+    created_at: new Date().toISOString(),
   };
 
-  await kv(env).put(
-    freeCaseKey(type, email),
-    JSON.stringify(entry),
-    { expirationTtl: FREE_CASE_TTL_SECONDS }
-  );
+  await kv(env).put(freeCaseKey(type, email), JSON.stringify(entry), {
+    expirationTtl: FREE_CASE_TTL_SECONDS,
+  });
 
   return entry;
 }
@@ -88,104 +142,194 @@ export async function saveFreeCase(env, {
 export async function getFreeCase(env, { type, email }) {
   const raw = await kv(env).get(freeCaseKey(type, email));
   if (!raw) return null;
-  try { return JSON.parse(raw); } catch (_) { return null; }
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
 }
 
-// ── Free recovery queue ───────────────────────────────────────────────────────
+export async function enqueueFree(env, {
+  type,
+  rawType,
+  name,
+  email,
+  triage,
+  stripeLink,
+  tier,
+  emailType,
+}) {
+  const normalized = normalizeEmail(email);
+  if (!normalized) return null;
 
-export async function enqueueFree(env, { type, rawType, name, email, triage, stripeLink }) {
+  await saveFreeTriage(env, {
+    type,
+    rawType,
+    name,
+    email: normalized,
+    triage,
+    stripeLink,
+  });
+
+  if (isTier3({ triage, tier, emailType })) {
+    console.log("QUEUE: tier3 free recovery suppressed:", normalized);
+    return null;
+  }
+
   const createdAt = Date.now();
-  const emailKey  = safeEmailKey(email);
-  const baseKey   = `free:${type}:${createdAt}:${emailKey}`;
+  const emailKey = safeEmailKey(normalized);
+  const baseKey = `free:${type}:${createdAt}:${emailKey}`;
 
-  const stage1SendAt = nextWorkdayAt15CET(createdAt);
-  const stage1Ms     = new Date(stage1SendAt).getTime();
+  // Stage 1 is sent immediately by analyze-free.js.
+  // Queue only recovery stages.
+  const stage2SendAt = addHours(createdAt, 24);
+  const stage3SendAt = addHours(createdAt, 48);
 
   const sendAts = {
-    1: stage1SendAt,
-    2: new Date(stage1Ms + 24 * 60 * 60 * 1000).toISOString(),
-    3: new Date(stage1Ms + 48 * 60 * 60 * 1000).toISOString(),
+    2: stage2SendAt,
+    3: stage3SendAt,
   };
 
-  for (const stage of [1, 2, 3]) {
-    const key   = `${baseKey}:stage_${stage}`;
+  for (const stage of [2, 3]) {
+    const key = `${baseKey}:stage_${stage}`;
+
     const entry = {
-      kind:        "free",
+      kind: "free",
       stage,
       type,
-      rawType:     rawType || type,
+      rawType: rawType || type,
       name,
-      email:       normalizeEmail(email),
+      email: normalized,
       triage,
-      stripe_link: stripeLink,
-      created_at:  new Date(createdAt).toISOString(),
-      send_at:     sendAts[stage],
+      tier: triage?.tier || tier || null,
+      emailType: triage?.emailType || emailType || null,
+      stripe_link: stripeLink || null,
+      created_at: new Date(createdAt).toISOString(),
+      send_at: sendAts[stage],
     };
-    await kv(env).put(key, JSON.stringify(entry), { expirationTtl: 60 * 60 * 24 * 7 });
+
+    await kv(env).put(key, JSON.stringify(entry), {
+      expirationTtl: QUEUE_TTL_SECONDS,
+    });
+
+    console.log("ENQUEUED FREE RECOVERY:", key, "SEND_AT:", sendAts[stage]);
   }
 
   return baseKey;
 }
 
-// ── Paid delivery queue ───────────────────────────────────────────────────────
+export async function enqueuePaid(env, {
+  type,
+  rawType,
+  name,
+  email,
+  triage,
+  analysis,
+  file_base64,
+  media_type,
+  fileName,
+  fileSize,
+  sessionId,
+  payment,
+}) {
+  const normalized = normalizeEmail(email);
+  if (!normalized) return null;
 
-export async function enqueuePaid(env, { type, name, email, triage, analysis, file_base64, media_type }) {
-  const key   = `paid:${type}:${Date.now()}:${safeEmailKey(email)}`;
+  const key = `paid:${type}:${Date.now()}:${safeEmailKey(normalized)}`;
+
   const entry = {
-    kind:        "paid",
+    kind: "paid",
     type,
+    rawType: rawType || type,
     name,
-    email:       normalizeEmail(email),
+    email: normalized,
+    sessionId: sessionId || payment?.sessionId || null,
+    payment: payment || null,
     triage,
-    analysis:    analysis || null,
+    analysis: analysis || null,
     file_base64: file_base64 || null,
-    media_type:  media_type || null,
-    created_at:  new Date().toISOString(),
-    send_at:     new Date(Date.now() + PAID_SEND_DELAY_MS).toISOString(),
+    media_type: media_type || null,
+    file_name: fileName || null,
+    file_size: fileSize || null,
+    created_at: new Date().toISOString(),
+    send_at: new Date(Date.now() + PAID_SEND_DELAY_MS).toISOString(),
   };
-  await kv(env).put(key, JSON.stringify(entry));
+
+  await kv(env).put(key, JSON.stringify(entry), {
+    expirationTtl: QUEUE_TTL_SECONDS,
+  });
+
+  console.log("ENQUEUED PAID:", key, "SEND_AT:", entry.send_at);
+
   return key;
 }
 
-// ── Abandoned checkout queue ──────────────────────────────────────────────────
-
-export async function saveAbandoned(env, { email, name, type, amount, stripeLink }) {
+export async function saveAbandoned(env, {
+  email,
+  name,
+  type,
+  rawType,
+  amount,
+  stripeLink,
+  tier,
+  emailType,
+  triage,
+}) {
   const normalized = normalizeEmail(email);
-  if (!normalized) return;
+  if (!normalized) return null;
+
+  if (isTier3({ triage, tier, emailType })) {
+    console.log("QUEUE: tier3 abandoned recovery suppressed:", normalized);
+    return null;
+  }
 
   const now = Date.now();
+
   const sendAts = {
-    1: new Date(now + 1  * 60 * 60 * 1000).toISOString(),
-    2: new Date(now + 24 * 60 * 60 * 1000).toISOString(),
-    3: new Date(now + 48 * 60 * 60 * 1000).toISOString(),
+    1: addHours(now, 1),
+    2: addHours(now, 24),
+    3: addHours(now, 48),
   };
 
   for (const stage of [1, 2, 3]) {
-    const key      = abandonedKey(normalized, stage);
+    const key = abandonedKey(normalized, stage);
+
     const existing = await kv(env).get(key);
     if (existing) continue;
 
     const entry = {
-      kind:        "abandoned",
+      kind: "abandoned",
       stage,
       type,
+      rawType: rawType || type,
       name,
-      email:       normalized,
-      amount:      amount || null,
-      stripe_link: stripeLink,
-      created_at:  new Date(now).toISOString(),
-      send_at:     sendAts[stage],
+      email: normalized,
+      amount: amount || null,
+      stripe_link: stripeLink || null,
+      tier: triage?.tier || tier || null,
+      emailType: triage?.emailType || emailType || null,
+      triage: triage || null,
+      created_at: new Date(now).toISOString(),
+      send_at: sendAts[stage],
     };
-    await kv(env).put(key, JSON.stringify(entry), { expirationTtl: ABANDONED_TTL_SECONDS });
-  }
-}
 
-// ── Cron helpers ──────────────────────────────────────────────────────────────
+    await kv(env).put(key, JSON.stringify(entry), {
+      expirationTtl: ABANDONED_TTL_SECONDS,
+    });
+
+    console.log("ENQUEUED ABANDONED:", key, "SEND_AT:", sendAts[stage]);
+  }
+
+  return true;
+}
 
 export async function getDueEntries(env) {
   const now = Date.now();
   const due = [];
   let cursor;
+
+  console.log("GET DUE START:", new Date(now).toISOString());
 
   do {
     const list = await kv(env).list(cursor ? { cursor } : undefined);
@@ -193,16 +337,25 @@ export async function getDueEntries(env) {
 
     for (const key of list.keys) {
       if (key.name.startsWith("paid_marker:")) continue;
-      if (key.name.startsWith("free_case:"))   continue;
+      if (key.name.startsWith("free_triage:")) continue;
+      if (key.name.startsWith("free_case:")) continue;
+      if (key.name.startsWith("track:")) continue;
+      if (key.name.startsWith("analysis_sent:")) continue;
+      if (key.name.startsWith("paid_missing_free_case:")) continue;
+      if (key.name.startsWith("paid_missing_email:")) continue;
+      if (key.name.startsWith("paid_failed_missing_file:")) continue;
 
       try {
         const raw = await kv(env).get(key.name);
         if (!raw) continue;
 
         const entry = JSON.parse(raw);
-        if (!entry.send_at) continue;
+        if (!entry?.send_at) continue;
 
-        if (new Date(entry.send_at).getTime() <= now) {
+        const sendAtMs = new Date(entry.send_at).getTime();
+        if (!Number.isFinite(sendAtMs)) continue;
+
+        if (sendAtMs <= now) {
           due.push({ key: key.name, entry });
         }
       } catch (err) {
@@ -211,9 +364,12 @@ export async function getDueEntries(env) {
     }
   } while (cursor);
 
+  console.log("GET DUE DONE:", due.length);
+
   return due;
 }
 
 export async function deleteEntry(env, key) {
   await kv(env).delete(key);
+  console.log("DELETED QUEUE KEY:", key);
 }
