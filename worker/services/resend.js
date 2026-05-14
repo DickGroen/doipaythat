@@ -336,10 +336,17 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
     } else if (emailType === "soft") {
       bodyHtml = `
         <p>Hi ${escapeHtml(name)},</p>
-        <p>We've taken a first look at your ${escapeHtml(labels.title)}${senderPart}${amountStr ? ` for ${amountStr}` : ""}.</p>
-        <p>${escapeHtml(triage?.teaser || "There may be aspects of this claim worth checking before you pay.")}</p>
+        <p>We've taken a first look at your ${escapeHtml(labels.title)}${senderPart}${amountStr ? ` regarding a claimed balance of ${amountStr}` : ""}.</p>
+        <p>Our initial review suggests there may be points worth checking carefully before deciding whether payment is appropriate.</p>
+        <p>${escapeHtml(labels.title === "debt letter" ? "Debt collection letters can sometimes include:" : "Documents like this can sometimes include:")}</p>
+        <ul style="padding-left:20px;margin:8px 0 16px 0;color:#374151;font-size:0.93rem;">
+          <li>unclear or excessive added fees</li>
+          <li>limited supporting evidence for the claimed amount</li>
+          <li>balance discrepancies or unexplained charges</li>
+          <li>pressure wording or escalation language</li>
+        </ul>
+        <p>A full review can help clarify whether the claim appears properly supported and whether any points may be worth challenging.</p>
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
-        <p>If you'd like a clearer picture, you can get a full analysis and a ready-to-send ${escapeHtml(labels.letter)}:</p>
         ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Check before you pay — £${escapeHtml(labels.price)} →</a></p>` : ""}`;
 
     } else {
