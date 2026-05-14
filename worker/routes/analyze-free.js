@@ -61,7 +61,7 @@ export async function handleAnalyzeFree(request, env) {
     }
 
     const { base64, mediaType } = await fileToBase64(file);
-    const prompts = await loadPrompts(type);
+    const prompts = loadPrompts(type);
 
     if (!prompts?.triage) {
       return jsonResponse(
@@ -76,9 +76,7 @@ export async function handleAnalyzeFree(request, env) {
       triagePrompt: prompts.triage,
     });
 
-    const triage = normalizeTriage(
-      safeJsonParse(raw) || fallbackTriage(type)
-    );
+    const triage = normalizeTriage(safeJsonParse(raw) || fallbackTriage(type));
 
     console.log("FREE TRIAGE:", JSON.stringify(triage));
 
@@ -217,18 +215,36 @@ function normalizeTriage(triage = {}) {
   const flagCount = normalizeFlagCount(triage);
   const tier = normalizeTier(triage.tier, risk, chance, flagCount);
 
+  const monthlyCost = normalizeAmount(triage.monthly_cost);
+  const annualCost =
+    normalizeAmount(triage.annual_cost) ??
+    (monthlyCost !== null ? Number((monthlyCost * 12).toFixed(2)) : null);
+
+  const amountClaimed =
+    normalizeAmount(triage.amount_claimed) ??
+    annualCost ??
+    monthlyCost ??
+    normalizeAmount(triage.fine_amount) ??
+    normalizeAmount(triage.total_price);
+
   return {
     ...triage,
 
     documentType: normalizeText(triage.documentType),
     sender: normalizeText(triage.sender),
+
     claim_type: normalizeText(triage.claim_type),
     bill_type: normalizeText(triage.bill_type),
     contract_type: normalizeText(triage.contract_type),
+    provider_type: normalizeText(triage.provider_type),
     operator_type: normalizeText(triage.operator_type),
 
-    amount_claimed: normalizeAmount(triage.amount_claimed),
-    monthly_cost: normalizeAmount(triage.monthly_cost),
+    amount_claimed: amountClaimed,
+    fine_amount: normalizeAmount(triage.fine_amount),
+    total_price: normalizeAmount(triage.total_price),
+    monthly_cost: monthlyCost,
+    annual_cost: annualCost,
+
     currency: normalizeCurrency(triage.currency),
 
     risk,
@@ -257,26 +273,33 @@ function publicTriage(triage) {
     claim_type: triage.claim_type ?? null,
     bill_type: triage.bill_type ?? null,
     contract_type: triage.contract_type ?? null,
+    provider_type: triage.provider_type ?? null,
     operator_type: triage.operator_type ?? null,
 
     amount_claimed: triage.amount_claimed ?? null,
+    fine_amount: triage.fine_amount ?? null,
+    total_price: triage.total_price ?? null,
     monthly_cost: triage.monthly_cost ?? null,
+    annual_cost: triage.annual_cost ?? null,
     currency: triage.currency ?? "GBP",
 
     risk: triage.risk,
     tier: triage.tier,
+    emailType: triage.emailType,
     chance: triage.chance,
     flagCount: triage.flagCount,
     teaser: triage.teaser,
     route: triage.route,
     consumer_position: triage.consumer_position,
 
+    // debt
     possible_old_debt: triage.possible_old_debt ?? null,
     possible_excessive_fees: triage.possible_excessive_fees ?? null,
     possible_no_proof: triage.possible_no_proof ?? null,
     possible_wrong_person: triage.possible_wrong_person ?? null,
     possible_pressure_language: triage.possible_pressure_language ?? null,
 
+    // parking
     possible_ntk_timing_defect: triage.possible_ntk_timing_defect ?? null,
     possible_signage_defect: triage.possible_signage_defect ?? null,
     possible_grace_period_failure: triage.possible_grace_period_failure ?? null,
@@ -291,27 +314,53 @@ function publicTriage(triage) {
     possible_pofa_keeper_liability_failure:
       triage.possible_pofa_keeper_liability_failure ?? null,
 
+    // bill
     possible_estimated_reading: triage.possible_estimated_reading ?? null,
     possible_wrong_tariff: triage.possible_wrong_tariff ?? null,
+    possible_unclear_tariff: triage.possible_unclear_tariff ?? null,
     possible_duplicate_charge: triage.possible_duplicate_charge ?? null,
     possible_exit_fee_invalid: triage.possible_exit_fee_invalid ?? null,
     possible_missing_breakdown: triage.possible_missing_breakdown ?? null,
     possible_unclear_terms: triage.possible_unclear_terms ?? null,
+    possible_unexplained_adjustment:
+      triage.possible_unexplained_adjustment ?? null,
+    possible_subscription_renewal_issue:
+      triage.possible_subscription_renewal_issue ?? null,
+    possible_cancellation_fee_issue:
+      triage.possible_cancellation_fee_issue ?? null,
+    possible_unusual_price_increase:
+      triage.possible_unusual_price_increase ?? null,
+    possible_incorrect_service_period:
+      triage.possible_incorrect_service_period ?? null,
 
+    // subscription
     possible_auto_renewal_invalid:
       triage.possible_auto_renewal_invalid ?? null,
+    possible_auto_renewal_issue:
+      triage.possible_auto_renewal_issue ?? null,
     possible_price_increase_exit_right:
       triage.possible_price_increase_exit_right ?? null,
     possible_cancellation_blocked:
       triage.possible_cancellation_blocked ?? null,
     possible_cooling_off_applies:
       triage.possible_cooling_off_applies ?? null,
+    possible_unclear_contract_length:
+      triage.possible_unclear_contract_length ?? null,
+    possible_unclear_cancellation_terms:
+      triage.possible_unclear_cancellation_terms ?? null,
     possible_hidden_fees: triage.possible_hidden_fees ?? null,
 
+    // quote
     possible_overpriced: triage.possible_overpriced ?? null,
+    possible_high_price: triage.possible_high_price ?? null,
     possible_unclear_scope: triage.possible_unclear_scope ?? null,
     possible_hidden_costs: triage.possible_hidden_costs ?? null,
     possible_no_breakdown: triage.possible_no_breakdown ?? null,
+    possible_pressure_language_quote:
+      triage.possible_pressure_language_quote ?? null,
+    possible_unclear_payment_terms:
+      triage.possible_unclear_payment_terms ?? null,
+    possible_missing_timeframe: triage.possible_missing_timeframe ?? null,
   };
 }
 
