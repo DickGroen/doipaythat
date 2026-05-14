@@ -7,6 +7,13 @@ compatibility_flags = ["nodejs_compat"]
 ENV = "production"
 ADMIN_EMAIL = "groenvantexel@gmail.com"
 
+# Stripe Payment Links (public — not secrets)
+STRIPE_LINK_DEBT         = "https://buy.stripe.com/REPLACE_WITH_DEBT_LINK"
+STRIPE_LINK_PARKING      = "https://buy.stripe.com/REPLACE_WITH_PARKING_LINK"
+STRIPE_LINK_BILL         = "https://buy.stripe.com/REPLACE_WITH_BILL_LINK"
+STRIPE_LINK_SUBSCRIPTION = "https://buy.stripe.com/REPLACE_WITH_SUBSCRIPTION_LINK"
+STRIPE_LINK_QUOTE        = "https://buy.stripe.com/REPLACE_WITH_QUOTE_LINK"
+
 # Secrets via Cloudflare Dashboard:
 # ANTHROPIC_API_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY
 
