@@ -334,20 +334,21 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
         <p style="font-size:0.9rem;color:#374151;">Most people prefer to understand what they're being asked to pay — before they pay it.</p>`;
 
     } else if (emailType === "soft") {
+      const formattedAmount = amountStr ? amountStr.replace(/£(\d+)/, (_, n) => `£${Number(n).toLocaleString("en-GB")}`) : null;
       bodyHtml = `
         <p>Hi ${escapeHtml(name)},</p>
-        <p>We've taken a first look at your ${escapeHtml(labels.title)}${senderPart}${amountStr ? ` regarding a claimed balance of ${amountStr}` : ""}.</p>
+        <p>We've taken a first look at your ${escapeHtml(labels.title)}${senderPart}${formattedAmount ? ` regarding a claimed balance of ${formattedAmount}` : ""}.</p>
         <p>Our initial review suggests there may be points worth checking carefully before deciding whether payment is appropriate.</p>
         <p>${escapeHtml(labels.title === "debt letter" ? "Debt collection letters can sometimes include:" : "Documents like this can sometimes include:")}</p>
-        <ul style="padding-left:20px;margin:8px 0 16px 0;color:#374151;font-size:0.93rem;">
+        <ul style="padding-left:20px;margin:8px 0 16px 0;color:#374151;font-size:0.93rem;line-height:1.8;">
           <li>unclear or excessive added fees</li>
           <li>limited supporting evidence for the claimed amount</li>
           <li>balance discrepancies or unexplained charges</li>
-          <li>pressure wording or escalation language</li>
+          <li>legal escalation or pressure wording</li>
         </ul>
         <p>A full review can help clarify whether the claim appears properly supported and whether any points may be worth challenging.</p>
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
-        ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Check before you pay — £${escapeHtml(labels.price)} →</a></p>` : ""}`;
+        ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Check before you pay — full review + ready-to-send ${escapeHtml(labels.letter)} for £${escapeHtml(labels.price)} →</a></p>` : ""}`;
 
     } else {
       bodyHtml = `
