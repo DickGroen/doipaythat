@@ -10,7 +10,7 @@ const PRICES = {
   subscription: 2900,
   quote: 2900,
 };
-
+ 
 const PRODUCT_NAMES = {
   debt: "Full analysis + ready-to-send dispute letter",
   parking: "Full analysis + ready-to-send appeal letter",
