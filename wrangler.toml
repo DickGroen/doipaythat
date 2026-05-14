@@ -9,7 +9,7 @@ ADMIN_EMAIL = "groenvantexel@gmail.com"
 SITE_URL = "https://doipaythat.co.uk"
 
 # Stripe Payment Links (public — not secrets)
-STRIPE_LINK_DEBT         = "https://buy.stripe.com/REPLACE_WITH_DEBT_LINK"
+STRIPE_LINK_DEBT         = "https://donate.stripe.com/test_14AeVe0qU76LfCm6pC14405"
 STRIPE_LINK_PARKING      = "https://buy.stripe.com/REPLACE_WITH_PARKING_LINK"
 STRIPE_LINK_BILL         = "https://buy.stripe.com/REPLACE_WITH_BILL_LINK"
 STRIPE_LINK_SUBSCRIPTION = "https://buy.stripe.com/REPLACE_WITH_SUBSCRIPTION_LINK"
