@@ -1,51 +1,51 @@
-// worker/routes/create-checkout.js — doipaythat
+// worker/routes/create-checkout.js — mussichzahlen
 
 import { jsonResponse } from "../utils/response.js";
 import { requireType } from "../config/types.js";
 
 const PRICES = {
-  debt: 4900,
-  parking: 1900,
-  bill: 2900,
-  subscription: 2900,
-  quote: 2900,
+  mahnung:    1900,
+  parkstrafe: 1900,
+  rechnung:   2900,
+  vertrag:    2900,
+  angebot:    1900,
 };
- 
+
 const PRODUCT_NAMES = {
-  debt: "Full analysis + ready-to-send dispute letter",
-  parking: "Full analysis + ready-to-send appeal letter",
-  bill: "Full analysis + ready-to-send dispute letter",
-  subscription: "Full analysis + ready-to-send cancellation letter",
-  quote: "Full analysis + ready-to-send response letter",
+  mahnung:    "Vollständige Analyse + fertiges Widerspruchsschreiben",
+  parkstrafe: "Vollständige Analyse + fertiges Einspruchsschreiben",
+  rechnung:   "Vollständige Analyse + fertiges Widerspruchsschreiben",
+  vertrag:    "Vollständige Analyse + fertiges Kündigungsschreiben",
+  angebot:    "Vollständige Analyse + fertige Verhandlungsnachricht",
 };
 
 const PRODUCT_DESC = {
-  debt:
-    "Check the claim before you decide what to do. Includes a full review and a ready-to-send response letter.",
-  parking:
-    "Check the parking charge before you decide what to do. Includes a full review and a ready-to-send appeal letter.",
-  bill:
-    "Check the bill before you decide what to do. Includes a full review and a ready-to-send response letter.",
-  subscription:
-    "Check the subscription or contract before you decide what to do. Includes a full review and a ready-to-send letter.",
-  quote:
-    "Check the quote before you agree. Includes a full review and a ready-to-send clarification letter.",
+  mahnung:
+    "Prüfe die Forderung bevor du reagierst. Inkl. vollständiger Analyse und fertigem Widerspruchsschreiben.",
+  parkstrafe:
+    "Prüfe den Bescheid bevor du zahlst. Inkl. vollständiger Analyse und fertigem Einspruchsschreiben.",
+  rechnung:
+    "Prüfe die Rechnung bevor du zahlst. Inkl. vollständiger Analyse und fertigem Widerspruchsschreiben.",
+  vertrag:
+    "Prüfe deinen Vertrag bevor du weiter zahlst. Inkl. vollständiger Analyse und fertigem Kündigungsschreiben.",
+  angebot:
+    "Prüfe das Angebot bevor du unterschreibst. Inkl. vollständiger Analyse und fertiger Verhandlungsnachricht.",
 };
 
 const SUCCESS_PATH = {
-  debt: "debt",
-  parking: "parking",
-  bill: "bill",
-  subscription: "subscription",
-  quote: "quote",
+  mahnung:    "mahnung",
+  parkstrafe: "parkstrafe",
+  rechnung:   "rechnung",
+  vertrag:    "vertrag",
+  angebot:    "angebot",
 };
 
 async function trackEvent(env, event, data = {}) {
   try {
-    const id = crypto.randomUUID();
+    const id  = crypto.randomUUID();
     const key = `track:${data.type || "unknown"}:${event}:${Date.now()}:${id}`;
 
-    await env.DEBT_QUEUE.put(
+    await env.SESSIONS_KV.put(
       key,
       JSON.stringify({
         event,
@@ -65,15 +65,15 @@ export async function handleCreateCheckout(request, env) {
   try {
     body = await request.json();
   } catch (_) {
-    return jsonResponse({ ok: false, error: "Invalid JSON" }, 400);
+    return jsonResponse({ ok: false, error: "Ungültiges JSON" }, 400);
   }
 
-  const rawType = String(body.type || "").trim();
-  const name = String(body.name || "").trim();
-  const email = String(body.email || "").trim().toLowerCase();
+  const rawType       = String(body.type          || "").trim();
+  const name          = String(body.name          || "").trim();
+  const email         = String(body.email         || "").trim().toLowerCase();
   const freeSessionId = String(body.freeSessionId || body.free_session_id || "").trim();
-  const tier = String(body.tier || "").trim();
-  const source = String(body.source || "free_result").trim();
+  const tier          = String(body.tier          || "").trim();
+  const source        = String(body.source        || "free_result").trim();
 
   let type;
 
@@ -85,7 +85,7 @@ export async function handleCreateCheckout(request, env) {
 
   if (!name || !email) {
     return jsonResponse(
-      { ok: false, error: "Name and email are required" },
+      { ok: false, error: "Name und E-Mail sind erforderlich." },
       400
     );
   }
@@ -93,32 +93,32 @@ export async function handleCreateCheckout(request, env) {
   if (!env.STRIPE_SECRET_KEY) {
     console.error("Missing STRIPE_SECRET_KEY");
     return jsonResponse(
-      { ok: false, error: "Checkout is temporarily unavailable." },
+      { ok: false, error: "Checkout ist vorübergehend nicht verfügbar." },
       500
     );
   }
 
-  const unitAmount = PRICES[type] || PRICES.debt;
-  const origin = new URL(request.url).origin;
-  const path = SUCCESS_PATH[type] || type;
+  const unitAmount = PRICES[type] || PRICES.mahnung;
+  const origin     = env.SITE_URL || new URL(request.url).origin;
+  const path       = SUCCESS_PATH[type] || type;
 
   const successUrl =
-    `${origin}/${path}/thankyou` +
+    `${origin}/${path}/danke` +
     `?session_id={CHECKOUT_SESSION_ID}` +
     `&type=${encodeURIComponent(type)}`;
 
   const cancelUrl = `${origin}/${path}/`;
 
   const sessionPayload = {
-    mode: "payment",
+    mode:                 "payment",
     payment_method_types: ["card"],
     line_items: [
       {
         price_data: {
-          currency: "gbp",
+          currency: "eur",
           product_data: {
-            name: PRODUCT_NAMES[type] || PRODUCT_NAMES.debt,
-            description: PRODUCT_DESC[type] || PRODUCT_DESC.debt,
+            name:        PRODUCT_NAMES[type] || PRODUCT_NAMES.mahnung,
+            description: PRODUCT_DESC[type]  || PRODUCT_DESC.mahnung,
           },
           unit_amount: unitAmount,
         },
@@ -126,8 +126,8 @@ export async function handleCreateCheckout(request, env) {
       },
     ],
     customer_email: email,
-    success_url: successUrl,
-    cancel_url: cancelUrl,
+    success_url:    successUrl,
+    cancel_url:     cancelUrl,
     metadata: {
       name,
       email,
@@ -142,35 +142,35 @@ export async function handleCreateCheckout(request, env) {
 
   try {
     res = await fetch("https://api.stripe.com/v1/checkout/sessions", {
-      method: "POST",
+      method:  "POST",
       headers: {
-        Authorization: `Bearer ${env.STRIPE_SECRET_KEY}`,
+        Authorization:  `Bearer ${env.STRIPE_SECRET_KEY}`,
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: encodeStripeParams(sessionPayload),
     });
   } catch (err) {
-    console.error("Stripe checkout fetch failed:", err.message);
+    console.error("Stripe checkout fetch fehlgeschlagen:", err.message);
     return jsonResponse(
-      { ok: false, error: "Failed to connect to checkout." },
+      { ok: false, error: "Verbindung zum Checkout fehlgeschlagen." },
       500
     );
   }
 
   if (!res.ok) {
     const errText = await res.text();
-    console.error("Stripe checkout session error:", errText);
+    console.error("Stripe checkout session Fehler:", errText);
 
     await trackEvent(env, "checkout_session_failed", {
       type,
       email,
-      value: unitAmount / 100,
-      currency: "GBP",
-      reason: "stripe_error",
+      value:    unitAmount / 100,
+      currency: "EUR",
+      reason:   "stripe_error",
     });
 
     return jsonResponse(
-      { ok: false, error: "Failed to create checkout session." },
+      { ok: false, error: "Checkout-Sitzung konnte nicht erstellt werden." },
       500
     );
   }
@@ -180,15 +180,15 @@ export async function handleCreateCheckout(request, env) {
   await trackEvent(env, "checkout_session_created", {
     type,
     email,
-    tier: tier || null,
-    value: unitAmount / 100,
-    currency: "GBP",
+    tier:       tier || null,
+    value:      unitAmount / 100,
+    currency:   "EUR",
     session_id: session.id || null,
   });
 
   return jsonResponse({
-    ok: true,
-    url: session.url,
+    ok:        true,
+    url:       session.url,
     sessionId: session.id || null,
   });
 }
@@ -218,7 +218,6 @@ function encodeStripeParams(obj, prefix = "") {
           );
         }
       });
-
       continue;
     }
 
