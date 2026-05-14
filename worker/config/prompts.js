@@ -21,15 +21,44 @@ import quoteHaiku          from "../../prompts/quote/haiku.js";
 import quoteSonnet         from "../../prompts/quote/sonnet.js";
 
 export const PROMPTS = {
-  debt:         { triage: debtTriage,         haiku: debtHaiku,         sonnet: debtSonnet         },
-  parking:      { triage: parkingTriage,       haiku: parkingHaiku,      sonnet: parkingSonnet      },
-  bill:         { triage: billTriage,          haiku: billHaiku,         sonnet: billSonnet         },
-  subscription: { triage: subscriptionTriage,  haiku: subscriptionHaiku, sonnet: subscriptionSonnet },
-  quote:        { triage: quoteTriage,         haiku: quoteHaiku,        sonnet: quoteSonnet        },
+  debt: {
+    triage: debtTriage,
+    haiku: debtHaiku,
+    sonnet: debtSonnet,
+  },
+
+  parking: {
+    triage: parkingTriage,
+    haiku: parkingHaiku,
+    sonnet: parkingSonnet,
+  },
+
+  bill: {
+    triage: billTriage,
+    haiku: billHaiku,
+    sonnet: billSonnet,
+  },
+
+  subscription: {
+    triage: subscriptionTriage,
+    haiku: subscriptionHaiku,
+    sonnet: subscriptionSonnet,
+  },
+
+  quote: {
+    triage: quoteTriage,
+    haiku: quoteHaiku,
+    sonnet: quoteSonnet,
+  },
 };
 
 export function loadPrompts(type) {
-  const prompts = PROMPTS[type];
-  if (!prompts) throw new Error(`Unknown type: ${type}`);
+  const key = String(type || "").trim().toLowerCase();
+  const prompts = PROMPTS[key];
+
+  if (!prompts) {
+    throw new Error(`Unknown type: ${type}`);
+  }
+
   return prompts;
 }
