@@ -1,12 +1,12 @@
-// routes/submit-paid.js — production version
+// routes/submit-paid.js — direct delivery test version
 
 import { validateUploadInput } from "../utils/validation.js";
 import { fileToBase64, safeJsonParse } from "../utils/files.js";
 import { jsonResponse } from "../utils/response.js";
 import { verifyStripeSession } from "../services/stripe.js";
 import { runTriage, runAnalysis } from "../services/claude.js";
-import { enqueuePaid, markPaid, getFreeCase } from "../services/queue.js";
-import { notifyAdminPaid } from "../services/resend.js";
+import { markPaid, getFreeCase } from "../services/queue.js";
+import { sendPaidEmail, notifyAdminPaid } from "../services/resend.js";
 import { loadPrompts } from "../config/prompts.js";
 import { requireType } from "../config/types.js";
 
@@ -150,16 +150,26 @@ export async function handleSubmitPaid(request, env) {
   console.log("ANALYSIS TAGS:", tagStatus);
   console.log("ANALYSIS LENGTH:", analysis.length);
 
-  await enqueuePaid(env, {
-    type,
-    rawType,
-    tier,
-    name,
-    email: resolvedEmail,
-    sessionId,
-    triage,
-    analysis,
-  });
+  try {
+    await sendPaidEmail(env, {
+      name,
+      email: resolvedEmail,
+      type,
+      rawType,
+      tier,
+      sessionId,
+      triage,
+      analysis,
+    });
+
+    console.log("sendPaidEmail: OK");
+  } catch (err) {
+    console.error("sendPaidEmail failed:", err.message);
+    return jsonResponse(
+      { ok: false, error: "Paid email failed: " + err.message },
+      500
+    );
+  }
 
   try {
     await notifyAdminPaid(env, {
@@ -172,6 +182,8 @@ export async function handleSubmitPaid(request, env) {
       triage,
       analysis,
     });
+
+    console.log("notifyAdminPaid: OK");
   } catch (err) {
     console.error("Admin notify failed:", err.message);
   }
@@ -181,6 +193,6 @@ export async function handleSubmitPaid(request, env) {
     type,
     tier,
     message:
-      "Upload successful. You will receive your full analysis and letter by email.",
+      "Upload successful. Your full analysis and letter have been sent by email.",
   });
 }
