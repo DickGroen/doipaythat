@@ -6,6 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 ENV = "production"
 ADMIN_EMAIL = "groenvantexel@gmail.com"
+SITE_URL = "https://doipaythat.co.uk"
 
 # Stripe Payment Links (public — not secrets)
 STRIPE_LINK_DEBT         = "https://buy.stripe.com/REPLACE_WITH_DEBT_LINK"
