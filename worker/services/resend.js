@@ -337,7 +337,6 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
       bodyHtml = `
         <p>Hi ${escapeHtml(name)},</p>
         <p>We've taken a first look at your ${escapeHtml(labels.title)}${senderPart}${amountStr ? ` for ${amountStr}` : ""}.</p>
-        <p>There may be aspects worth checking before you proceed with payment.</p>
         <p>${escapeHtml(triage?.teaser || "There may be aspects of this claim worth checking before you pay.")}</p>
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
         <p>If you'd like a clearer picture, you can get a full analysis and a ready-to-send ${escapeHtml(labels.letter)}:</p>
