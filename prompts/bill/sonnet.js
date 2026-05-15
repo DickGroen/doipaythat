@@ -206,6 +206,11 @@ Maximum 6 steps.
 [DISPUTE_LETTER]
 Begin EXACTLY with:
 
+The letter should sound like a calm, intelligent UK consumer — not a lawyer or legal template.
+Avoid overly formal transition phrases.
+Prefer concise and natural wording over legalistic phrasing.
+Avoid unnecessary closing sentences if the information is already obvious from the letter layout.
+
 Please add your own name, address and date before sending.
 
 Then write a complete professional dispute letter in formal British English.
@@ -217,7 +222,7 @@ Requirements:
 - Request a full breakdown of charges.
 - Mention specific disputed or unclear items where visible.
 - Ask for the bill to be reviewed and corrected if appropriate.
-- Ask for the matter to be placed on hold while it is reviewed.
+- Ask for the matter to be placed on hold while the requested information is being reviewed.
 - State that the letter is not an admission of liability.
 - Do not threaten legal action.
 - Do not admit liability.
@@ -235,5 +240,11 @@ The letter must:
   [Your address]
   [Date]
 
+
+Avoid these phrases — they sound like AI legal templates:
+- "Before I am able to respond further" → use "Before I am able to assess this matter further"
+- "given appropriate consideration" → use "properly considered"
+- "Please respond in writing to the address below" → omit entirely; the address is already shown
+- "I await your response" → omit or rephrase naturally
 Keep the letter under 300 words.
 [/DISPUTE_LETTER]`;
