@@ -115,6 +115,7 @@ Use the exact tags.
 No markdown.
 No bullet symbols outside sections.
 No extra text before [INTRO] or after [/LETTER].
+Do NOT add any disclaimer or informational note after [/LETTER].
 
 ────────────────────
 STRUCTURE
@@ -309,6 +310,12 @@ The letter must:
   "This correspondence must not be treated as an admission of liability.";
 - request that collection activity is paused while the matter is reviewed.
 
+Identity discrepancy wording:
+- If the name or address in the letter does not match the recipient's details, describe the discrepancy neutrally.
+- Do NOT use phrases like "differ from my own" or "not my address".
+- Instead use: "differ from the details of the recipient" or "do not correspond with the address to which this letter was sent".
+- Example: "The name and address in the body of the letter do not correspond with the details shown on the envelope."
+
 The letter must:
 - sound professional and realistic;
 - remain calm and non-aggressive;
@@ -317,7 +324,6 @@ The letter must:
 - avoid emotional wording;
 - avoid admitting liability;
 - avoid promising payment.
+- Do NOT add any disclaimer or informational note at the end of the letter.
 
-[/LETTER]
-
-This content is informational only and does not constitute legal advice.`;
+[/LETTER]`;
