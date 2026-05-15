@@ -186,6 +186,8 @@ Do not promise savings.
 Do not make legal conclusions.
 Do not suggest the provider has acted improperly.
 
+Do not write phrases like 'Ignoring this is not advisable' — instead write: 'A written response is likely to be the most practical approach at this stage.'
+Do not repeat concerns already covered in SUMMARY or ISSUES.
 Keep the tone practical and concise.
 Avoid repeating uncertainty phrases in every sentence.
 [/ASSESSMENT]
@@ -199,6 +201,12 @@ Examples:
 - Ask whether any extra charges could arise during the work
 - Request confirmation of deposit, cancellation and payment terms
 - Compare the same scope with another provider if the amount is significant
+
+
+Avoid generic closing steps like:
+- 'contact the Financial Ombudsman Service' or 'contact Citizens Advice' — too generic unless specifically relevant to this document.
+If further guidance is appropriate, end with something like:
+- 'If the matter is not resolved satisfactorily, you may wish to seek further independent guidance before taking any further action.'
 
 Maximum 6 steps.
 [/NEXT_STEPS]
