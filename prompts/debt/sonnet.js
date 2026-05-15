@@ -254,10 +254,10 @@ Cover:
 - what appears reasonably clear;
 - what still appears unclear;
 - why supporting evidence may matter;
-- what may be appropriate to request;
-- what could happen if the matter is ignored.
+- what may be appropriate to request.
 
-Do NOT:
+Do NOT write:
+- "Ignoring the letter entirely is not advisable" — this sounds like a legal template. Instead write: "A written response is likely to be the safest approach at this stage."
 - claim the debt is invalid;
 - advise refusing payment;
 - make legal conclusions;
@@ -266,6 +266,7 @@ Do NOT:
 The tone should feel calm, realistic and practical.
 Keep the tone practical and concise.
 Avoid repeating uncertainty phrases in every sentence.
+Do not repeat concerns already covered in SUMMARY or ISSUES.
 [/ASSESSMENT]
 
 [NEXT_STEPS]
@@ -279,9 +280,13 @@ Good examples:
 - "Request a full written breakdown of any additional charges or collection fees."
 - "If the account is several years old, ask for confirmation of the original default date."
 
-Avoid vague wording like:
+Avoid generic closing steps like:
 - "seek legal advice"
 - "review your records"
+- "consider contacting the Financial Ombudsman Service" — too generic and template-like.
+
+If further guidance is appropriate, end with something like:
+- "If the sender cannot provide satisfactory documentation, you may wish to seek further independent guidance before making any payment decision."
 
 Maximum 6 steps.
 [/NEXT_STEPS]
