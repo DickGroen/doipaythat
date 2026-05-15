@@ -409,9 +409,11 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
         }`;
     } else {
       // trust / tier-3 — concrete language, no generic uncertainty stacking, CTA always present
-      const trustTeaser = triage?.teaser
-        ? escapeHtml(triage.teaser)
-        : `It may still be useful to verify how the ${escapeHtml(labels.title === "debt letter" ? "balance has been calculated and whether all supporting details are clearly documented" : "amount has been calculated and whether the supporting details fully match your records")}.`;
+      const trustTeaser = type === "debt"
+        ? "It may still be useful to verify how the balance has been calculated and whether all supporting details are clearly documented."
+        : type === "parking"
+          ? "It may still be worth confirming whether the correct process was followed before paying."
+          : `It may be sensible to check whether the supporting information fully matches your own records before responding.`;
 
       bodyHtml = `
         <p>Hi ${safeName},</p>
@@ -419,7 +421,7 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
         <p>The correspondence appears professionally presented and generally consistent — but it is still worth checking carefully before you pay or respond.</p>
         <p>${trustTeaser}</p>
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
-        <p>A full review confirms exactly what the claim covers and gives you a ready-to-send ${escapeHtml(labels.letter)} if you decide to respond in writing:</p>
+        <p>A full review helps clarify what the claim covers and gives you a ready-to-send ${escapeHtml(labels.letter)} if you decide to respond in writing:</p>
         <p style="margin:20px 0;"><a href="${stripeLink ? escapeHtml(stripeLink) : "#"}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Review the full details before responding — £${escapeHtml(labels.price)} →</a></p>
         <p style="font-size:0.9rem;color:#374151;">Most people prefer to understand what they are being asked to pay — before they pay it.</p>`;
     }
@@ -517,20 +519,20 @@ async function sendParkingFreeStage1(env, { name, email, labels, triage, stripeL
           : ""
       }`;
   } else {
-    // trust / tier-3 parking — improved
+    // trust / tier-3 parking — concrete language, CTA always present
+    const parkingTrustTeaser = triage?.teaser
+      ? escapeHtml(triage.teaser)
+      : "It may still be worth confirming whether the correct process was followed before paying — including how the charge was issued and whether the timing and evidence meet the required standard.";
+
     bodyHtml = `
       <p>Hi ${name},</p>
       <p>We've reviewed your parking fine${senderPart}${amountStr ? ` for ${amountStr}` : ""}.</p>
-      <p>The fine appears to have been issued through the correct channels, but there are still some procedural points worth checking before you pay.</p>
-      <p>${escapeHtml(triage?.teaser || "Some aspects of how the charge was issued may be worth a closer look before deciding whether to pay.")}</p>
-      ${groundsHtml ? `<p>Some areas that may be worth checking:</p>${groundsHtml}` : ""}
+      <p>The notice appears relatively well documented, but there are still some procedural points worth checking before you pay.</p>
+      <p>${parkingTrustTeaser}</p>
+      ${groundsHtml ? `<p>Some areas that may be worth a closer look:</p>${groundsHtml}` : ""}
       <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
       <p>A full review confirms whether the correct process was followed — and includes a ready-to-send appeal letter if you decide to challenge:</p>
-      ${
-        stripeLink
-          ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Review the full details before paying — £${escapeHtml(labels.price)} →</a></p>`
-          : ""
-      }
+      <p style="margin:20px 0;"><a href="${stripeLink ? escapeHtml(stripeLink) : "#"}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Review the full details before paying — £${escapeHtml(labels.price)} →</a></p>
       <p style="font-size:0.9rem;color:#374151;">Checking first takes minutes. Paying without checking is permanent.</p>`;
   }
 
