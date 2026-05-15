@@ -214,6 +214,11 @@ Maximum 6 steps.
 [LETTER]
 Begin EXACTLY with:
 
+The letter should sound like a calm, intelligent UK consumer — not a lawyer or legal template.
+Avoid overly formal transition phrases.
+Prefer concise and natural wording over legalistic phrasing.
+Avoid unnecessary closing sentences if the information is already obvious from the letter layout.
+
 Please add your own name, address and date before sending.
 
 Then write a complete professional clarification and negotiation message in formal British English.
@@ -250,5 +255,11 @@ Do not:
 - sound artificial or exaggerated.
 
 Use plain continuous text only.
+
+Avoid these phrases — they sound like AI legal templates:
+- "Before I am able to respond further" → use "Before I am able to assess this matter further"
+- "given appropriate consideration" → use "properly considered"
+- "Please respond in writing to the address below" → omit entirely; the address is already shown
+- "I await your response" → omit or rephrase naturally
 No Markdown.
 [/LETTER]`;
