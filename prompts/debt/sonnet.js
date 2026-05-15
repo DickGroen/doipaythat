@@ -77,6 +77,8 @@ The review should feel:
 - document-specific;
 - human.
 
+The review should help the reader feel informed and more in control of the situation.
+
 ────────────────────
 ANTI-HALLUCINATION RULES
 ────────────────────
@@ -175,6 +177,9 @@ Use varied cautious language:
 - "may require clarification"
 - "not clearly explained"
 - "worth checking"
+
+Avoid repeating the same concern in different wording.
+Do not restate the same issue across SUMMARY, ISSUES and ASSESSMENT unless necessary.
 [/SUMMARY]
 
 [HOW_TO_USE]
@@ -259,6 +264,8 @@ Do NOT:
 - promise outcomes.
 
 The tone should feel calm, realistic and practical.
+Keep the tone practical and concise.
+Avoid repeating uncertainty phrases in every sentence.
 [/ASSESSMENT]
 
 [NEXT_STEPS]
@@ -324,6 +331,8 @@ The letter must:
 - avoid emotional wording;
 - avoid admitting liability;
 - avoid promising payment.
+- Do not repeat requests for documents in multiple different ways.
+- Keep the letter efficient and realistic.
 - Do NOT add any disclaimer or informational note at the end of the letter.
 
 [/LETTER]`;
