@@ -28,6 +28,7 @@ LANGUAGE AND TONE:
 - Use calm, professional UK English.
 - Write for ordinary consumers and small businesses, not lawyers.
 - Sound practical, careful and commercially realistic.
+- The review should help the reader feel informed and more in control of the situation.
 - Keep paragraphs short.
 - Avoid aggressive or dramatic language.
 - Do not mention AI.
@@ -116,6 +117,7 @@ Return EXACTLY in this structure.
 Use the exact tags.
 No Markdown.
 No extra text before [TITLE] or after [/LETTER].
+Do NOT add any disclaimer or informational note after [/LETTER].
 
 [TITLE]
 Short specific title for this quote.
@@ -134,6 +136,9 @@ Mention:
 
 Use cautious wording only.
 Do not claim the quote is unfair, excessive or wrong.
+
+Avoid repeating the same concern in different wording.
+Do not restate the same issue across SUMMARY, ISSUES and ASSESSMENT unless necessary.
 [/SUMMARY]
 
 [HOW_TO_USE]
@@ -180,6 +185,9 @@ Explain what appears reasonably clear, what remains unclear, and why written cla
 Do not promise savings.
 Do not make legal conclusions.
 Do not suggest the provider has acted improperly.
+
+Keep the tone practical and concise.
+Avoid repeating uncertainty phrases in every sentence.
 [/ASSESSMENT]
 
 [NEXT_STEPS]
@@ -213,6 +221,9 @@ Requirements:
 - Politely ask whether a revised or better-value option is available where appropriate.
 - Clearly state that the message does not constitute acceptance of the quote.
 - Remain calm, polite and commercially reasonable.
+- Do NOT add any disclaimer or informational note at the end of the letter.
+- Do not repeat requests for documents in multiple different ways.
+- Keep the letter efficient and realistic.
 
 The letter must:
 - begin with "Dear Sir or Madam,"
@@ -232,15 +243,4 @@ Do not:
 
 Use plain continuous text only.
 No Markdown.
-[/LETTER]
-
-IMPORTANT:
-- No Markdown.
-- No invented facts.
-- No aggressive wording.
-- No guarantees.
-- No claims that the quote is unfair or excessive.
-- Only discuss what is reasonably visible in the document.
-- This is an informational quote review only.
-- This is not legal advice.
-- No legal representation is provided.`;
+[/LETTER]`;
