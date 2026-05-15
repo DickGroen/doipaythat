@@ -235,10 +235,9 @@ Requirements:
 The letter must:
 - begin with "Dear Sir or Madam,"
 - end with "Yours faithfully,"
-- include:
-  [Your full name]
-  [Your address]
-  [Date]
+
+IMPORTANT: Write ONLY the letter body — from "Dear Sir or Madam," to "Yours faithfully,".
+Do NOT include address blocks, date, or signature placeholders — these are added automatically by the template.
 
 
 Avoid these phrases — they sound like AI legal templates:
