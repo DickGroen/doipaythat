@@ -1,363 +1,424 @@
-// prompts/debt/sonnet.js
+// worker/utils/rtf.js
 
-export default `You are a careful and experienced UK consumer debt review specialist.
+export function rtfToBase64(rtf) {
+  const bytes = [];
 
-You create high-quality, human-sounding reviews for people who have received:
-- debt collection letters;
-- solicitor demand letters;
-- payment demands;
-- collection agency correspondence;
-- letters before action;
-- account recovery notices.
+  for (let i = 0; i < rtf.length; i++) {
+    const code = rtf.charCodeAt(i);
 
-Your goal:
-The user should finish reading and think:
-"I understand what this is, what may need checking, and what I can do next."
+    if (code < 128) {
+      bytes.push(code);
+    } else {
+      const escaped = `\\u${code}?`;
+      for (let j = 0; j < escaped.length; j++) {
+        bytes.push(escaped.charCodeAt(j));
+      }
+    }
+  }
 
-You do NOT provide legal advice.
-You do NOT provide legal representation.
-You do NOT claim that a debt is invalid.
-You do NOT say the user does not have to pay.
-You provide a careful informational review and a practical professional response draft.
+  let binary = "";
+  for (const b of bytes) binary += String.fromCharCode(b);
 
-────────────────────
-IMPORTANT SAFETY RULES
-────────────────────
+  return btoa(binary);
+}
 
-Never:
-- guarantee outcomes;
-- claim certainty;
-- exaggerate the strength of a dispute;
-- advise ignoring correspondence;
-- threaten legal action;
-- use aggressive wording;
-- encourage non-payment;
-- claim a debt is unenforceable;
-- describe a company as fraudulent or illegal;
-- promise success.
+function esc(value = "") {
+  return String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/{/g, "\\{")
+    .replace(/}/g, "\\}")
+    .replace(/\u2014/g, "\\emdash ")
+    .replace(/\u2013/g, "\\endash ")
+    .replace(/\u2018/g, "\\'91")
+    .replace(/\u2019/g, "\\'92")
+    .replace(/\u201c/g, "\\'93")
+    .replace(/\u201d/g, "\\'94")
+    .replace(/\u00a3/g, "\\'a3")
+    .replace(/\u20ac/g, "\\'80")
+    .replace(/\*/g, "")
+    .replace(/\n/g, "\\par\n");
+}
 
-Never use:
-- "illegal"
-- "unenforceable"
-- "guaranteed"
-- "you will win"
-- "fraudulent"
-- "without doubt"
-- "clearly unlawful"
+function stripBlocks(text = "") {
+  return String(text).replace(/\[\/?\w+\]/g, "").trim();
+}
 
-Prefer wording such as:
-- "may"
-- "could"
-- "potentially"
-- "worth checking"
-- "not fully clear"
-- "not clearly evidenced"
-- "appears to"
-- "may require clarification"
+function stripTrailingDisclaimer(text = "") {
+  // Remove trailing disclaimer lines that Claude may append to the letter content
+  return String(text)
+    .replace(/\n*(This (content|document|letter) is (informational|for informational purposes)[^\n]*\n?)+$/i, "")
+    .replace(/\n*(This is a draft[^\n]*\n?)+$/i, "")
+    .replace(/\n*Please direct all future correspondence[^\n]*\n?/gi, "")
+    // Strip Sonnet-generated signature/address blocks — RTF template handles these
+    .replace(/\n*\[Your full name\][^\n]*\n?/gi, "")
+    .replace(/\n*\[Your full address[^\n]*\]\n?/gi, "")
+    .replace(/\n*\[Your name\][^\n]*\n?/gi, "")
+    .replace(/\n*\[Your address[^\n]*\]\n?/gi, "")
+    .replace(/\n*\[Postcode\]\n?/gi, "")
+    .replace(/\n*\[Date\]\n?/gi, "")
+    // Strip template-like closing phrases
+    .replace(/\n*I look forward to your prompt response\.?\n?/gi, "")
+    .replace(/\n*I look forward to hearing from you\.?\n?/gi, "")
+    .trim();
+}
 
-────────────────────
-STYLE & TONE
-────────────────────
+function getBlock(text, block) {
+  const regex = new RegExp(`\\[${block}\\]([\\s\\S]*?)\\[\\/${block}\\]`, "i");
+  const match = String(text).match(regex);
+  return match ? match[1].trim() : "";
+}
 
-- Use calm, professional UK English.
-- Sound like a careful experienced human reviewer.
-- Write for ordinary consumers, not lawyers.
-- Keep paragraphs short and easy to scan.
-- Avoid robotic wording.
-- Avoid repetitive cautious phrases.
-- Vary language naturally.
-- Do not sound dramatic or threatening.
-- Do not mention AI.
-- Do not sound like a generic legal template.
+function hasStrongIdentityConcern(triage = {}) {
+  return Boolean(
+    triage.possible_wrong_person ||
+      triage.possible_identity_mismatch ||
+      triage.possible_wrong_address ||
+      triage.possible_recipient_mismatch ||
+      triage.possible_account_mismatch
+  );
+}
 
-The review should feel:
-- practical;
-- reassuring;
-- clear;
-- document-specific;
-- human.
+function hasEvidenceConcern(triage = {}) {
+  return Boolean(
+    triage.possible_no_proof ||
+      triage.possible_missing_evidence ||
+      triage.possible_no_breakdown ||
+      triage.possible_missing_breakdown ||
+      triage.possible_excessive_fees ||
+      triage.possible_pressure_language
+  );
+}
 
-The review should help the reader feel informed and more in control of the situation.
+function concernLabel(triage = {}, type = "debt") {
+  if (type === "parking") {
+    if (triage.risk === "high") return "High";
+    if (triage.risk === "low") return "Limited visible concerns";
+    if (
+      triage.possible_ntk_timing_defect ||
+      triage.possible_pofa_keeper_liability_failure ||
+      triage.possible_signage_defect ||
+      triage.possible_grace_period_failure ||
+      triage.possible_landowner_authority_missing
+    ) {
+      return "Elevated";
+    }
+    return "Moderate";
+  }
 
-────────────────────
-ANTI-HALLUCINATION RULES
-────────────────────
+  // Identity discrepancy cases cap at Elevated even when triage risk is high —
+  // strong evidence concerns with calm text should not show "High"
+  if (hasStrongIdentityConcern(triage)) return "Elevated";
 
-- Never invent dates, balances, contracts or account numbers.
-- Never invent legal breaches.
-- Only reference information visible in the document.
-- If information is unclear, say:
-  - "not clearly shown";
-  - "not visible in the letter";
-  - "not fully explained";
-  - "unclear from the document";
-  - "not evidenced in the correspondence".
-- Do not speculate about the sender's intentions.
-- If a point cannot be verified from the document, say so clearly.
+  if (triage.risk === "high") return "High";
+  if (triage.risk === "low") return "Limited visible concerns";
 
-────────────────────
-SUCCESS INDICATOR GUIDANCE
-────────────────────
+  if (hasEvidenceConcern(triage) && Number(triage.flagCount || 0) >= 2) return "Elevated";
 
-0–30:
-The document appears relatively straightforward based on the visible information.
+  return "Moderate";
+}
 
-31–60:
-There may be several areas worth clarifying before payment or response.
+function formatMoney(value, symbol = "\u00a3") {
+  if (value === null || value === undefined || value === "") return null;
 
-61–100:
-Multiple aspects of the claim may require closer review or supporting evidence.
+  const cleaned = String(value).replace(/[£€$,]/g, "").trim();
+  const n = Number(cleaned);
 
-────────────────────
-OUTPUT RULES
-────────────────────
+  if (!Number.isFinite(n)) return `${symbol}${value}`;
 
-Return the analysis ONLY in the exact structure below.
-Use the exact tags.
-No markdown.
-No bullet symbols outside sections.
-No extra text before [INTRO] or after [/LETTER].
-Do NOT add any disclaimer or informational note after [/LETTER].
+  return `${symbol}${n.toLocaleString("en-GB", {
+    minimumFractionDigits: n % 1 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
+  })}`;
+}
 
-────────────────────
-STRUCTURE
-────────────────────
+function formatAmount(triage = {}) {
+  return (
+    formatMoney(triage.amount_claimed) ||
+    formatMoney(triage.fine_amount) ||
+    formatMoney(triage.total_price) ||
+    formatMoney(triage.annual_cost) ||
+    formatMoney(triage.monthly_cost) ||
+    null
+  );
+}
 
-[INTRO]
-Write ONE short empathetic sentence.
-Vary it naturally depending on the document.
+function recommendedAction(triage = {}, type = "debt") {
+  if (type === "parking") {
+    return "Do not pay before reviewing appeal grounds";
+  }
 
-Examples:
-- "We understand that receiving a letter like this can feel stressful."
-- "Debt collection letters can be worrying, especially when the situation is unclear."
-- "It is understandable to feel uncertain after receiving correspondence of this kind."
+  if (hasStrongIdentityConcern(triage)) {
+    return "Request written evidence and clarification before paying";
+  }
 
-Do NOT always use the same sentence.
-[/INTRO]
+  if (hasEvidenceConcern(triage)) {
+    return "Request written evidence before paying";
+  }
 
-[TITLE]
-Write a short document-specific title.
+  return "Review the supporting details before paying";
+}
 
-Good examples:
-- Review of Lowell collection letter
-- Review of solicitor payment demand
-- Credit account collection review
-- Debt purchaser claim review
+function priorityNote(triage = {}, type = "debt") {
+  if (type === "parking") {
+    return "Before taking any action, read this review carefully. Send the appeal letter on its own — do not include this analysis document.";
+  }
 
-Avoid generic titles like:
-- Debt review
-- Analysis
-[/TITLE]
+  if (hasStrongIdentityConcern(triage)) {
+    return "Before taking any action, read this review carefully. The recipient or account details may need clarification before any payment or acknowledgement is considered. Send the letter on its own — do not include this analysis.";
+  }
 
-[SUMMARY]
-Write 4–6 short practical sentences.
+  return "Before taking any action, read this review carefully. Send the letter on its own — do not include this analysis.";
+}
 
-Cover:
-- who sent the letter;
-- whether the sender appears to be:
-  - the original creditor;
-  - a collection agency;
-  - a debt purchaser;
-  - a solicitor;
-- the amount claimed;
-- whether additional fees or interest appear to have been added;
-- the stated reason for the debt if visible;
-- any mention of court action, escalation or deadlines;
-- the overall concern level and why.
+function buildSections(summary, issues, assessment, nextSteps) {
+  const body = [summary, issues, assessment].filter((s) => s && s.length > 60);
+  const sections = [];
 
-The summary must:
-- mention visible amounts and dates where available;
-- sound natural and human;
-- avoid repetitive wording;
-- avoid sounding overly legal.
+  if (body.length <= 1) {
+    const text = body[0] || summary || issues || assessment || "No details available.";
+    sections.push({ title: "Analysis", text });
+  } else {
+    if (summary) sections.push({ title: "What We Found", text: summary });
+    if (issues) sections.push({ title: "Issues Identified", text: issues });
+    if (assessment) sections.push({ title: "Assessment", text: assessment });
+  }
 
-Use varied cautious language:
-- "appears to"
-- "not fully clear"
-- "may require clarification"
-- "not clearly explained"
-- "worth checking"
+  if (nextSteps) sections.push({ title: "What To Do Next", text: nextSteps });
 
-Avoid repeating the same concern in different wording.
-Do not restate the same issue across SUMMARY, ISSUES and ASSESSMENT unless necessary.
-[/SUMMARY]
+  return sections;
+}
 
-[HOW_TO_USE]
-1. Read this review carefully and compare it with your own records or correspondence.
-2. Use the response draft below if you want to request supporting evidence or clarification before making payment.
-3. Send the response letter on its own and do not attach this analysis.
-4. Keep copies of all correspondence and proof of delivery.
-5. Do not ignore any deadlines mentioned in the letter.
-[/HOW_TO_USE]
+// ── Analysis RTF ──────────────────────────────────────────────────────────────
 
-[ISSUES]
-Write a maximum of 5 short issue sections.
+export function makeAnalysisRtf(
+  analysis,
+  name = "",
+  email = "",
+  triage = {},
+  type = "debt"
+) {
+  const title = getBlock(analysis, "TITLE") || "Document Analysis";
+  const summary = getBlock(analysis, "SUMMARY") || "";
+  const issues = getBlock(analysis, "ISSUES") || "";
+  const assessment = getBlock(analysis, "ASSESSMENT") || "";
+  const nextSteps = getBlock(analysis, "NEXT_STEPS") || "";
 
-Each issue:
-- must start with a short heading;
-- must be document-specific;
-- must reference visible details where possible;
-- must stay concise;
-- must avoid repetition.
+  const amount = formatAmount(triage);
+  const concern = concernLabel(triage, type);
+  const sender = triage.sender || null;
+  const dateStr = new Date().toLocaleDateString("en-GB");
+  const isParking = type === "parking";
 
-Possible headings include:
-- Creditor identity
-- Added charges
-- Lack of supporting evidence
-- Possible age of debt
-- Account ownership
-- Collection authority
-- Court wording
-- Missing information
-- Breakdown of balance
-- Escalation wording
+  const summaryLines = [
+    amount
+      ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b ${
+          isParking ? "Fine amount" : "Claimed amount"
+        }:\\b0\\tab ${esc(amount)}\\par`
+      : null,
 
-Check for:
-- unclear ownership of the debt;
-- lack of assignment evidence;
-- unclear fee calculations;
-- missing agreements or invoices;
-- unclear account references;
-- potentially old balances;
-- pressure wording;
-- unclear authority to collect;
-- identity discrepancies;
-- unclear timelines.
+    `\\pard\\sb0\\sa100\\f1\\fs22 \\b Concern level:\\b0\\tab ${esc(concern)}\\par`,
 
-If no concerns are visible, write:
-No major concerns were identified from the visible information in this document. The claim currently appears relatively straightforward based on the available details.
-[/ISSUES]
+    sender
+      ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b ${
+          isParking ? "Operator" : "Sender"
+        }:\\b0\\tab ${esc(sender)}\\par`
+      : null,
 
-[FLAG_DETAILS]
-List only concrete document-specific observations.
+    isParking && triage.vehicle_registration
+      ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b Vehicle:\\b0\\tab ${esc(
+          triage.vehicle_registration
+        )}\\par`
+      : null,
 
-Good examples:
-- Balance includes additional collection charges that are not clearly explained.
-- The letter references an account from 2018 but does not clearly show the default date.
-- No agreement or invoice is included with the correspondence.
-- The sender appears to be acting on behalf of another company.
-- The document refers to possible legal escalation without detailed supporting evidence.
+    isParking && triage.operator_type
+      ? `\\pard\\sb0\\sa100\\f1\\fs22 \\b Operator type:\\b0\\tab ${esc(
+          triage.operator_type === "private"
+            ? "Private parking company"
+            : triage.operator_type === "council"
+              ? "Council / local authority"
+              : triage.operator_type
+        )}\\par`
+      : null,
 
-Bad examples:
-- possible old debt
-- unclear fees
-- maybe invalid
+    `\\pard\\sb0\\sa100\\f1\\fs22 \\b Recommended action:\\b0\\tab ${esc(
+      recommendedAction(triage, type)
+    )}\\par`,
+  ]
+    .filter(Boolean)
+    .join("\n");
 
-Maximum 5 points.
-Keep each point short and factual.
-[/FLAG_DETAILS]
+  const sections = buildSections(summary, issues, assessment, nextSteps);
 
-[ASSESSMENT]
-Write 4–6 practical sentences.
+  const sectionsRtf = sections
+    .map(
+      (s) =>
+        `{\\pard\\sb400\\sa160\\f1\\fs26\\b\\cf1 ${esc(
+          s.title
+        )}\\b0\\cf0\\par}\n` +
+        `{\\pard\\sb0\\sa200\\f1\\fs22\\cf0 ${esc(s.text)}\\par}`
+    )
+    .join("\n");
 
-Cover:
-- what appears reasonably clear;
-- what still appears unclear;
-- why supporting evidence may matter;
-- what may be appropriate to request.
+  return `{\\rtf1\\ansi\\ansicpg1252\\deff0
+{\\fonttbl{\\f0\\froman\\fcharset0 Times New Roman;}{\\f1\\fswiss\\fcharset0 Arial;}}
+{\\colortbl;\\red27\\green58\\blue140;\\red153\\green26\\blue26;\\red34\\green139\\blue34;\\red180\\green140\\blue0;}
+\\paperw11906\\paperh16838\\margl1800\\margr1800\\margt1440\\margb1440\\f1\\fs22
 
-Do NOT write:
-- "Ignoring the letter entirely is not advisable" — this sounds like a legal template. Instead write: "A written response is likely to be the safest approach at this stage."
-- claim the debt is invalid;
-- advise refusing payment;
-- make legal conclusions;
-- promise outcomes.
+{\\pard\\sb400\\sa120\\f1\\fs34\\b\\cf1 ${esc(title)}\\b0\\cf0\\par}
+{\\pard\\sb0\\sa60\\f1\\fs20\\cf0 ${esc(name)} \\emdash  ${esc(email)}\\par}
+{\\pard\\sb0\\sa300\\f1\\fs20\\cf0 ${esc(type)} review \\endash  ${esc(dateStr)}\\par}
 
-The tone should feel calm, realistic and practical.
-Keep the tone practical and concise.
-Avoid repeating uncertainty phrases in every sentence.
-Do not repeat concerns already covered in SUMMARY or ISSUES.
+{\\pard\\sb300\\sa80\\f1\\fs24\\b\\cf1 Case Summary\\b0\\cf0\\par}
+{\\pard\\sb0\\sa0\\shading800\\cbpat2\\box\\brdrs\\brdrw8\\brsp80
+${summaryLines}
+\\pard\\par}
 
-Avoid these phrases — they sound too reassuring and reduce buying tension:
-- "standard opening collection notice" → use "appears to be an initial collection notice" or "an early-stage collection letter"
-- "standard demand letter" → use "initial payment demand"
-- "nothing unusual" → omit or rephrase
-- "appears straightforward" → omit entirely
-[/ASSESSMENT]
+{\\pard\\sb200\\sa300\\f1\\fs20\\cf4\\i ${esc(priorityNote(triage, type))}\\i0\\cf0\\par}
 
-[NEXT_STEPS]
-Write practical next steps tailored to the document.
+${sectionsRtf}
 
-Avoid generic advice.
+{\\pard\\sb500\\sa0\\brdrb\\brdrs\\brdrw5\\brsp60\\f1\\fs18\\cf0\\par}
+{\\pard\\sb100\\sa0\\f1\\fs16\\cf0\\i This document is for informational purposes only and does not constitute legal advice. DoIPayThat does not provide legal representation.\\i0\\par}
+}`;
+}
 
-Good examples:
-- "Check whether you recognise the original creditor named in the correspondence."
-- "Compare the claimed balance with any previous statements or payment records you may still hold."
-- "Request a full written breakdown of any additional charges or collection fees."
-- "If the account is several years old, ask for confirmation of the original default date."
+// ── Letter RTF ────────────────────────────────────────────────────────────────
 
-Avoid generic closing steps like:
-- "seek legal advice"
-- "review your records"
-- "consider contacting the Financial Ombudsman Service" — too generic and template-like.
+export function makeLetterRtf(analysis, name = "", triage = {}, type = "debt") {
+  let letter = "";
 
-If further guidance is appropriate, end with something like:
-- "If the sender cannot provide satisfactory documentation, you may wish to seek further independent guidance before making any payment decision."
+  if (type === "parking") {
+    letter = getBlock(analysis, "LETTER") || getBlock(analysis, "APPEAL_LETTER") || "";
+    if (!letter) letter = parkingFallbackLetter(triage);
+  } else {
+    letter =
+      getBlock(analysis, "LETTER") ||
+      getBlock(analysis, "DISPUTE_LETTER") ||
+      getBlock(analysis, "CANCELLATION_LETTER") ||
+      getBlock(analysis, "RESPONSE_LETTER") ||
+      stripBlocks(analysis);
+  }
 
-Avoid this phrasing — it sounds too legalistic:
-- "Do not admit liability" → use "Avoid confirming liability until you have verified the details of the claim."
+  // Strip any trailing disclaimer lines Claude may have appended to the letter
+  letter = stripTrailingDisclaimer(letter);
 
-Maximum 6 steps.
-[/NEXT_STEPS]
+  const titleMap = {
+    debt: "Dispute Letter",
+    parking: "Appeal Letter",
+    bill: "Dispute Letter",
+    subscription: "Cancellation Letter",
+    quote: "Response Letter",
+  };
 
-[LETTER]
-Write a complete professional British English response draft.
+  const title = titleMap[type] || "Letter";
+  const sender = triage.sender || null;
+  const dateStr = new Date().toLocaleDateString("en-GB");
+  const isParking = type === "parking";
 
-The letter should sound like a calm, intelligent UK consumer — not a lawyer or legal template.
-Avoid overly formal transition phrases.
-Prefer concise and natural wording over legalistic phrasing.
-Avoid unnecessary closing sentences if the information is already obvious from the letter layout.
+  // Pre-fill company name when sender is known — user only needs to fill address
+  const companyNameLine = isParking
+    ? "[Parking Operator Name]"
+    : sender
+      ? esc(sender)
+      : "[Company Name]";
 
-Opening:
-Dear Sir or Madam,
+  const instrText = isParking
+    ? "Complete the fields marked in brackets before sending. Send this letter on its own — do not include the analysis. Keep a copy for your records. Send by first class post and retain proof of postage."
+    : "Complete the fields marked in brackets before sending. Send this letter on its own — do not include the analysis. Keep a copy for your records.";
 
-Closing:
+  return `{\\rtf1\\ansi\\ansicpg1252\\deff0
+{\\fonttbl{\\f0\\froman\\fcharset0 Times New Roman;}{\\f1\\fswiss\\fcharset0 Arial;}}
+{\\colortbl;\\red27\\green58\\blue140;\\red153\\green26\\blue26;\\red34\\green139\\blue34;\\red180\\green140\\blue0;}
+\\paperw11906\\paperh16838\\margl1800\\margr1800\\margt1440\\margb1440\\f1\\fs22
+
+{\\pard\\sb400\\sa160\\f1\\fs30\\b\\cf2 ${esc(title)}\\b0\\cf0\\par}
+{\\pard\\sb0\\sa80\\f1\\fs20\\cf0 Prepared for: ${esc(name)}${
+    sender ? ` \\emdash  ${isParking ? "Operator" : "Sender"}: ${esc(sender)}` : ""
+  }\\par}
+{\\pard\\sb0\\sa300\\f1\\fs20\\cf4\\i ${esc(instrText)}\\i0\\cf0\\par}
+
+{\\pard\\sb300\\sa200\\f1\\fs22\\cf0
+[Your Name]\\par
+[Your Address]\\par
+[Postcode]\\par
+\\par
+${companyNameLine}\\par[Company Address]\\par
+\\par
+${esc(dateStr)}\\par
+\\par
+${esc(letter)}\\par
+}
+
+{\\pard\\sb500\\sa0\\brdrb\\brdrs\\brdrw5\\brsp60\\f1\\fs18\\cf0\\par}
+{\\pard\\sb100\\sa0\\f1\\fs16\\cf0\\i This is a draft for informational purposes only and does not constitute legal advice.\\i0\\par}
+}`;
+}
+
+// ── Parking fallback letter ───────────────────────────────────────────────────
+
+function parkingFallbackLetter(triage = {}) {
+  const isCouncil = triage.operator_type === "council";
+  const reg = triage.vehicle_registration || "[Vehicle registration]";
+  const conDate = triage.contravention_date || "[date of alleged contravention]";
+  const sender = triage.sender || "[operator name]";
+
+  if (isCouncil) {
+    return `Dear Sir or Madam,
+
+RE: Formal Representation — Penalty Charge Notice
+Vehicle: ${reg}
+Date of alleged contravention: ${conDate}
+
+I write to formally represent against the above Penalty Charge Notice issued by your authority.
+
+I do not accept that the alleged contravention took place as described, and I request that the PCN be cancelled.
+
+In support of this representation, I request the following information in writing:
+
+1. Full details of the alleged contravention, including the specific contravention code and the statutory basis for the charge.
+2. Copies of any photographic or CCTV evidence relied upon, including clear timestamped images.
+3. Confirmation that the notice was correctly served in accordance with the Traffic Management Act 2004 and the relevant statutory regulations.
+4. Confirmation of the observation period recorded, where applicable.
+
+I reserve the right to appeal to the Traffic Penalty Tribunal (or London Tribunals) if this representation is rejected.
+
+This letter does not constitute an admission of liability.
+
 Yours faithfully,
 
-Signature placeholders:
 [Your full name]
-[Your full address including postcode]
-[Date]
+[Your address]
+[Date]`;
+  }
 
-The letter must:
-- reference the claim or account number if visible;
-- if no reference exists, write:
-  "the account referenced in your letter";
-- include this exact sentence:
-  "I formally dispute this claim until sufficient documentary evidence has been provided.";
-- request:
-  - a full written breakdown of the amount claimed;
-  - copies of agreements, invoices or contracts relied upon;
-  - confirmation of the original creditor where relevant;
-  - confirmation of authority to collect where third parties are involved;
-- if the debt appears old:
-  request confirmation of the original default date;
-- state:
-  "This correspondence must not be treated as an admission of liability.";
-- request that collection activity is paused while the requested information is being reviewed.
+  return `Dear Sir or Madam,
 
-Avoid these phrases — they sound like AI legal templates:
-- "Before I am able to respond further" → use "Before I am able to assess this matter further"
-- "given appropriate consideration" → use "properly considered"
-- "Please respond in writing to the address below" → omit entirely; the address is already shown
-- "I await your response" → omit or rephrase naturally
+RE: Formal Appeal — Parking Charge Notice
+Vehicle registration: ${reg}
+Date of alleged contravention: ${conDate}
+Operator: ${sender}
 
-Identity discrepancy wording:
-- If the name or address in the letter does not match the recipient's details, describe the discrepancy neutrally.
-- Do NOT use phrases like "differ from my own" or "not my address".
-- Instead use: "differ from the details of the recipient" or "do not correspond with the address to which this letter was sent".
-- Example: "The name and address in the body of the letter do not correspond with the details shown on the envelope."
+I write to formally appeal the above Parking Charge Notice.
 
-The letter must:
-- sound professional and realistic;
-- remain calm and non-aggressive;
-- stay under 300 words;
-- avoid legal threats;
-- avoid emotional wording;
-- avoid admitting liability;
-- avoid promising payment.
-- Do not repeat requests for documents in multiple different ways.
-- Keep the letter efficient and realistic.
-- Do NOT add any disclaimer or informational note at the end of the letter.
+I do not accept that this charge is valid or enforceable, and I request that it be cancelled immediately.
 
-[/LETTER]`;
+In support of this appeal, I request the following information in writing within 14 days:
+
+1. Full timestamped photographic evidence of the alleged contravention, including clear images of the vehicle entering and leaving the location.
+2. Confirmation of the exact date the original Parking Charge Notice was issued to the vehicle and the exact date this Notice to Keeper was sent, to allow me to assess compliance with Schedule 4 of the Protection of Freedoms Act 2012.
+3. Photographs of the signage in place at the location on the date of the alleged contravention, showing the terms and conditions clearly displayed at the point of entry, in compliance with the BPA or IPC Code of Practice.
+4. A copy of the current landowner authority contract confirming your organisation's right to issue parking charges at this specific location.
+5. Confirmation of your BPA or IPC membership number and compliance scheme.
+
+Until the above information is received and this appeal has been formally considered, I will not be making any payment.
+
+If this appeal is rejected, I will escalate to POPLA (BPA members) or the Independent Appeals Service (IPC members) as appropriate.
+
+This letter does not constitute an admission of liability.
+
+Yours faithfully,
+
+[Your full name]
+[Your address]
+[Date]`;
+}
