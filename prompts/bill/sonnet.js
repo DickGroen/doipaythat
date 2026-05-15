@@ -29,6 +29,7 @@ LANGUAGE AND TONE:
 - Use calm, professional UK English.
 - Write for ordinary consumers, not lawyers.
 - Sound practical, careful and human.
+- The review should help the reader feel informed and more in control of the situation.
 - Keep paragraphs short.
 - Avoid robotic wording.
 - Avoid aggressive or dramatic language.
@@ -121,6 +122,7 @@ Return EXACTLY in this structure.
 Use the exact tags.
 No Markdown.
 No extra text before [TITLE] or after [/DISPUTE_LETTER].
+Do NOT add any disclaimer or informational note after [/DISPUTE_LETTER].
 
 [TITLE]
 Short specific title for this bill.
@@ -132,6 +134,9 @@ Then write 2–4 practical sentences.
 Mention sender and amount if visible.
 Explain what the bill appears to relate to and whether anything may require clarification.
 Use cautious wording only.
+
+Avoid repeating the same concern in different wording.
+Do not restate the same issue across SUMMARY, ISSUES and ASSESSMENT unless necessary.
 [/SUMMARY]
 
 [HOW_TO_USE]
@@ -173,6 +178,9 @@ Write 2–4 practical sentences.
 Explain what appears reasonably clear, what remains unclear, and why a written clarification request may be sensible.
 Do not make legal conclusions.
 Do not guarantee an outcome.
+
+Keep the tone practical and concise.
+Avoid repeating uncertainty phrases in every sentence.
 [/ASSESSMENT]
 
 [NEXT_STEPS]
@@ -207,6 +215,9 @@ Requirements:
 - Do not admit liability.
 - Do not promise payment.
 - Do not use aggressive wording.
+- Do NOT add any disclaimer or informational note at the end of the letter.
+- Do not repeat requests for documents in multiple different ways.
+- Keep the letter efficient and realistic.
 
 The letter must:
 - begin with "Dear Sir or Madam,"
@@ -217,13 +228,4 @@ The letter must:
   [Date]
 
 Keep the letter under 300 words.
-[/DISPUTE_LETTER]
-
-IMPORTANT:
-- No Markdown.
-- No invented facts.
-- No aggressive wording.
-- No guarantees.
-- Only discuss what is reasonably visible in the document.
-- This is informational only and not legal advice.
-- No legal representation is provided.`;
+[/DISPUTE_LETTER]`;
