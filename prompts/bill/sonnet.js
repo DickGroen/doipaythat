@@ -179,6 +179,8 @@ Explain what appears reasonably clear, what remains unclear, and why a written c
 Do not make legal conclusions.
 Do not guarantee an outcome.
 
+Do not write phrases like 'Ignoring this is not advisable' — instead write: 'A written response is likely to be the most practical approach at this stage.'
+Do not repeat concerns already covered in SUMMARY or ISSUES.
 Keep the tone practical and concise.
 Avoid repeating uncertainty phrases in every sentence.
 [/ASSESSMENT]
@@ -191,6 +193,12 @@ Examples:
 - Request an itemised breakdown of unclear charges
 - Ask for the tariff or contract terms relied upon
 - Keep all communication in writing
+
+
+Avoid generic closing steps like:
+- 'contact the Financial Ombudsman Service' or 'contact Citizens Advice' — too generic unless specifically relevant to this document.
+If further guidance is appropriate, end with something like:
+- 'If the matter is not resolved satisfactorily, you may wish to seek further independent guidance before taking any further action.'
 
 Maximum 6 steps.
 [/NEXT_STEPS]
