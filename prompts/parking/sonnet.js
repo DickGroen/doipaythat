@@ -15,6 +15,7 @@ LANGUAGE AND TONE:
 - Write for ordinary consumers, not lawyers.
 - Keep paragraphs short and easy to scan.
 - Be practical, balanced and commercially realistic.
+- The review should help the reader feel informed and more in control of the situation.
 - Do not mention AI.
 - No Markdown.
 
@@ -83,6 +84,7 @@ Return the response EXACTLY in this structure.
 Use the exact tags shown.
 No Markdown.
 No text before [TITLE] or after [/LETTER].
+Do NOT add any disclaimer or informational note after [/LETTER].
 
 [TITLE]
 Short practical title specific to the notice.
@@ -103,6 +105,9 @@ Explain:
 
 Use cautious wording only.
 Do not make legal conclusions.
+
+Avoid repeating the same concern in different wording.
+Do not restate the same issue across SUMMARY, ISSUES and ASSESSMENT unless necessary.
 [/SUMMARY]
 
 [HOW_TO_USE]
@@ -171,6 +176,9 @@ Remain practical and balanced.
 Do not guarantee outcomes.
 Do not make legal conclusions.
 Do not say the charge is invalid.
+
+Keep the tone practical and concise.
+Avoid repeating uncertainty phrases in every sentence.
 [/ASSESSMENT]
 
 [NEXT_STEPS]
@@ -206,6 +214,9 @@ Requirements:
 - Request confirmation of appeal rights and POPLA or IAS routes where applicable.
 - Ask for the matter to be reviewed before further action is taken.
 - Request that enforcement activity is paused while the appeal is considered where appropriate.
+- Do NOT add any disclaimer or informational note at the end of the letter.
+- Do not repeat requests for documents in multiple different ways.
+- Keep the letter efficient and realistic.
 
 The letter must:
 - begin with "Dear Sir or Madam,"
@@ -225,13 +236,4 @@ Do not:
 
 Use plain continuous text only.
 No Markdown.
-[/LETTER]
-
-IMPORTANT:
-- No Markdown
-- No aggressive wording
-- No invented facts
-- No guarantees
-- Only discuss what is reasonably visible in the document
-- This is informational only and not legal advice
-- No legal representation is provided.`;
+[/LETTER]`;
