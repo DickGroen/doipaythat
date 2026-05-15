@@ -48,6 +48,7 @@ function stripTrailingDisclaimer(text = "") {
   return String(text)
     .replace(/\n*(This (content|document|letter) is (informational|for informational purposes)[^\n]*\n?)+$/i, "")
     .replace(/\n*(This is a draft[^\n]*\n?)+$/i, "")
+    .replace(/\n*Please direct all future correspondence[^\n]*\n?/gi, "")
     .trim();
 }
 
