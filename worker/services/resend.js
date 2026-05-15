@@ -351,7 +351,9 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
 
     const subject =
       emailType === "trust"
-        ? "Your document has been reviewed"
+        ? amountStr
+          ? `Your ${escapeHtml(labels.title)} review — a few things worth checking`
+          : `Your ${escapeHtml(labels.title)} review — some points worth checking`
         : amountStr
           ? `Before you pay ${amountStr} — check this first`
           : "Before you pay — check this first";
@@ -406,17 +408,20 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
             : ""
         }`;
     } else {
+      // trust / tier-3 — improved: subtle uncertainty, always has CTA
       bodyHtml = `
         <p>Hi ${safeName},</p>
-        <p>We've reviewed your ${escapeHtml(labels.title)}${senderPart}.</p>
-        <p>At first glance, everything appears relatively clear — but it can still be useful to review the details carefully before taking action.</p>
-        <p>${escapeHtml(triage?.teaser || "Some details may be worth a closer look.")}</p>
+        <p>We've reviewed your ${escapeHtml(labels.title)}${senderPart}${amountStr ? ` for ${amountStr}` : ""}.</p>
+        <p>The document appears professionally presented, but there are still some points worth checking carefully before you decide how to respond.</p>
+        <p>${escapeHtml(triage?.teaser || "Certain details are not fully explained within the correspondence itself. A closer look may be worth it before you pay or respond.")}</p>
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
+        <p>A full review gives you a clear picture of what the claim actually covers — and a ready-to-send ${escapeHtml(labels.letter)} if you want to respond in writing:</p>
         ${
           stripeLink
-            ? `<p>If you'd like a full breakdown, you can still request a full analysis:</p>
-               <p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Get full analysis — £${escapeHtml(labels.price)} →</a></p>`
+            ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Review the full details before responding — £${escapeHtml(labels.price)} →</a></p>`
             : ""
-        }`;
+        }
+        <p style="font-size:0.9rem;color:#374151;">Most people prefer to understand what they're being asked to pay — before they pay it.</p>`;
     }
 
     await sendEmail(env, {
@@ -464,7 +469,9 @@ async function sendParkingFreeStage1(env, { name, email, labels, triage, stripeL
 
   const subject =
     emailType === "trust"
-      ? "Your parking fine has been reviewed"
+      ? amountStr
+        ? `Your parking fine review — a few things worth checking before you pay ${amountStr}`
+        : "Your parking fine review — some points worth checking first"
       : amountStr
         ? `Before you pay ${amountStr} — your parking fine check`
         : "Before you pay that parking fine — check this first";
@@ -510,17 +517,21 @@ async function sendParkingFreeStage1(env, { name, email, labels, triage, stripeL
           : ""
       }`;
   } else {
+    // trust / tier-3 parking — improved
     bodyHtml = `
       <p>Hi ${name},</p>
-      <p>We've reviewed your parking fine${senderPart}.</p>
-      <p>At first glance the fine appears relatively straightforward — but it is always worth making sure the correct process was followed before paying.</p>
-      <p>${escapeHtml(triage?.teaser || "Some aspects may be worth a quick check before you pay.")}</p>
+      <p>We've reviewed your parking fine${senderPart}${amountStr ? ` for ${amountStr}` : ""}.</p>
+      <p>The fine appears to have been issued through the correct channels, but there are still some procedural points worth checking before you pay.</p>
+      <p>${escapeHtml(triage?.teaser || "Some aspects of how the charge was issued may be worth a closer look before deciding whether to pay.")}</p>
+      ${groundsHtml ? `<p>Some areas that may be worth checking:</p>${groundsHtml}` : ""}
+      <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
+      <p>A full review confirms whether the correct process was followed — and includes a ready-to-send appeal letter if you decide to challenge:</p>
       ${
         stripeLink
-          ? `<p>If you'd like a full breakdown, a complete review is available:</p>
-             <p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Get full review — £${escapeHtml(labels.price)} →</a></p>`
+          ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Review the full details before paying — £${escapeHtml(labels.price)} →</a></p>`
           : ""
-      }`;
+      }
+      <p style="font-size:0.9rem;color:#374151;">Checking first takes minutes. Paying without checking is permanent.</p>`;
   }
 
   await sendEmail(env, {
@@ -551,7 +562,7 @@ async function sendFreeStage2(env, { name, email, type, labels, triage, stripeLi
        <p>A full review and ready-to-send appeal letter is still available for £${escapeHtml(labels.price)}:</p>`
     : `<p>Hi ${name},</p>
        <p>Just a quick reminder about your ${escapeHtml(labels.title)}.</p>
-       <p>Many people end up paying more than they should simply because they don't check first.</p>
+       <p>Some aspects may still require clarification before deciding how to respond — and it is easier to check now than after you have already paid.</p>
        ${
          triage?.teaser
            ? `<p style="background:#fef3c7;border:1px solid #fbbf24;padding:12px;border-radius:6px;font-size:0.9rem;"><strong>From your initial review:</strong> ${escapeHtml(triage.teaser)}</p>`
@@ -562,7 +573,7 @@ async function sendFreeStage2(env, { name, email, type, labels, triage, stripeLi
   const cta = `
 <p style="margin:20px 0;">
   <a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">
-    ${isParking ? `Appeal before you pay — £${escapeHtml(labels.price)} →` : `Check this before you pay — £${escapeHtml(labels.price)} →`}
+    ${isParking ? `Appeal before you pay — £${escapeHtml(labels.price)} →` : `Get the full review before you respond — £${escapeHtml(labels.price)} →`}
   </a>
 </p>
 <p style="font-size:0.9rem;color:#374151;">
@@ -596,7 +607,7 @@ async function sendFreeStage3(env, { name, email, type, labels, triage, stripeLi
        }`
     : `<p>Hi ${name},</p>
        <p>This is our final reminder before we close this follow-up.</p>
-       <p>If you haven't had a chance to review the claim yet, it's still worth checking before you pay.</p>
+       <p>If you haven't had a chance to review the claim yet, it's still worth checking before you pay or respond. Some details in correspondence like this are not always as clear as they appear.</p>
        ${
          triage?.teaser
            ? `<p style="background:#fef3c7;border:1px solid #fbbf24;padding:12px;border-radius:6px;font-size:0.9rem;"><strong>From your initial review:</strong> ${escapeHtml(triage.teaser)}</p>`
