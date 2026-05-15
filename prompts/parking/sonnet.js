@@ -177,6 +177,8 @@ Do not guarantee outcomes.
 Do not make legal conclusions.
 Do not say the charge is invalid.
 
+Do not write phrases like 'Ignoring this is not advisable' — instead write: 'A written response is likely to be the most practical approach at this stage.'
+Do not repeat concerns already covered in SUMMARY or ISSUES.
 Keep the tone practical and concise.
 Avoid repeating uncertainty phrases in every sentence.
 [/ASSESSMENT]
@@ -190,6 +192,12 @@ Examples:
 - "Request ANPR evidence or signage photographs if these are unclear"
 - "If the operator rejects the appeal, check whether POPLA or IAS escalation is available"
 - "For council PCNs, follow the statutory appeal process shown on the notice"
+
+
+Avoid generic closing steps like:
+- 'contact the Financial Ombudsman Service' or 'contact Citizens Advice' — too generic unless specifically relevant to this document.
+If further guidance is appropriate, end with something like:
+- 'If the matter is not resolved satisfactorily, you may wish to seek further independent guidance before taking any further action.'
 
 Do not give unrealistic or aggressive advice.
 [/NEXT_STEPS]
