@@ -294,6 +294,11 @@ Maximum 6 steps.
 [LETTER]
 Write a complete professional British English response draft.
 
+The letter should sound like a calm, intelligent UK consumer — not a lawyer or legal template.
+Avoid overly formal transition phrases.
+Prefer concise and natural wording over legalistic phrasing.
+Avoid unnecessary closing sentences if the information is already obvious from the letter layout.
+
 Opening:
 Dear Sir or Madam,
 
@@ -320,7 +325,13 @@ The letter must:
   request confirmation of the original default date;
 - state:
   "This correspondence must not be treated as an admission of liability.";
-- request that collection activity is paused while the matter is reviewed.
+- request that collection activity is paused while the requested information is being reviewed.
+
+Avoid these phrases — they sound like AI legal templates:
+- "Before I am able to respond further" → use "Before I am able to assess this matter further"
+- "given appropriate consideration" → use "properly considered"
+- "Please respond in writing to the address below" → omit entirely; the address is already shown
+- "I await your response" → omit or rephrase naturally
 
 Identity discrepancy wording:
 - If the name or address in the letter does not match the recipient's details, describe the discrepancy neutrally.
