@@ -205,6 +205,11 @@ Do not give unrealistic or aggressive advice.
 [LETTER]
 Begin EXACTLY with:
 
+The letter should sound like a calm, intelligent UK consumer — not a lawyer or legal template.
+Avoid overly formal transition phrases.
+Prefer concise and natural wording over legalistic phrasing.
+Avoid unnecessary closing sentences if the information is already obvious from the letter layout.
+
 Please add your own name, address and date before sending.
 
 Then write a complete professional appeal letter in formal British English.
@@ -221,7 +226,7 @@ Requirements:
 - For private operators, request confirmation of authority to issue charges where relevant.
 - Request confirmation of appeal rights and POPLA or IAS routes where applicable.
 - Ask for the matter to be reviewed before further action is taken.
-- Request that enforcement activity is paused while the appeal is considered where appropriate.
+- Request that enforcement activity is paused while the requested information is being reviewed.
 - Do NOT add any disclaimer or informational note at the end of the letter.
 - Do not repeat requests for documents in multiple different ways.
 - Keep the letter efficient and realistic.
@@ -243,5 +248,11 @@ Do not:
 - sound artificial or exaggerated.
 
 Use plain continuous text only.
+
+Avoid these phrases — they sound like AI legal templates:
+- "Before I am able to respond further" → use "Before I am able to assess this matter further"
+- "given appropriate consideration" → use "properly considered"
+- "Please respond in writing to the address below" → omit entirely; the address is already shown
+- "I await your response" → omit or rephrase naturally
 No Markdown.
 [/LETTER]`;
