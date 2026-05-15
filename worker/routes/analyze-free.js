@@ -292,16 +292,14 @@ function normalizeFlagCount(triage) {
 function normalizeTeaser(risk, teaser) {
   const map = {
     high:
-      "Es deutet einiges darauf hin, dass hier mögliche Unstimmigkeiten bestehen. Wenn du nicht reagierst, kann sich die Situation finanziell deutlich verschlechtern.",
+      "There may be important aspects of this document worth checking carefully before responding or making payment.",
     medium:
-      "In diesem Schreiben könnten Ansatzpunkte vorliegen, die ohne rechtzeitige Reaktion zu unnötigen Mehrkosten führen können.",
+      "There may be aspects of this document that could benefit from further review before payment is considered.",
     low:
-      "Es gibt Hinweise darauf, dass diese Forderung nicht vollständig eindeutig ist. Ohne Prüfung könnten unnötige Kosten entstehen.",
+      "It may still be worth checking the details carefully before responding — some aspects of the claim may not be fully explained.",
   };
 
-  const allowed = new Set(Object.values(map));
-
-  if (allowed.has(teaser)) return teaser;
-
+  // Always use the English defaults — never pass through AI-generated teaser text
+  // which may contain German if the uploaded document is German
   return map[risk] || map.medium;
 }
