@@ -197,6 +197,8 @@ Do not:
 - make legal conclusions;
 - promise a successful dispute outcome.
 
+Do not write phrases like 'Ignoring this is not advisable' — instead write: 'A written response is likely to be the most practical approach at this stage.'
+Do not repeat concerns already covered in SUMMARY or ISSUES.
 Keep the tone practical and concise.
 Avoid repeating uncertainty phrases in every sentence.
 [/ASSESSMENT]
@@ -207,6 +209,12 @@ Avoid repeating uncertainty phrases in every sentence.
 - Request written confirmation of cancellation or account changes
 - Keep screenshots if cancellation must be completed online
 - Request clarification of unclear renewal, billing or cancellation wording
+
+Avoid generic closing steps like:
+- 'contact the Financial Ombudsman Service' or 'contact Citizens Advice' — too generic unless specifically relevant to this document.
+If further guidance is appropriate, end with something like:
+- 'If the matter is not resolved satisfactorily, you may wish to seek further independent guidance before taking any further action.'
+
 - Keep records of all future communication
 [/NEXT_STEPS]
 
