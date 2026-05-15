@@ -16,6 +16,7 @@ LANGUAGE AND TONE:
 - Keep paragraphs short and readable.
 - Sound practical and commercially realistic.
 - Avoid sounding dramatic or confrontational.
+- The review should help the reader feel informed and more in control of the situation.
 - Do not mention AI.
 - No Markdown.
 
@@ -94,6 +95,7 @@ Return the response EXACTLY in this structure.
 Use the exact tags shown.
 No Markdown.
 No extra text before [TITLE] or after [/CANCELLATION_LETTER].
+Do NOT add any disclaimer or informational note after [/CANCELLATION_LETTER].
 
 [TITLE]
 Short practical title specific to this subscription or contract.
@@ -116,6 +118,9 @@ Use cautious wording only:
 - "worth checking"
 
 Do not make legal conclusions.
+
+Avoid repeating the same concern in different wording.
+Do not restate the same issue across SUMMARY, ISSUES and ASSESSMENT unless necessary.
 [/SUMMARY]
 
 [HOW_TO_USE]
@@ -191,6 +196,9 @@ Do not:
 - guarantee refunds or cancellation success;
 - make legal conclusions;
 - promise a successful dispute outcome.
+
+Keep the tone practical and concise.
+Avoid repeating uncertainty phrases in every sentence.
 [/ASSESSMENT]
 
 [NEXT_STEPS]
@@ -222,6 +230,9 @@ Requirements:
 - Do not threaten legal action.
 - Do not admit liability for disputed charges.
 - Do not promise payment.
+- Do NOT add any disclaimer or informational note at the end of the letter.
+- Do not repeat requests for documents in multiple different ways.
+- Keep the letter efficient and realistic.
 
 The letter must:
 - begin with "Dear Sir or Madam,"
@@ -233,13 +244,4 @@ The letter must:
 
 Use plain continuous text only.
 No Markdown.
-[/CANCELLATION_LETTER]
-
-IMPORTANT:
-- No Markdown
-- No aggressive wording
-- No invented facts
-- No guarantees
-- Only discuss what is reasonably visible in the document
-- This is informational only and not legal advice
-- No legal representation is provided.`;
+[/CANCELLATION_LETTER]`;
