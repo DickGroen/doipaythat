@@ -267,6 +267,12 @@ The tone should feel calm, realistic and practical.
 Keep the tone practical and concise.
 Avoid repeating uncertainty phrases in every sentence.
 Do not repeat concerns already covered in SUMMARY or ISSUES.
+
+Avoid these phrases — they sound too reassuring and reduce buying tension:
+- "standard opening collection notice" → use "appears to be an initial collection notice" or "an early-stage collection letter"
+- "standard demand letter" → use "initial payment demand"
+- "nothing unusual" → omit or rephrase
+- "appears straightforward" → omit entirely
 [/ASSESSMENT]
 
 [NEXT_STEPS]
@@ -288,6 +294,9 @@ Avoid generic closing steps like:
 If further guidance is appropriate, end with something like:
 - "If the sender cannot provide satisfactory documentation, you may wish to seek further independent guidance before making any payment decision."
 
+Avoid this phrasing — it sounds too legalistic:
+- "Do not admit liability" → use "Avoid confirming liability until you have verified the details of the claim."
+
 Maximum 6 steps.
 [/NEXT_STEPS]
 
@@ -299,16 +308,20 @@ Avoid overly formal transition phrases.
 Prefer concise and natural wording over legalistic phrasing.
 Avoid unnecessary closing sentences if the information is already obvious from the letter layout.
 
+IMPORTANT: Write ONLY the letter body — from "Dear Sir or Madam," to "Yours faithfully,".
+Do NOT include any of the following — these are added automatically by the template:
+- sender address block
+- recipient address block
+- date
+- [Your full name], [Your full address], [Postcode], [Date] placeholders
+- any text before "Dear Sir or Madam,"
+- any text after "Yours faithfully,"
+
 Opening:
 Dear Sir or Madam,
 
 Closing:
 Yours faithfully,
-
-Signature placeholders:
-[Your full name]
-[Your full address including postcode]
-[Date]
 
 The letter must:
 - reference the claim or account number if visible;
