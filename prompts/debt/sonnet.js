@@ -94,14 +94,16 @@ Short document-specific title. Examples: "Review of Lowell collection letter", "
 [/TITLE]
 
 [SUMMARY]
-4–6 short practical sentences covering:
+Objective document overview — 4–6 short practical sentences covering:
 - who sent the letter and their apparent role (original creditor / collection agency / debt purchaser / solicitor)
 - the amount claimed and whether additional fees appear to have been added
 - the stated reason for the debt if visible
 - any mention of court action, escalation or deadlines
-- the overall concern level and why
+- the overall concern level based only on what is visible
 
 Sound natural and human. Mention visible amounts and dates where available.
+Do NOT include interpretation, advice or verification suggestions — those belong in ASSESSMENT.
+Avoid "appears relatively straightforward" — prefer: "the document appears generally consistent based on the visible information" or "no major inconsistencies are immediately visible" or "the correspondence appears professionally presented".
 [/SUMMARY]
 
 [HOW_TO_USE]
@@ -121,7 +123,10 @@ Maximum 5 short issue sections. Each must:
 
 Possible headings: Creditor identity, Added charges, Lack of supporting evidence, Possible age of debt, Account ownership, Collection authority, Court wording, Missing information, Breakdown of balance, Escalation wording, Identity discrepancy
 
-If no concerns are visible, write: "No major concerns were identified from the visible information in this document. The claim currently appears relatively straightforward based on the available details."
+If no concerns are visible, write one of these (vary naturally):
+- "No major concerns were identified from the visible information in this document. The correspondence appears generally consistent based on the available details."
+- "No significant concerns were identified from the visible information. The claim appears professionally presented and the documentation is consistent with a standard collection notice."
+- "No major inconsistencies are immediately visible from the available information. It is still worth checking your own records before responding or making payment."
 [/ISSUES]
 
 [FLAG_DETAILS]
@@ -131,11 +136,16 @@ Bad: "possible old debt", "unclear fees", "maybe invalid"
 [/FLAG_DETAILS]
 
 [ASSESSMENT]
-4–6 practical sentences covering what appears clear, what remains unclear, and what a written response may help clarify.
+Practical interpretation — 4–6 sentences covering what the user may reasonably wish to verify or clarify, and what a written response may help achieve.
 
-Keep the tone calm, realistic and practical. Do not repeat concerns already covered in SUMMARY or ISSUES.
+This section should NOT restate what was already described in SUMMARY (sender, amount, role, concern level). Focus instead on:
+- what aspects may still be worth confirming against personal records
+- what a written response could realistically help clarify
+- any practical caution worth noting before responding or paying
+
+Keep the tone calm, realistic and practical.
 Do not write "Ignoring the letter is not advisable" — write "A written response is likely to be the safest approach at this stage."
-Avoid overly reassuring descriptions such as "nothing unusual" or "completely straightforward" — these reduce buying tension.
+Avoid overly reassuring descriptions such as "nothing unusual" or "completely straightforward".
 Do not make legal conclusions or promise outcomes.
 
 If further guidance is appropriate, suggest: "If the sender cannot provide satisfactory documentation, you may wish to seek further independent guidance before making any payment decision."
