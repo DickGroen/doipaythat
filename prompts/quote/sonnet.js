@@ -156,4 +156,4 @@ The letter must:
 - clearly state that the message does not constitute acceptance of the quote
 
 Do not threaten, accuse the provider, promise payment or use aggressive wording. Do not repeat requests in different ways. Do not add any disclaimer after "Yours faithfully,".
-[/LETTER]\`;
+[/LETTER]`;
