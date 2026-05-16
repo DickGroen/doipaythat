@@ -1,193 +1,631 @@
-// prompts/debt/triage.js
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mahnung pr&uuml;fen — MussIchZahlen.de</title>
+  <meta name="description" content="Mahnung, Inkassoschreiben oder Zahlungsaufforderung erhalten? Kostenlose Ersteinsch&auml;tzung, danach vollst&auml;ndige Analyse + fertiger Widerspruch.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--ink:#0f1923;--ink-2:#2d3748;--ink-3:#4a5568;--muted:#718096;--line:#e2e8f0;--surface:#f7f9fc;--white:#ffffff;--accent:#1a3a6b;--accent-2:#2d5499;--green:#166534;--green-soft:#dcfce7;--warn:#eab308;--warn-soft:#fef9c3;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.65;color:var(--ink);background:var(--white);-webkit-font-smoothing:antialiased;}
+    h1,h2,h3{font-family:'Lora',Georgia,serif;line-height:1.2;}
+    a{color:var(--accent);}
+    .container{max-width:860px;margin:0 auto;padding:0 24px;}
+    .hinweis-banner{background:#fff7ed;border-bottom:2px solid #fdba74;padding:10px 0;text-align:center;font-size:.84rem;font-weight:600;color:#92400e;}
+    .header{background:var(--white);border-bottom:1px solid var(--line);padding:16px 0;position:sticky;top:0;z-index:100;}
+    .header__inner{display:flex;align-items:center;justify-content:space-between;}
+    .logo{font-family:'Lora',serif;font-size:1.15rem;font-weight:700;color:var(--accent);}
+    .logo-dot{display:inline-block;width:8px;height:8px;background:var(--accent-2);border-radius:50%;margin-right:6px;vertical-align:middle;}
+    .header-cta{background:var(--accent);color:var(--white);border:none;border-radius:8px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;text-decoration:none;}
+    .hero{padding:64px 0 48px;text-align:center;}
+    .hero h1{font-size:clamp(1.9rem,5vw,2.9rem);margin-bottom:20px;max-width:700px;margin-left:auto;margin-right:auto;}
+    .hero__sub{font-size:1.05rem;color:var(--ink-3);max-width:560px;margin:0 auto 30px;line-height:1.7;}
+    .hero-cta,.primary-btn{display:inline-block;background:var(--accent);color:var(--white);text-decoration:none;padding:17px 34px;border-radius:10px;font-size:1.05rem;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .hero-cta:hover,.primary-btn:hover,.offer-cta:hover{background:var(--accent-2);}
+    .hero-sub-note{font-size:.82rem;color:var(--muted);margin-top:10px;}
+    .trust-triggers{background:var(--green-soft);border:1px solid #bbf7d0;border-radius:12px;padding:20px 24px;margin:40px auto 0;display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:600px;}
+    @media(max-width:600px){.trust-triggers{grid-template-columns:1fr;}}
+    .trust-trigger{display:flex;align-items:flex-start;gap:10px;font-size:.87rem;color:var(--green);line-height:1.55;}
+    .trust-trigger strong{display:block;font-weight:700;color:#14532d;margin-bottom:2px;}
+    .section{padding:72px 0;}
+    .section--alt{background:var(--surface);}
+    .section-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent-2);margin-bottom:10px;}
+    .section h2{font-size:clamp(1.5rem,3vw,2rem);margin-bottom:32px;}
+    .value-strip{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 36px;justify-content:center;}
+    .value-item{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:100px;padding:8px 16px;font-size:.86rem;color:var(--ink-2);font-weight:500;}
+    .vi-check{color:var(--green);font-weight:700;}
+    .offer-card{background:var(--white);border:2px solid var(--accent);border-radius:16px;padding:36px 32px;max-width:580px;margin:0 auto;box-shadow:0 12px 40px rgba(26,58,107,.1);}
+    @media(max-width:600px){.offer-card{padding:24px 20px;}}
+    .offer-badge{display:inline-block;background:var(--accent);color:var(--white);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:4px 12px;border-radius:100px;margin-bottom:16px;}
+    .offer-title{font-family:'Lora',serif;font-size:1.45rem;margin-bottom:8px;}
+    .offer-desc{color:var(--ink-3);font-size:.93rem;margin-bottom:20px;line-height:1.65;}
+    .offer-list{list-style:none;margin-bottom:24px;display:grid;gap:8px;}
+    .offer-list li{display:flex;align-items:flex-start;gap:10px;font-size:.93rem;color:var(--ink-2);line-height:1.55;}
+    .offer-list li::before{content:"✓";color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px;}
+    hr.offer-divider{border:none;border-top:1px solid var(--line);margin:20px 0;}
+    .offer-price{font-size:2rem;font-weight:700;color:var(--accent);font-family:'Lora',serif;}
+    .offer-price span{font-size:.95rem;color:var(--muted);font-weight:400;font-family:'DM Sans',sans-serif;}
+    .offer-cta{display:block;background:var(--accent);color:var(--white);text-decoration:none;text-align:center;padding:17px;border-radius:10px;font-size:1.05rem;font-weight:700;margin-top:20px;border:none;width:100%;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .offer-security{text-align:center;font-size:.78rem;color:var(--muted);margin-top:10px;}
+    .offer-refund{text-align:center;font-size:.76rem;color:var(--muted);margin-top:6px;}
+    .upload-zone{border:2px dashed var(--line);border-radius:14px;padding:28px;text-align:center;cursor:pointer;background:var(--surface);transition:.2s;}
+    .upload-zone:hover{border-color:var(--accent);background:#eef4ff;}
+    .upload-label{font-weight:700;color:var(--accent);}
+    .upload-hint{font-size:.84rem;color:var(--muted);margin-top:6px;}
+    .contact-fields{display:none;flex-direction:column;gap:10px;margin-top:18px;}
+    .input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;}
+    .input:focus{outline:none;border-color:var(--accent);}
+    .optie-status{font-size:.9rem;margin-top:12px;}
+    .optie-status--error{color:#b91c1c;}
+    .optie-status--success{color:var(--green);}
+    .optie-status--info{color:var(--accent);}
+    .teaser{display:none;margin-top:30px;opacity:0;transform:translateY(10px);transition:.25s ease;}
+    .teaser--visible{opacity:1;transform:translateY(0);}
+    .teaser-card{border-color:var(--warn);background:#fffdf2;}
+    .teaser-heading{font-weight:800;font-size:1.2rem;color:var(--ink);}
+    .teaser-sub{margin-top:6px;color:var(--muted);font-size:.92rem;}
+    .teaser-ai{margin:16px 0;background:var(--warn-soft);border-left:4px solid var(--warn);padding:14px;border-radius:8px;font-weight:500;color:#713f12;}
+    .teaser-cta{margin-top:16px;}
+    .teaser-cta h3{font-size:1.1rem;margin-bottom:10px;font-family:'Lora',serif;}
+    .teaser-cta ul{list-style:none;margin:10px 0 16px;display:grid;gap:7px;}
+    .teaser-cta li{font-size:.92rem;color:var(--ink-2);}
+    .teaser-cta li::before{content:"✓ ";color:var(--green);font-weight:700;}
+    .teaser-trust{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;font-size:.8rem;color:var(--muted);}
+    .teaser-trust span{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 10px;}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+    @media(max-width:640px){.steps{grid-template-columns:1fr;}}
+    .step__num{font-family:'Lora',serif;font-size:2.2rem;font-weight:700;color:var(--line);margin-bottom:10px;line-height:1;}
+    .step__title{font-weight:700;margin-bottom:6px;font-size:.98rem;}
+    .step__desc{font-size:.87rem;color:var(--ink-3);line-height:1.65;}
+    .trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+    @media(max-width:680px){.trust-grid{grid-template-columns:1fr;}}
+    .trust-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:20px;}
+    .trust-item__label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);margin-bottom:8px;}
+    .trust-item__text{font-size:.87rem;color:var(--ink-3);line-height:1.65;}
+    .fit-rows{display:grid;gap:10px;max-width:560px;}
+    .fit-row{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;background:var(--green-soft);border:1px solid #bbf7d0;border-radius:10px;font-size:.93rem;color:#14532d;}
+    .fit-row span:first-child{font-weight:700;flex-shrink:0;}
+    .faq-list{display:grid;gap:4px;}
+    .faq-item{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--white);}
+    .faq-q{display:flex;align-items:center;justify-content:space-between;padding:17px 20px;cursor:pointer;font-weight:600;font-size:.93rem;user-select:none;gap:12px;}
+    .faq-q:hover{background:var(--surface);}
+    .faq-chevron{flex-shrink:0;color:var(--muted);transition:transform .25s;}
+    .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:.9rem;color:var(--ink-3);line-height:1.7;padding:0 20px;}
+    .faq-item--open .faq-a{max-height:300px;padding:0 20px 17px;}
+    .faq-item--open .faq-chevron{transform:rotate(180deg);}
+    .final-cta{background:var(--accent);color:var(--white);padding:72px 0;text-align:center;}
+    .final-cta h2{color:var(--white);font-size:clamp(1.6rem,3.5vw,2.1rem);margin-bottom:12px;}
+    .final-cta p{color:rgba(255,255,255,.75);margin-bottom:32px;}
+    .final-cta-btn{display:inline-block;background:var(--white);color:var(--accent);text-decoration:none;padding:17px 40px;border-radius:10px;font-size:1.05rem;font-weight:700;}
+    .final-cta-note{color:rgba(255,255,255,.6);font-size:.8rem;margin-top:12px;}
+    .sticky-footer{position:fixed;bottom:0;left:0;right:0;background:var(--ink);color:var(--white);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;transform:translateY(100%);transition:transform .3s ease;z-index:200;}
+    .sticky-footer.visible,.sticky-footer--visible{transform:translateY(0);}
+    .sticky-footer__text{font-size:.9rem;font-weight:600;}
+    .sticky-footer__sub{font-size:.76rem;color:rgba(255,255,255,.6);margin-top:2px;}
+    .sticky-cta{background:var(--white);color:var(--accent);border:none;border-radius:8px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;text-decoration:none;}
+    @media(max-width:500px){.sticky-footer{flex-direction:column;text-align:center;}.sticky-cta{width:100%;}}
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,25,35,.6);backdrop-filter:blur(4px);z-index:300;display:none;align-items:center;justify-content:center;padding:24px;}
+    .modal-overlay.open,.modal-overlay.modal--open{display:flex;}
+    .modal{background:var(--white);border-radius:16px;max-width:480px;width:100%;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.2);}
+    .modal__header{background:var(--accent);color:var(--white);padding:28px 28px 24px;}
+    .modal__eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;opacity:.7;margin-bottom:8px;}
+    .modal__title{font-family:'Lora',serif;font-size:1.25rem;font-weight:700;margin-bottom:8px;}
+    .modal__price{font-size:1.6rem;font-weight:700;font-family:'Lora',serif;}
+    .modal__price span{font-size:.95rem;opacity:.7;font-weight:400;font-family:'DM Sans',sans-serif;}
+    .modal__body{padding:24px 28px;}
+    .modal__feature{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;font-size:.92rem;color:var(--ink-2);}
+    .modal__feature .check{color:var(--green);font-weight:700;flex-shrink:0;}
+    .modal__disclaimer{background:var(--surface);border-radius:8px;padding:10px 14px;font-size:.8rem;color:var(--muted);margin:16px 0;line-height:1.55;}
+    .modal__cta{display:block;background:var(--accent);color:var(--white);text-decoration:none;text-align:center;padding:16px;border-radius:10px;font-size:1rem;font-weight:700;margin-bottom:10px;}
+    .modal__security{text-align:center;font-size:.78rem;color:var(--muted);}
+    .modal__close{display:block;text-align:center;margin-top:14px;font-size:.84rem;color:var(--muted);cursor:pointer;}
+    .modal__close:hover{color:var(--ink);}
+    .footer-trust{padding:32px 0 16px;font-size:.85rem;color:var(--ink-3);line-height:1.75;border-top:1px solid var(--line);}
+    .disclaimer{padding:16px 0 20px;font-size:.78rem;color:var(--muted);line-height:1.7;}
+  </style>
+</head>
+<body>
 
-export default `You are a careful triage system for UK debt letters, collection agency letters, solicitor letters, invoices and payment demands.
+<div class="hinweis-banner">&#9200; Nicht vorschnell zahlen &mdash; viele Mahnungen enthalten Punkte, die vor einer Zahlung gepr&uuml;ft werden sollten</div>
 
-Goal:
-You assess whether the document may contain points worth checking further before payment or response.
-You do NOT provide legal advice.
-You do NOT give a final legal conclusion.
+<header class="header">
+  <div class="container">
+    <div class="header__inner">
+      <div class="logo"><span class="logo-dot"></span>MussIchZahlen</div>
+      <a href="#free-check" class="header-cta">Kostenlos pr&uuml;fen</a>
+    </div>
+  </div>
+</header>
 
-Important safety rules:
-- Never assume the claim is invalid.
-- Never encourage the user to ignore correspondence.
-- Never promise a successful dispute.
-- Never state that payment is unnecessary.
-- Never use aggressive fear-based language.
-- Never suggest the debt is fraudulent unless explicitly stated in the document itself.
-- Use cautious, balanced and professional English only.
+<section class="hero">
+  <div class="container">
+    <h1>Bevor Sie zahlen &mdash; pr&uuml;fen Sie, ob die Forderung wirklich berechtigt ist</h1>
+    <p class="hero__sub">Laden Sie Ihr Schreiben hoch und erhalten Sie zuerst eine kostenlose Ersteinsch&auml;tzung. Wenn Ansatzpunkte erkennbar sind, k&ouml;nnen Sie danach die vollst&auml;ndige Analyse + fertigen Widerspruch kaufen.</p>
+    <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">Viele merken erst nach der Zahlung, dass die Forderung angreifbar gewesen w&auml;re.</p>
+    <a href="#free-check" class="hero-cta">Kostenlose Ersteinsch&auml;tzung starten &rarr;</a>
+    <div class="hero-sub-note">PDF, JPG oder PNG &middot; kein Abo &middot; vollst&auml;ndige Analyse optional</div>
+    <div class="trust-triggers">
+      <div class="trust-trigger"><span>&#128308;</span><div><strong>Verj&auml;hrung: 3 Jahre</strong>Viele Forderungen k&ouml;nnen verj&auml;hrt sein (&sect; 195 BGB).</div></div>
+      <div class="trust-trigger"><span>&#128308;</span><div><strong>Inkassokosten gedeckelt</strong>Kosten d&uuml;rfen Anwaltskosten nicht &uuml;bersteigen (&sect; 4 RDGEG).</div></div>
+    </div>
+  </div>
+</section>
 
-Prefer wording such as:
-- "may", "could", "potentially", "worth checking", "may require clarification"
+<section class="section" id="free-check">
+  <div class="container" style="max-width:620px;">
+    <div class="offer-card" id="free-card">
+      <div class="offer-badge">Kostenlos starten</div>
+      <div class="offer-title">Kostenlose Ersteinsch&auml;tzung</div>
+      <p class="offer-desc">Laden Sie Ihre Mahnung oder Ihr Inkassoschreiben hoch. Sie erhalten eine erste Einsch&auml;tzung, ob eine genauere Pr&uuml;fung sinnvoll sein k&ouml;nnte.</p>
+      <div id="gratis-upload-zone" class="upload-zone">
+        <div class="upload-label">Datei ausw&auml;hlen</div>
+        <div class="upload-hint">PDF, JPG oder PNG &middot; max. 8 MB</div>
+        <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+      </div>
+      <div id="gratis-contact-fields" class="contact-fields">
+        <input id="gratis-name" class="input" placeholder="Ihr Name" autocomplete="name">
+        <input id="gratis-email" class="input" placeholder="Ihre E-Mail-Adresse" type="email" autocomplete="email">
+        <button id="gratis-btn" disabled class="offer-cta">Kostenlose Einsch&auml;tzung starten</button>
+      </div>
+      <div id="gratis-status" class="optie-status"></div>
+      <div class="offer-security">&#128274; Ihre Datei wird nur zur Analyse verarbeitet.</div>
+    </div>
 
-Avoid wording such as:
-- "illegal", "unenforceable", "guaranteed", "you will win", "fraudulent", "without doubt"
+    <div id="teaser" class="teaser">
+      <div class="offer-card teaser-card">
+        <div id="teaser-company" class="teaser-heading"></div>
+        <div id="teaser-sub" class="teaser-sub"></div>
+        <div id="modal-dynamic-copy" class="teaser-ai"></div>
+        <div id="teaser-cta" class="teaser-cta"></div>
+        <div class="teaser-trust">
+          <span>Kein Abo</span><span>Sichere Zahlung via Stripe</span><span>Ergebnis per E-Mail</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-Read the document and return ONLY this JSON — no text before or after, no Markdown:
+<section class="section section--alt">
+  <div class="container">
+    <div class="value-strip">
+      <span class="value-item"><span class="vi-check">&#10003;</span> Verj&auml;hrung (&sect; 195 BGB)</span>
+      <span class="value-item"><span class="vi-check">&#10003;</span> Inkassokosten (&sect; 4 RDGEG)</span>
+      <span class="value-item"><span class="vi-check">&#10003;</span> Abtretungsnachweis</span>
+      <span class="value-item"><span class="vi-check">&#10003;</span> Fertiger Widerspruch</span>
+      <span class="value-item"><span class="vi-check">&#10003;</span> Einmalig &euro;49 &mdash; kein Abo</span>
+    </div>
+    <div class="offer-card">
+      <div class="offer-badge">Nach Ersteinsch&auml;tzung</div>
+      <div class="offer-title">Vollst&auml;ndige Analyse + Widerspruch</div>
+      <p class="offer-desc">Wir pr&uuml;fen Ihr Schreiben auf m&ouml;gliche Ansatzpunkte und erstellen einen fertigen Widerspruch.</p>
+      <ul class="offer-list">
+        <li>Pr&uuml;fung auf Verj&auml;hrung (&sect; 195 BGB)</li>
+        <li>Pr&uuml;fung der Inkassokosten (&sect; 4 RDGEG)</li>
+        <li>Pr&uuml;fung der Abtretung und Nachweispflicht</li>
+        <li>Pr&uuml;fung formaler Auff&auml;lligkeiten</li>
+        <li>Fertiger Widerspruch auf Ihren Namen</li>
+        <li>Klare n&auml;chste Schritte</li>
+        <li>Ergebnis per E-Mail</li>
+      </ul>
+      <hr class="offer-divider">
+      <div class="offer-price">&euro;49 <span>einmalig &middot; kein Abo</span></div>
+      <a href="#free-check" class="offer-cta">Erst kostenlos pr&uuml;fen &rarr;</a>
+      <div class="offer-security">&#128274; Sichere Zahlung &uuml;ber Stripe nach der Ersteinsch&auml;tzung</div>
+      <div class="offer-refund">Bei inhaltlich unvollst&auml;ndiger Analyse: Geld zur&uuml;ck.</div>
+    </div>
+  </div>
+</section>
 
-{
-  "documentType": "debt|collection|solicitor|court|invoice|other|null",
-  "sender": "string or null",
-  "claim_type": "debt_collection|overdue_invoice|solicitor_letter|court_related|unknown|null",
-  "amount_claimed": number or null,
-  "currency": "GBP|EUR|USD|null",
+<section class="section">
+  <div class="container">
+    <div class="section-label">So funktioniert es</div>
+    <h2>In 3 Schritten zur Entscheidung</h2>
+    <div class="steps">
+      <div class="step"><div class="step__num">01</div><div class="step__title">Schreiben hochladen</div><div class="step__desc">Sie laden Ihre Mahnung hoch. PDF, JPG oder PNG.</div></div>
+      <div class="step"><div class="step__num">02</div><div class="step__title">Kostenlose Ersteinsch&auml;tzung</div><div class="step__desc">Sie sehen, ob m&ouml;gliche Ansatzpunkte erkennbar sind.</div></div>
+      <div class="step"><div class="step__num">03</div><div class="step__title">Optional vollst&auml;ndige Analyse</div><div class="step__desc">Wenn Sie m&ouml;chten, erhalten Sie Analyse + fertigen Widerspruch per E-Mail.</div></div>
+    </div>
+  </div>
+</section>
 
-  "is_collection_agency": true or false,
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-label">Rechtliche Grundlage</div>
+    <h2>Worauf wir pr&uuml;fen</h2>
+    <div class="trust-grid">
+      <div class="trust-item"><div class="trust-item__label">&sect; 195 BGB &mdash; Verj&auml;hrung</div><div class="trust-item__text">Regelm&auml;&szlig;ige Verj&auml;hrungsfrist: 3 Jahre. Manche Forderungen k&ouml;nnen nicht mehr durchsetzbar sein.</div></div>
+      <div class="trust-item"><div class="trust-item__label">&sect; 4 RDGEG &mdash; Inkassokosten</div><div class="trust-item__text">Inkassokosten d&uuml;rfen die entsprechenden Anwaltskosten nicht &uuml;bersteigen.</div></div>
+      <div class="trust-item"><div class="trust-item__label">Keine Rechtsberatung</div><div class="trust-item__text">Informative Analyse und Widerspruchsentwurf. Keine rechtliche Vertretung.</div></div>
+    </div>
+  </div>
+</section>
 
-  "possible_old_debt": true or false or null,
-  "possible_excessive_fees": true or false or null,
-  "possible_no_proof": true or false or null,
-  "possible_wrong_person": true or false or null,
-  "possible_pressure_language": true or false or null,
+<section class="section">
+  <div class="container">
+    <div class="section-label">Passend f&uuml;r Sie?</div>
+    <h2>F&uuml;r wen ist das geeignet?</h2>
+    <div class="fit-rows">
+      <div class="fit-row"><span>&#10003;</span><span>Sie haben eine Mahnung, ein Inkassoschreiben oder einen Anwaltsbrief erhalten</span></div>
+      <div class="fit-row"><span>&#10003;</span><span>Sie sind unsicher, ob die Forderung berechtigt ist</span></div>
+      <div class="fit-row"><span>&#10003;</span><span>Sie m&ouml;chten wissen, ob sich ein Widerspruch lohnen k&ouml;nnte</span></div>
+    </div>
+  </div>
+</section>
 
-  "chance": <integer between 0 and 100>,
-  "flagCount": <integer between 0 and 5>,
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-label">H&auml;ufige Fragen</div>
+    <h2>Alles, was Sie wissen m&ouml;chten</h2>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q">Wann ist eine Forderung verj&auml;hrt? <span class="faq-chevron">&#8964;</span></div><div class="faq-a">Die regelm&auml;&szlig;ige Verj&auml;hrungsfrist betr&auml;gt 3 Jahre ab Ende des Jahres der Kenntnis (&sect; 195, 199 BGB).</div></div>
+      <div class="faq-item"><div class="faq-q">D&uuml;rfen Inkassounternehmen beliebig hohe Kosten berechnen? <span class="faq-chevron">&#8964;</span></div><div class="faq-a">Nein. Inkassokosten sind nach &sect; 4 RDGEG begrenzt und d&uuml;rfen die entsprechenden Anwaltskosten nicht &uuml;bersteigen.</div></div>
+      <div class="faq-item"><div class="faq-q">Muss ich nach der kostenlosen Einsch&auml;tzung kaufen? <span class="faq-chevron">&#8964;</span></div><div class="faq-a">Nein. Die vollst&auml;ndige Analyse ist optional.</div></div>
+      <div class="faq-item"><div class="faq-q">Ist das Rechtsberatung? <span class="faq-chevron">&#8964;</span></div><div class="faq-a">Nein. Es handelt sich um eine informative Analyse und einen Widerspruchsentwurf. Keine rechtliche Vertretung.</div></div>
+    </div>
+  </div>
+</section>
 
-  "risk": "low|medium|high",
+<section class="final-cta">
+  <div class="container">
+    <h2>Erst pr&uuml;fen &mdash; dann zahlen</h2>
+    <p>Mahnung erhalten? Starten Sie mit der kostenlosen Ersteinsch&auml;tzung.</p>
+    <a href="#free-check" class="final-cta-btn">Kostenlos pr&uuml;fen &rarr;</a>
+    <div class="final-cta-note">PDF, JPG oder PNG &middot; kein Abo &middot; vollst&auml;ndige Analyse optional</div>
+  </div>
+</section>
 
-  "tier": "tier1|tier2|tier3",
+<div class="container">
+  <div class="footer-trust"><strong>MussIchZahlen.de</strong> hilft Verbrauchern, Forderungen vor einer Zahlung besser zu verstehen.<br>Fragen? <a href="mailto:support@mussichzahlen.de">support@mussichzahlen.de</a></div>
+  <div class="disclaimer">MussIchZahlen.de bietet informative Analysen und Widerspruchsentw&uuml;rfe. Keine Rechtsberatung, keine rechtliche Vertretung. Dokumente werden nach Verarbeitung gel&ouml;scht. &copy; 2026 MussIchZahlen.de</div>
+</div>
 
-  "route": "HAIKU|SONNET",
+<footer style="border-top:1px solid var(--line);padding:20px 0;text-align:center;background:var(--white);">
+  <div class="container">
+    <p style="font-size:.78rem;color:var(--muted);margin:0;">
+      <a href="/impressum.html" style="color:var(--muted);margin:0 10px;">Impressum</a>
+      <a href="/datenschutz.html" style="color:var(--muted);margin:0 10px;">Datenschutz</a>
+      <a href="/agb.html" style="color:var(--muted);margin:0 10px;">AGB</a>
+    </p>
+  </div>
+</footer>
 
-  "teaser": "string",
+<div class="sticky-footer" id="sticky-footer">
+  <div>
+    <div class="sticky-footer__text">Mahnung erhalten? Erst pr&uuml;fen, dann zahlen.</div>
+    <div class="sticky-footer__sub">Kostenlose Ersteinsch&auml;tzung &middot; vollst&auml;ndige Analyse optional</div>
+  </div>
+  <a href="#free-check" class="sticky-cta">Kostenlos pr&uuml;fen &rarr;</a>
+</div>
 
-  "consumer_position": "1-2 cautious sentences explaining whether the claim appears relatively standard, unclear, or potentially worth checking further."
+<!-- Modal — dynamisch befüllt nach Triage -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal__header">
+      <div class="modal__eyebrow">Vollst&auml;ndige Pr&uuml;fung der Forderung</div>
+      <div class="modal__title" id="modal-title">Analyse + fertiger Widerspruch</div>
+      <div class="modal__price">&euro;49 <span>einmalig</span></div>
+    </div>
+    <div class="modal__body">
+      <div id="modal-features">
+        <div class="modal__feature"><span class="check">&#10003;</span><span>Konkrete Bewertung Ihrer Forderung</span></div>
+        <div class="modal__feature"><span class="check">&#10003;</span><span>Pr&uuml;fung der Kosten und Nachweise</span></div>
+        <div class="modal__feature"><span class="check">&#10003;</span><span>Fertiger Widerspruch zum direkten Versand</span></div>
+      </div>
+      <div class="modal__disclaimer">Informative Analyse und Widerspruchsentwurf. Keine rechtliche Vertretung.</div>
+      <a id="modal-cta" href="#" class="modal__cta">Jetzt vollst&auml;ndige Pr&uuml;fung starten &rarr;</a>
+      <div class="modal__security">&#128274; Sichere Zahlung via Stripe &middot; kein Abo</div>
+      <div class="modal__close" id="modal-close-btn">Zur&uuml;ck</div>
+    </div>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+
+<script>
+// ── Init ──────────────────────────────────────────────────────────────────────
+initFaq();
+initStickyFooter();
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let selectedFile = null;
+let currentStripeLink = null;
+
+// ── DOM refs ──────────────────────────────────────────────────────────────────
+const uploadZone      = document.getElementById('gratis-upload-zone');
+const fileInput       = document.getElementById('gratis-file-input');
+const contactFields   = document.getElementById('gratis-contact-fields');
+const nameEl          = document.getElementById('gratis-name');
+const emailEl         = document.getElementById('gratis-email');
+const btn             = document.getElementById('gratis-btn');
+const statusEl        = document.getElementById('gratis-status');
+const teaserEl        = document.getElementById('teaser');
+const teaserCompany   = document.getElementById('teaser-company');
+const teaserSub       = document.getElementById('teaser-sub');
+const teaserCopy      = document.getElementById('modal-dynamic-copy');
+const teaserCta       = document.getElementById('teaser-cta');
+const modalEl         = document.getElementById('modal');
+const modalCta        = document.getElementById('modal-cta');
+const modalFeatures   = document.getElementById('modal-features');
+const modalCloseBtn   = document.getElementById('modal-close-btn');
+
+// ── Safety check ──────────────────────────────────────────────────────────────
+if (
+  !window.submitFree ||
+  !window.validateFile ||
+  !window.formatFileSize ||
+  !window.track ||
+  !window.initFaq ||
+  !window.initStickyFooter
+) {
+  console.error('app.js wurde nicht korrekt geladen. Prüfen Sie /app.js und entfernen Sie alle export/import Statements.');
+  if (statusEl) {
+    statusEl.textContent = 'Technischer Fehler: Upload-Modul konnte nicht geladen werden.';
+    statusEl.className = 'optie-status optie-status--error';
+  }
 }
 
-Rules:
+// ── File selection ────────────────────────────────────────────────────────────
+uploadZone.addEventListener('click', () => fileInput.click());
 
-1. Document type
-- debt = general payment demand or overdue debt letter.
-- collection = debt collection agency or debt recovery company involved.
-- solicitor = solicitor or legal representative letter.
-- court = court-related document, claim form, CCJ-related or enforcement-related.
-- invoice = unpaid invoice or bill.
-- other = another document type.
-- null = not clear.
+uploadZone.addEventListener('dragover', (event) => {
+  event.preventDefault();
+  uploadZone.style.borderColor = 'var(--accent)';
+});
 
-2. Claim type
-- debt_collection = collection agency or debt purchaser involved.
-- overdue_invoice = unpaid invoice or unpaid service bill.
-- solicitor_letter = solicitor or legal representative.
-- court_related = court, CCJ, county court or enforcement-related context.
-- unknown = insufficient information.
-- null = not clear.
+uploadZone.addEventListener('dragleave', () => {
+  uploadZone.style.borderColor = '';
+});
 
-3. Amount
-- amount_claimed is the total claimed amount as a number. Use only numbers, no currency symbols.
-- Example: "£149.90" becomes 149.9.
-- If no amount is clearly visible: null.
-- currency should normally be GBP unless another currency is clearly visible.
+uploadZone.addEventListener('drop', (event) => {
+  event.preventDefault();
+  uploadZone.style.borderColor = '';
 
-4. Possible issues
-- possible_old_debt: true if the debt appears several years old or may fall outside the usual limitation period under the Limitation Act 1980. Only set true if a date in the document clearly suggests this.
+  const file = event.dataTransfer?.files?.[0];
 
-- possible_excessive_fees: true if added collection fees, admin charges, interest or legal costs appear unusually high, unclear or disproportionate compared with the original amount, and this is visible in the document.
+  if (file) {
+    handleFile(file);
+  }
+});
 
-- possible_no_proof: true if there is no clear agreement, invoice, account reference, assignment detail or supporting evidence visible in the document.
+fileInput.addEventListener('change', () => {
+  if (fileInput.files?.[0]) {
+    handleFile(fileInput.files[0]);
+  }
+});
 
-- possible_wrong_person: true if the debtor identity, address, name or account number appears inconsistent or questionable based on visible information.
+function handleFile(file) {
+  const err = validateFile(file);
 
-- possible_pressure_language: true ONLY if the document contains explicit and repeated escalation wording — CCJ threats, bailiff mentions, or enforcement language. Do not set true for standard "further action may be taken" phrasing, which is routine. Avoid false positives here.
+  if (err) {
+    setStatus('error', err);
+    return;
+  }
 
-- Set a possible_* field to true ONLY if there is concrete evidence in the visible document.
-- If there is not enough information, use null instead of guessing.
+  selectedFile = file;
 
-5. Special document handling
+  uploadZone.querySelector('.upload-label').textContent = file.name;
+  uploadZone.querySelector('.upload-hint').textContent = formatFileSize(file.size);
 
-- Collection agency letters: pay attention to assignment clarity, original creditor identification, balance breakdown, collection fees, account references, debt age, and whether the collector explains their authority clearly.
+  contactFields.style.display = 'flex';
 
-- Solicitor letters: pay attention to legal escalation wording, threatened court action, deadlines, legal cost additions, and whether the underlying debt explanation is sufficiently clear.
+  setStatus('', '');
+  updateBtn();
 
-- Court-related documents: pay attention to claim form references, response deadlines, county court wording, judgment wording, enforcement wording. Court-related documents should be treated as higher urgency.
-
-- Ordinary debt letters: pay attention to proof of debt, fee breakdown, debt age, sender identity, and clarity of the claimed balance.
-
-6. Risk
-- risk high: possible old debt, wrong person indicators, court-related escalation, significant fee concerns, missing proof, solicitor escalation, multiple strong concerns, or flagCount >= 4.
-- risk medium: one or more possible points worth checking, moderate uncertainty, incomplete supporting information, or flagCount 2–3.
-- risk low: the claim mostly appears standard, relatively clear, or only minor uncertainty is visible. Usually flagCount 0–1.
-- If documentType = "court", risk should normally be at least "high".
-- If documentType = "solicitor", risk should normally be at least "medium".
-- If amount_claimed > 500 and flagCount >= 2, risk should normally be "high".
-- If amount_claimed > 200 and several details are unclear, risk should normally be at least "medium".
-- If flagCount >= 4, risk should normally be "high".
-
-7. Tier
-- tier1: multiple strong concerns; possible old debt; possible wrong person; missing proof; excessive fees; solicitor escalation; court escalation; flagCount >= 4.
-- tier2: moderate uncertainty; one or more points worth checking; incomplete information; clarification may be useful; flagCount 1–3 without severe escalation.
-- tier3: relatively standard-looking claim; limited visible concerns; documentation appears mostly straightforward; flagCount 0 and no legal escalation.
-
-- Tier 3 does NOT mean the claim is valid. It only means the document currently appears relatively standard based on visible information.
-
-8. Review potential (field: "chance")
-The field is named "chance" in the JSON — it represents how worthwhile a full review may be, not the probability of winning a dispute.
-Higher value = more points that may benefit from clarification before payment. No outcome is guaranteed.
-
-- Possible old debt: 70–90.
-- Wrong person or missing proof: 65–85.
-- Excessive fees: 50–75.
-- Pressure or escalation wording (genuine): 45–70.
-- flagCount 2: 50–70. flagCount 3: 60–80. flagCount 4+: 70–90.
-- Minor uncertainty only: 30–50.
-- Mostly clear claim: 10–25.
-- If documentType is other or null: chance 0.
-- chance must always be an integer between 0 and 100.
-
-9. FlagCount
-- flagCount = number of possible_* fields that are true.
-Count these five: possible_old_debt, possible_excessive_fees, possible_no_proof, possible_wrong_person, possible_pressure_language.
-- false and null do not count. Never guess.
-- flagCount must always be an integer between 0 and 5.
-
-10. Teaser
-The teaser is a SHORT, DOCUMENT-SPECIFIC observation — 1–2 sentences naming the most concrete unclear points visible in this document.
-
-The teaser must NOT be generic.
-
-BAD (too generic — do not use):
-"Debt collection fees can sometimes be challenged."
-"There may be aspects worth reviewing."
-
-GOOD (document-specific — this is the target):
-"No breakdown of the added collection fees of £137 is provided in the letter."
-"It is not clearly stated whether the debt has been assigned to the current company or is still being collected on their behalf."
-"The balance appears significantly higher than the original amount, but no explanation is included."
-"No signed agreement or original account reference is attached."
-"The account reference dates from 2018 and no explanation of any limitation period extension is given."
-
-Rules for the teaser:
-- Maximum 2 sentences.
-- Only use information actually visible in the document.
-- No legal claims or guarantees.
-- No aggressive language. No "you do not have to pay."
-- Cautious, factual wording: "not provided", "not clearly shown", "no explanation is given", "not included".
-- The teaser should feel like a brief human observation — not a legal checklist.
-- The user should feel that their uncertainty about this document is understandable — not that they should panic.
-- If flagCount = 0 and risk = "low": write one short, balanced sentence noting one concrete aspect that may still be worth confirming before payment.
-
-11. Consumer position
-- Short and cautious. 1–2 sentences maximum.
-- The user should feel their uncertainty is reasonable — not that they are in danger.
-- Example tier1: "The document may contain several aspects worth reviewing carefully before payment or response."
-- Example tier2: "Some elements of the claim may benefit from clarification or additional supporting information."
-- Example tier3: "Based on the visible information, the claim currently appears relatively standard, although further review remains optional."
-
-12. Route
-- route = "SONNET" if: amount_claimed > 500, risk = "high", flagCount >= 4, documentType = "court", documentType = "solicitor", or the matter appears complex.
-- Otherwise: route = "HAIKU".
-- route may ONLY be "HAIKU" or "SONNET".
-
-13. Fallback
-- Always return valid JSON.
-- If the document is not a debt letter, payment demand, collection letter or invoice:
-{
-  "documentType": "other", "sender": null, "claim_type": "unknown",
-  "amount_claimed": null, "currency": null, "is_collection_agency": false,
-  "possible_old_debt": null, "possible_excessive_fees": null, "possible_no_proof": null,
-  "possible_wrong_person": null, "possible_pressure_language": null,
-  "chance": 0, "flagCount": 0, "risk": "low", "tier": "tier3", "route": "HAIKU",
-  "teaser": "Based on the visible information, the document does not clearly appear to be a debt or payment demand.",
-  "consumer_position": "The document currently appears limited or unclear from a debt-review perspective."
+  track('file_selected', {
+    type: 'mahnung',
+    fileType: file.type,
+    fileSize: file.size,
+  });
 }
 
-Return ONLY JSON. No explanation. No Markdown.`;
+function updateBtn() {
+  const ready =
+    selectedFile &&
+    nameEl.value.trim() &&
+    emailEl.value.trim();
+
+  btn.disabled = !ready;
+}
+
+nameEl.addEventListener('input', updateBtn);
+emailEl.addEventListener('input', updateBtn);
+
+// ── Upload + Triage ───────────────────────────────────────────────────────────
+btn.addEventListener('click', async () => {
+  const name  = nameEl.value.trim();
+  const email = emailEl.value.trim();
+
+  if (!selectedFile || !name || !email) {
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Wird geprüft…';
+
+  setStatus('info', 'Ihr Schreiben wird geprüft…');
+
+  try {
+    const data = await submitFree({
+      file: selectedFile,
+      name,
+      email,
+      type: 'mahnung',
+      onStatus: (kind, msg) => setStatus(kind, msg),
+    });
+
+    currentStripeLink = data.stripeLink || null;
+
+    renderTeaser(data);
+
+    setStatus('', '');
+
+  } catch (err) {
+    setStatus(
+      'error',
+      err.message || 'Prüfung fehlgeschlagen. Bitte erneut versuchen.'
+    );
+
+    btn.disabled = false;
+    btn.textContent = 'Kostenlose Einschätzung starten';
+  }
+});
+
+// ── Teaser rendering ──────────────────────────────────────────────────────────
+function renderTeaser(data) {
+  const triage     = data.triage || {};
+  const tier       = data.tier || triage.tier || 'tier2';
+  const sender     = triage.sender || null;
+  const amount     = triage.amount_claimed ? `€${triage.amount_claimed}` : null;
+  const teaser     = triage.teaser || data.teaser?.text || '';
+  const stripeLink = data.stripeLink || currentStripeLink || null;
+
+  if (sender) {
+    teaserCompany.textContent = `Schreiben von ${sender}`;
+  } else {
+    teaserCompany.textContent = 'Ihre Mahnung wurde geprüft';
+  }
+
+  teaserSub.textContent = amount
+    ? `Geforderte Summe: ${amount}`
+    : 'Erste Einschätzung liegt vor';
+
+  if (teaser) {
+    teaserCopy.textContent = teaser;
+    teaserCopy.style.display = '';
+  } else {
+    teaserCopy.style.display = 'none';
+  }
+
+  if (stripeLink && tier !== 'tier3') {
+    teaserCta.innerHTML = `
+      <h3>Vollständige Prüfung der Forderung</h3>
+      <ul>
+        <li>Prüfung aller relevanten Punkte aus Ihrem Schreiben</li>
+        <li>Bewertung der Kosten und Nachweise</li>
+        <li>Fertiger Widerspruch zum direkten Versand</li>
+      </ul>
+      <a href="${escapeHtmlAttribute(stripeLink)}" class="offer-cta" style="margin-top:8px;">
+        Vollständige Prüfung starten — €49 →
+      </a>
+      <p style="font-size:.78rem;color:var(--muted);margin-top:8px;text-align:center;">
+        Einmalig €49 · kein Abo · sichere Zahlung
+      </p>
+    `;
+
+    if (modalCta) {
+      modalCta.href = stripeLink;
+    }
+
+    updateModalFeatures(triage);
+
+  } else if (tier === 'tier3') {
+    teaserCta.innerHTML = `
+      <p style="font-size:.9rem;color:var(--ink-3);margin-top:8px;">
+        Auf Basis der sichtbaren Informationen wirkt das Schreiben derzeit eher standardmäßig.
+        Eine zusätzliche Prüfung bleibt optional.
+      </p>
+      ${
+        stripeLink
+          ? `<a href="${escapeHtmlAttribute(stripeLink)}" class="offer-cta" style="margin-top:12px;background:var(--ink-3);">Optionale vollständige Prüfung — €49</a>`
+          : ''
+      }
+    `;
+  } else {
+    teaserCta.innerHTML = '';
+  }
+
+  teaserEl.style.display = 'block';
+
+  requestAnimationFrame(() => {
+    teaserEl.classList.add('teaser--visible');
+  });
+
+  teaserEl.scrollIntoView({
+    behavior: 'smooth',
+    block: 'nearest',
+  });
+
+  track('teaser_shown', {
+    type: 'mahnung',
+    tier,
+    hasStripeLink: Boolean(stripeLink),
+  });
+}
+
+function updateModalFeatures(triage) {
+  const features = [];
+
+  if (triage.possible_verjährt) {
+    features.push('Prüfung der möglichen Verjährung Ihrer Forderung');
+  }
+
+  if (triage.possible_überhöhte_kosten || triage.possible_kein_nachweis) {
+    features.push('Prüfung der Kostenaufstellung und vorhandener Nachweise');
+  }
+
+  if (triage.possible_kein_abtretungsnachweis) {
+    features.push('Prüfung der Inkassoberechtigung und Abtretungsanzeige');
+  }
+
+  if (triage.possible_falscher_empfänger) {
+    features.push('Prüfung der korrekten Adressierung und Schuldneridentität');
+  }
+
+  features.push('Fertiger Widerspruch zum direkten Versand');
+  features.push('Klare nächste Schritte');
+
+  if (modalFeatures && features.length > 0) {
+    modalFeatures.innerHTML = features
+      .slice(0, 4)
+      .map((feature) => `
+        <div class="modal__feature">
+          <span class="check">✓</span>
+          <span>${escapeHtml(feature)}</span>
+        </div>
+      `)
+      .join('');
+  }
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
+modalCloseBtn?.addEventListener('click', () => {
+  modalEl.classList.remove('modal--open', 'open');
+  document.body.style.overflow = '';
+});
+
+modalEl?.addEventListener('click', (event) => {
+  if (event.target === modalEl) {
+    modalEl.classList.remove('modal--open', 'open');
+    document.body.style.overflow = '';
+  }
+});
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function setStatus(kind, msg) {
+  statusEl.textContent = msg;
+  statusEl.className =
+    'optie-status' +
+    (kind ? ` optie-status--${kind}` : '');
+}
+
+function escapeHtml(value = '') {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function escapeHtmlAttribute(value = '') {
+  return escapeHtml(value);
+}
+</script>
+
+</body>
+</html>
