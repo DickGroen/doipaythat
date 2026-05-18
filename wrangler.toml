@@ -18,6 +18,10 @@ STRIPE_LINK_QUOTE        = "https://buy.stripe.com/REPLACE_WITH_QUOTE_LINK"
 # Secrets via Cloudflare Dashboard:
 # ANTHROPIC_API_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY
 
+# Test route (never link publicly)
+TEST_SECRET = "REPLACE_WITH_RANDOM_SECRET"
+TEST_EMAIL  = "groenvantexel@gmail.com"
+
 [[kv_namespaces]]
 binding = "DEBT_QUEUE"
 id = "79aa4e89ce7c4699a36c73a6ea8a8af2"
