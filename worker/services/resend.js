@@ -3,7 +3,7 @@
 import { escapeHtml } from "../utils/html.js";
 import { makeAnalysisRtf, makeLetterRtf, rtfToBase64 } from "../utils/rtf.js";
 
-const FROM       = "DoIPayThat <noreply@mussichzahlen.de>"; // TEMP: switch back to noreply@doipaythat.co.uk after domain verification
+const FROM       = "DoIPayThat <noreply@doipaythat.co.uk>";
 const DISCLAIMER = "This is informational analysis only and does not constitute legal advice. DoIPayThat does not provide legal representation.";
 
 async function trackEvent(env, event, data = {}) {
