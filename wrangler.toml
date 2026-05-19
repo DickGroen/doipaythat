@@ -19,7 +19,7 @@ STRIPE_LINK_QUOTE        = "https://buy.stripe.com/REPLACE_WITH_QUOTE_LINK"
 # ANTHROPIC_API_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY
 
 # Test route (never link publicly)
-TEST_SECRET = "REPLACE_WITH_RANDOM_SECRET"
+TEST_SECRET = "dipt-test-2026-xq7k"
 TEST_EMAIL  = "groenvantexel@gmail.com"
 
 [[kv_namespaces]]
