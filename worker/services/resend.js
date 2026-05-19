@@ -429,8 +429,8 @@ export async function sendPaidEmail(env, { name, email, type, triage, analysis }
   const isParking   = type === "parking";
 
   const subject = isParking
-    ? "Your appeal letter is ready — DoIPayThat"
-    : "Your analysis is ready — here's what to do next";
+    ? "Your parking review — DoIPayThat"
+    : `Your documents — ${triage?.sender ? escapeHtml(triage.sender) : "DoIPayThat"}`;
 
   const tip = isParking
     ? "Send the appeal letter by first class post and keep proof of postage. Do not include the analysis document — send the letter on its own."
@@ -441,18 +441,14 @@ export async function sendPaidEmail(env, { name, email, type, triage, analysis }
     subject,
     html:    `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1f2937;line-height:1.7;">
       <p>Hi ${escapeHtml(name)},</p>
-      <p>Your ${isParking ? "parking fine review" : "analysis"} is ready.</p>
-      <p>You now have everything you need to ${isParking ? "decide whether to appeal and how" : "understand the situation and respond with confidence"}.</p>
-      <p>Please find attached:</p>
-      <ul style="padding-left:20px;margin:8px 0 16px 0;list-style:none;">
-        <li>✓ <strong>Analysis.rtf</strong> — full breakdown with findings and next steps</li>
-        <li>✓ <strong>${escapeHtml(labels.filename)}</strong> — ready-to-send ${escapeHtml(labels.letter)}</li>
-      </ul>
+      <p>We've now reviewed the documents relating to your case and attached the assessment along with a response letter.</p>
+      <p>${isParking ? "The assessment explains which points in the notice may be worth reviewing before payment, and puts the charge into context." : "The assessment explains which points may still require clarification before any payment is made and helps put the claim into context."}</p>
+      <p>The ${isParking ? "appeal letter" : "response letter"} can be used if you decide to contact the ${isParking ? "operator" : "company"} in writing.</p>
       <p style="background:#f0fdf4;border-left:4px solid #22c55e;padding:12px;border-radius:4px;font-size:0.9rem;">
-        💡 Tip: ${escapeHtml(tip)}
+        ${escapeHtml(tip)}
       </p>
-      ${isParking ? `<p style="font-size:0.9rem;color:#374151;">If your appeal is rejected: the letter includes information on escalating to POPLA (for BPA members) or IAS (for IPC members) — both are free independent appeal services.</p>` : ""}
-      <p>If anything is unclear, you can simply reply to this email.</p>
+      ${isParking ? `<p style="font-size:0.9rem;color:#374151;">If the operator rejects your appeal, the assessment includes information on escalating to POPLA or IAS — both are free independent services.</p>` : ""}
+      <p>If anything is unclear, simply reply to this email.</p>
       <p>Best regards,<br><strong>DoIPayThat</strong></p>
       <p style="font-size:0.8rem;color:#6b7280;margin-top:24px;">${escapeHtml(DISCLAIMER)}</p>
     </div>`,
