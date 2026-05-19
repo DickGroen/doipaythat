@@ -201,6 +201,31 @@ Could there be confusion about the debtor identity?
 Are important details missing?
 
 ────────────────────
+TIER 3 SPECIFIC INSTRUCTIONS
+────────────────────
+
+When triage is tier3 (risk: low, few or no flags):
+
+The assessment must NOT feel like "we found issues anyway".
+It must feel like "this appears largely straightforward, but a calm check is sensible".
+
+Change:
+• "Issues identified" → "Points worth checking"
+• "requires clarification before payment" → "may be worth a quick check"
+• "cannot be verified" → "would be helpful for a complete picture"
+• Avoid language suggesting important missing information
+
+CASE_REVIEW for tier3:
+• Start with what appears clear and reasonable
+• Mention missing details only as practical suggestions, not as problems
+• Close with a calm neutral observation — not "should be checked before payment"
+
+NEXT_STEPS for tier3:
+• Practical and neutral — "Compare with your records" not "Verify critically"
+• No alarming language
+• Maximum 2–3 steps
+
+────────────────────
 ANTI-OVERLAP BETWEEN SECTIONS
 ────────────────────
 
