@@ -129,6 +129,21 @@ CHECK FOR
 10. Council PCN statutory requirements where relevant
 
 ────────────────────
+ANTI-OVERLAP BETWEEN SECTIONS
+────────────────────
+
+NEXT_STEPS and HOW_TO_USE must NOT repeat the same practical guidance.
+
+If NEXT_STEPS already explains what to do, keep HOW_TO_USE to 1–2 sentences maximum — or omit detailed steps entirely.
+
+A real human reviewer would write ONE practical section — not two exhaustive ones.
+
+Avoid the "completeness instinct" — not every section needs to be fully filled.
+Shorter and less repetitive feels MORE human than comprehensive and systematic.
+
+The same applies across CASE_REVIEW, ISSUES and ASSESSMENT: do not restate the same point using slightly different wording.
+
+────────────────────
 OUTPUT RULES
 ────────────────────
 
@@ -186,7 +201,8 @@ Do NOT repeat the CASE_REVIEW section.
 [/SUMMARY]
 
 [HOW_TO_USE]
-Practical guidance tailored to the document.
+Maximum 2–3 short practical hints tailored to the document.
+NO repetition of NEXT_STEPS. If NEXT_STEPS is already detailed, keep this to 1–2 sentences only.
 
 1. Compare the review with your own records, photographs and parking receipts.
 2. Use the appeal draft below if you decide to request clarification or challenge the notice.
