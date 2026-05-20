@@ -106,4 +106,4 @@ Maximum 2 sentences. Only information visible in the document. No legal conclusi
 
 13. Fallback: If not a bill or payment demand, return documentType: "other", all possible_*: null, chance: 0, flagCount: 0, risk: "low", tier: "tier3", emailType: "soft", route: "HAIKU".
 
-Return ONLY JSON. No explanation. No Markdown.\`;
+Return ONLY JSON. No explanation. No Markdown.`;
