@@ -14,8 +14,8 @@ import {
 window.openModal = openModal;
 window.closeModal = closeModal;
 
-const TYPE = 'mahnung';
-const PRICE = 49;
+const TYPE = 'parking';
+const PRICE = 19;
 
 let gratisFile = null;
 let selectedFile = null;
@@ -73,7 +73,7 @@ function checkGratisReady() {
 
   if (hint) {
     if (email.length > 3 && !emailOk) {
-      hint.textContent = 'Bitte eine gültige E-Mail-Adresse eingeben.';
+      hint.textContent = 'Please enter a valid email address.';
       hint.style.display = 'block';
     } else {
       hint.style.display = 'none';
@@ -94,7 +94,7 @@ window.startGratisUpload = async function() {
 
   if (btn) {
     btn.disabled = true;
-    btn.textContent = 'Wird geprüft…';
+    btn.textContent = 'Checking your parking notice…';
   }
 
   try {
@@ -123,11 +123,11 @@ window.startGratisUpload = async function() {
 
     if (status) {
       status.className = 'optie-status optie-status--success';
-      status.textContent = 'Erste Einschätzung abgeschlossen.';
+      status.textContent = 'Your first check is ready.';
     }
 
     if (btn) {
-      btn.textContent = 'Fertig ✓';
+      btn.textContent = 'Done ✓';
     }
   } catch (err) {
     if (status) {
@@ -137,7 +137,7 @@ window.startGratisUpload = async function() {
 
     if (btn) {
       btn.disabled = false;
-      btn.textContent = 'Kostenlose Einschätzung starten';
+      btn.textContent = 'Start free check';
     }
   }
 };
@@ -305,12 +305,12 @@ function updateSelectedFile(file) {
   if (name) name.textContent = file.name;
 
   const meta = document.getElementById('selected-file-meta');
-  if (meta) meta.textContent = formatFileSize(file.size) + ' · bereit';
+  if (meta) meta.textContent = formatFileSize(file.size) + ' · ready';
 
   const btn = document.getElementById('submit-btn');
   if (btn) {
     btn.disabled = false;
-    btn.textContent = 'Hochladen und Analyse starten';
+    btn.textContent = 'Upload and start analysis';
   }
 }
 
@@ -325,7 +325,7 @@ function clearFile() {
   const btn = document.getElementById('submit-btn');
   if (btn) {
     btn.disabled = true;
-    btn.textContent = 'Zuerst eine Datei wählen';
+    btn.textContent = 'Choose a file first';
   }
 }
 
@@ -351,7 +351,7 @@ async function doSubmit() {
     email.length > 5;
 
   if (!name || !emailOk || !file) {
-    showStatus('Bitte alle Felder korrekt ausfüllen.', 'error');
+    showStatus('Please fill in all fields correctly and select a file.', 'error');
     return;
   }
 
@@ -359,7 +359,7 @@ async function doSubmit() {
 
   if (btn) {
     btn.disabled = true;
-    btn.textContent = 'Wird hochgeladen…';
+    btn.textContent = 'Uploading…';
   }
 
   try {
@@ -386,17 +386,17 @@ async function doSubmit() {
       card.innerHTML = `
         <div class="success-screen">
           <div class="success-screen__icon">✓</div>
-          <h2>Upload erfolgreich!</h2>
-          <p>Wir analysieren dein Schreiben und senden dir die vollständige Analyse sowie den fertigen Widerspruch per E-Mail an <strong>${esc(email)}</strong>.</p>
-          <p style="font-size:.82rem;color:var(--muted);">Bitte auch den Spam-Ordner prüfen.</p>
+          <h2>Upload successful</h2>
+          <p>We will review your parking notice and send the full analysis and response letter by email to <strong>${esc(email)}</strong>.</p>
+          <p style="font-size:.82rem;color:var(--muted);">Please also check your spam folder.</p>
         </div>`;
     }
   } catch (err) {
-    showStatus('Upload fehlgeschlagen: ' + err.message, 'error');
+    showStatus('Upload failed: ' + err.message, 'error');
 
     if (btn) {
       btn.disabled = false;
-      btn.textContent = 'Hochladen und Analyse starten';
+      btn.textContent = 'Upload and start analysis';
     }
   }
 }
