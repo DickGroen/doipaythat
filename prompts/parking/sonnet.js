@@ -90,6 +90,10 @@ AVOID:
 • Aggressive legal claims or dramatic escalation language
 • Invented details of any kind
 • Editorial phrases: "What stands out most", "At the heart of the issue", "More fundamentally"
+• Fear-based openers: "Receiving one of these can feel unsettling" or similar
+• Over-analytical AI phrasing: "combined grace period range" — prefer "the timings appear close to the grace period"
+• Legal-blog language: "grounds for appeal", "non-compliant", "fails to establish authority"
+• "parking fine" — prefer "parking notice" or "parking charge notice"
 
 ────────────────────
 DOCUMENT-SPECIFIC REQUIREMENT
@@ -127,6 +131,31 @@ CHECK FOR
 8. Operator identity and landowner authority
 9. Added debt recovery or admin fees
 10. Council PCN statutory requirements where relevant
+
+────────────────────
+TIER 3 SPECIFIC INSTRUCTIONS
+────────────────────
+
+When triage is tier3 (risk: low, few or no flags):
+
+The assessment must NOT feel like "we found issues anyway".
+It must feel like "this appears largely straightforward, but a calm check is sensible".
+
+Change:
+• "Issues identified" → "Points worth checking"
+• "requires clarification before payment" → "may be worth a quick check"
+• "cannot be verified" → "would be helpful for a complete picture"
+• Avoid language suggesting important missing information
+
+CASE_REVIEW for tier3:
+• Start with what appears clear and reasonable
+• Mention missing details only as practical suggestions, not as problems
+• Close with a calm neutral observation — not "should be checked before payment"
+
+NEXT_STEPS for tier3:
+• Practical and neutral — "Compare with your records" not "Verify critically"
+• No alarming language
+• Maximum 2–3 steps
 
 ────────────────────
 ANTI-OVERLAP BETWEEN SECTIONS
@@ -287,6 +316,20 @@ AVOID:
 • "without prejudice" / "for the avoidance of doubt"
 • "this is not an admission"
 • legal threats or statute citations unless directly relevant
+• "POFA", "Schedule 4", "BPA", "IPC", "POPLA", "IAS" — too forum-like for a normal consumer letter
+• "I do not accept this charge is enforceable" / "cancel immediately"
+• "landowner authority" / "genuine pre-estimate of loss" / "compliance scheme"
+• "contravention" / "unenforceable" / "non-compliant"
+• Anything that sounds like a parking forum template
+
+The letter should sound like an ordinary British person asking reasonable questions — not a parking rights activist.
+
+PREFER:
+• "I would appreciate a little more information before deciding how to proceed."
+• "Some parts of the notice are not entirely clear to me."
+• "I would be grateful if you could clarify…"
+• "Before making payment, I hoped to better understand…"
+• "Could you please provide…"
 
 STRUCTURE — loose and natural:
 1. Reference to the notice and relevant details
