@@ -132,7 +132,7 @@ export async function sendConfirmationEmail(env, { name, email, type }) {
         <strong style="color:#14532d;">Why this matters:</strong>
         <p style="color:#166534;margin-top:6px;margin-bottom:0;line-height:1.65;">
           ${isParking
-            ? "Many parking fines contain procedural errors, incorrect timing or unclear signage. Our review helps you understand whether paying immediately is the right decision."
+            ? "Private parking notices are not always easy to interpret. We'll review the notice and help you understand the main points before you decide what to do next."
             : "Many people only realise they could have questioned the claim after they've already paid. Our review helps you understand what to check before paying."}
         </p>
       </div>
@@ -229,9 +229,8 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
       if (emailType === "stark") {
         bodyHtml = `
           <p>Hi ${escapeHtml(name)},</p>
-          <p>We've taken a first look at your parking fine${senderPart}${amountStr ? ` for ${amountStr}` : ""}.</p>
-          <p><strong>There may be appeal points worth checking before you pay.</strong></p>
-          <p>Many people pay parking charges too quickly — often because the fine looks official and the deadline feels urgent. But paying without checking means giving up your right to appeal.</p>
+          <p>We've taken a first look at the parking notice${senderPart}${amountStr ? ` for ${amountStr}` : ""}.</p>
+          <p>At first glance, parts of the notice may look straightforward. Even so, private parking notices are worth checking carefully before paying, especially where evidence, timings or signage are not fully explained.</p>
           <p><strong>What we noticed:</strong><br>
           ${escapeHtml(triage?.teaser || "There may be aspects of this fine worth checking before you pay anything.")}</p>
           ${groundsHtml ? `<p><strong>Possible grounds identified:</strong></p>${groundsHtml}` : ""}
@@ -245,26 +244,26 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
             <li>✓ Ready-to-send appeal letter</li>
             <li>✓ Clear next steps if appeal is rejected</li>
           </ul>
-          ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Full analysis + appeal letter — £${escapeHtml(labels.price)} →</a></p>` : ""}
+          ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Review the parking notice in full — £${escapeHtml(labels.price)} →</a></p>` : ""}
           <p style="font-size:0.9rem;color:#374151;">Most people prefer to check before they pay — especially when there may be grounds to challenge.</p>`;
 
       } else if (emailType === "soft") {
         bodyHtml = `
           <p>Hi ${escapeHtml(name)},</p>
-          <p>We've taken a first look at your parking fine${senderPart}${amountStr ? ` for ${amountStr}` : ""}.</p>
-          <p>There may be aspects worth checking before you pay. Many people pay parking charges without realising they could have appealed successfully.</p>
+          <p>We've taken a first look at the parking notice${senderPart}${amountStr ? ` for ${amountStr}` : ""}.</p>
+          <p>Private parking notices are worth checking before paying, particularly where evidence or signage is not clearly explained.</p>
           <p>${escapeHtml(triage?.teaser || "There may be aspects of this fine worth checking before you pay.")}</p>
           ${groundsHtml ? `<p>Some possible areas to look at:</p>${groundsHtml}` : ""}
           <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
           <p>If you'd like a clearer picture, a full review and appeal letter is available for £19:</p>
-          ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Check before you pay — £${escapeHtml(labels.price)} →</a></p>` : ""}`;
+          ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Review the parking notice in full — £${escapeHtml(labels.price)} →</a></p>` : ""}`;
 
       } else {
         // trust — no pressure, no Stripe if showUpsell is false
         bodyHtml = `
           <p>Hi ${escapeHtml(name)},</p>
-          <p>We've reviewed your parking fine${senderPart}.</p>
-          <p>At first glance the fine appears relatively straightforward — but it is always worth making sure the correct process was followed before paying.</p>
+          <p>We've taken a look at the parking notice${senderPart}.</p>
+          <p>At first glance the notice appears relatively straightforward. Even so, it is worth taking a moment to check the main points before deciding whether to pay.</p>
           <p>${escapeHtml(triage?.teaser || "Some aspects may be worth a quick check before you pay.")}</p>
           ${stripeLink ? `<p>If you'd like a full breakdown, a complete review is available:</p>
           <p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Get full review — £${escapeHtml(labels.price)} →</a></p>` : ""}`;
@@ -354,14 +353,14 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
     if (!stripeLink) return;
 
     const subject = isParking
-      ? "Your parking fine — still worth checking before you pay"
+      ? "Your parking notice — still worth checking before you decide"
       : "Before you pay — a quick reminder";
 
     const bodyHtml = isParking
       ? `<p>Hi ${escapeHtml(name)},</p>
-         <p>Just a reminder about your parking fine.</p>
-         <p>Many people pay parking charges without checking — and later discover they had valid grounds to appeal. Once you pay, that option is gone.</p>
-         <p>A full review and ready-to-send appeal letter is still available for £${escapeHtml(labels.price)}:</p>`
+         <p>Just a quick reminder about the parking notice you uploaded.</p>
+         <p>If you are still unsure whether to pay, the full review can help you understand the notice, the evidence and the possible next steps.</p>
+         <p>The full review is still available for £${escapeHtml(labels.price)}:</p>`
       : `<p>Hi ${escapeHtml(name)},</p>
          <p>Just a quick reminder about your ${escapeHtml(labels.title)}.</p>
          <p>Many people end up paying more than they should simply because they don't check first.</p>
@@ -375,10 +374,10 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
         <p style="margin:20px 0;">
           <a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">
-            ${isParking ? `Appeal before you pay — £${escapeHtml(labels.price)} →` : `Check this before you pay — £${escapeHtml(labels.price)} →`}
+            ${isParking ? `Review the parking notice in full — £${escapeHtml(labels.price)} →` : `Check this before you pay — £${escapeHtml(labels.price)} →`}
           </a>
         </p>
-        <p style="font-size:0.9rem;color:#374151;">${isParking ? "Checking first takes minutes. Paying without checking is permanent." : "A short check now can save you money — and stress — later."}</p>
+        <p style="font-size:0.9rem;color:#374151;">${isParking ? "If you are still unsure, the review explains the notice in plain English." : "A short check now can save you money — and stress — later."}</p>
         <p>Best regards,<br><strong>DoIPayThat</strong></p>
         <p style="font-size:0.8rem;color:#6b7280;margin-top:24px;">${escapeHtml(DISCLAIMER)}</p>
       </div>`
@@ -392,7 +391,7 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
   if (!stripeLink) return;
 
   const subject3 = isParking
-    ? "Final reminder — check your parking fine before you pay"
+    ? "Final reminder — your parking notice review"
     : "Our final reminder — before you pay";
 
   await sendEmail(env, {
@@ -401,8 +400,8 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
     html:    `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1f2937;line-height:1.7;">
       <p>Hi ${escapeHtml(name)},</p>
       ${isParking
-        ? `<p>This is our final reminder about your parking fine.</p>
-           <p>If you haven't checked yet, it's still worth a look before you pay. Many fines that appear legitimate on the surface contain procedural errors that make them worth challenging.</p>`
+        ? `<p>This is our final reminder about your parking notice review.</p>
+           <p>If you still want a clearer view before deciding what to do, the full review is still available below.</p>`
         : `<p>This is our final reminder before we close this follow-up.</p>
            <p>If you haven't had a chance to review the claim yet, it's still worth checking before you pay.</p>`}
       <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
@@ -429,7 +428,7 @@ export async function sendPaidEmail(env, { name, email, type, triage, analysis }
   const isParking   = type === "parking";
 
   const subject = isParking
-    ? "Your appeal letter is ready — DoIPayThat"
+    ? "Your parking notice review is ready — DoIPayThat"
     : "Your analysis is ready — here's what to do next";
 
   const tip = isParking
@@ -488,8 +487,8 @@ export async function sendAbandonedEmail(env, { name, email, type, amount, strip
 
     bodyHtml = isParking
       ? `<p>Hi ${escapeHtml(name)},</p>
-         <p>You started reviewing your parking fine but didn't complete it.</p>
-         <p>Before you pay${amountPhrase}, it's worth knowing whether there are grounds to appeal. Many fines contain errors in timing, signage or procedure that make them worth challenging.</p>
+         <p>You started reviewing your parking notice but didn't complete it.</p>
+         <p>If you are still unsure whether to pay, the full review explains the notice, the evidence and the possible next steps in plain English.</p>
          <p>You can continue here:</p>`
       : `<p>Hi ${escapeHtml(name)},</p>
          <p>You started checking your ${escapeHtml(labels.title)} but didn't complete it.</p>
@@ -503,8 +502,8 @@ export async function sendAbandonedEmail(env, { name, email, type, amount, strip
 
     bodyHtml = isParking
       ? `<p>Hi ${escapeHtml(name)},</p>
-         <p>Just a reminder — many parking fines that get paid didn't have to be.</p>
-         <p>If the operator didn't follow the correct process, the charge may be worth challenging. It only takes a few minutes to find out.</p>`
+         <p>Just a reminder about the parking notice you uploaded.</p>
+         <p>If you are still undecided, the review can help you understand what the notice says, what evidence is included, and what your options are.</p>`
       : `<p>Hi ${escapeHtml(name)},</p>
          <p>Just a quick reminder.</p>
          <p>Many people only realise they could have challenged a claim after they've already paid.</p>
@@ -519,8 +518,8 @@ export async function sendAbandonedEmail(env, { name, email, type, amount, strip
 
     bodyHtml = isParking
       ? `<p>Hi ${escapeHtml(name)},</p>
-         <p>This is our final reminder about your parking fine.</p>
-         <p>If you pay without checking, you lose your right to appeal. If the fine had grounds worth challenging, that money is gone.</p>`
+         <p>This is our final reminder about your parking notice review.</p>
+         <p>If you still want a clearer view before deciding what to do, you can complete the review here.</p>`
       : `<p>Hi ${escapeHtml(name)},</p>
          <p>If you don't check this now, you may end up paying unnecessarily.</p>
          <p>This is our final reminder before we close this follow-up.</p>`;
@@ -533,11 +532,11 @@ export async function sendAbandonedEmail(env, { name, email, type, amount, strip
       ${bodyHtml}
       <p style="margin:20px 0;">
         <a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">
-          ${isParking ? `Appeal before you pay — £${escapeHtml(labels.price)} →` : `Continue — £${escapeHtml(labels.price)} →`}
+          ${isParking ? `Review the parking notice in full — £${escapeHtml(labels.price)} →` : `Continue — £${escapeHtml(labels.price)} →`}
         </a>
       </p>
       <p style="font-size:0.9rem;color:#374151;">
-        ${isParking ? "A few minutes now could save you the full amount." : "Most people prefer to check first rather than risk paying too much."}
+        ${isParking ? "The review explains the notice in plain English — before you decide what to do." : "Most people prefer to check first rather than risk paying too much."}
       </p>
       <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
       <p>Best regards,<br><strong>DoIPayThat</strong></p>
