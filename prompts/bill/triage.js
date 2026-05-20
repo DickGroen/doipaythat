@@ -33,8 +33,8 @@ Read the document and return ONLY this JSON - no text before or after, no Markdo
   "possible_unusual_price_increase": true or false or null,
   "possible_incorrect_service_period": true or false or null,
 
-  "chance": integer 0-100,
-  "flagCount": integer 0-9,
+  "chance": <integer between 0 and 100>,
+  "flagCount": <integer between 0 and 9>,
   "risk": "low|medium|high",
   "tier": "tier1|tier2|tier3",
   "emailType": "strong|soft|trust",
