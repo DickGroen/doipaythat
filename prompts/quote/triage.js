@@ -226,28 +226,19 @@ Professional services:
 
 11. Teaser
 
-The teaser must NOT be freely written.
-Choose exactly one of these texts based on risk:
+The teaser is a SHORT, DOCUMENT-SPECIFIC observation — not a generic template sentence.
 
-If risk = "high":
-"There may be important aspects of this quote worth reviewing carefully before you agree to the proposed work or costs."
+Write as a calm human reviewer summarising the key point about this specific document.
 
-If risk = "medium":
-"There may be aspects of this quote that could benefit from further clarification before you commit."
+BAD: "There may be several points worth checking before payment."
+BAD: "There may be aspects worth clarifying before renewal."
 
-If risk = "low":
-"Some parts of this quote may still be worth confirming before a final decision is made."
+GOOD (bill, contrast form): "Both meter readings are marked as estimated, and a £45 smart meter installation fee is listed with no explanation."
+GOOD (subscription): "The renewal notice confirms a £5 monthly price increase but makes no mention of any right to cancel as a result."
+GOOD (quote): "The quote covers labour, materials and tiling as lump sums with no itemised breakdown, and states disposal costs are excluded."
+GOOD (tier3): "The bill sets out usage, unit rate and standing charge clearly, with actual meter readings and a clear due date."
 
-If risk is unclear:
-Use the medium text.
-
-The teaser must be exactly one of these texts.
-
-Do not:
-- mention specific legal rights;
-- threaten financial consequences;
-- promise savings;
-- encourage rejection of the quote.
+Maximum 2 sentences. Only information visible in the document. No legal conclusions. No guarantees.
 
 12. Consumer position
 - Keep this short and cautious.
