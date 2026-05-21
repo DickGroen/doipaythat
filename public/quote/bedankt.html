@@ -272,19 +272,34 @@
   nameEl.addEventListener("input", updateSubmitState);
   emailEl.addEventListener("input", updateSubmitState);
 
-  submitBtn.addEventListener("click", async () => {
-    try {
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Uploading…";
+    submitBtn.addEventListener("click", async () => {
+    const name  = nameEl.value.trim();
+    const email = emailEl.value.trim();
 
-      await submitPaid({
-        file: chosenFile,
-        name: nameEl.value.trim(),
-        email: emailEl.value.trim(),
-        type,
-        sessionId,
-        onStatus: setStatus
-      });
+    if (!chosenFile || !name || !email) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Uploading…";
+
+    // Show success immediately — analysis runs in background
+    showOnly(success);
+
+    track("paid_fallback_upload_started", { type });
+
+    submitPaid({
+      file: chosenFile,
+      name,
+      email,
+      type,
+      sessionId,
+      onStatus: () => {}
+    }).then(() => {
+      track("paid_fallback_upload_completed", { type });
+    }).catch((err) => {
+      track("paid_fallback_upload_failed", { type, error: err.message });
+      console.error("Upload error:", err.message);
+    });
+  });
 
       track("paid_fallback_upload_completed", { type });
       showOnly(success);
