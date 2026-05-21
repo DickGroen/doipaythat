@@ -127,13 +127,13 @@ export async function sendConfirmationEmail(env, { name, email, type }) {
     html:    `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1f2937;line-height:1.7;">
       <p style="font-size:1.1rem;font-weight:700;color:#14532d;">✓ We've received your document.</p>
       <p>Hi ${escapeHtml(name)},</p>
-      <p>We'll review your ${escapeHtml(labels.title)} carefully and send your first check by email by the next working day before 4pm.</p>
+      <p>We'll review your ${escapeHtml(labels.title)} and send your first review by email by the next working day before 4pm.</p>
       <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px;margin:16px 0;">
-        <strong style="color:#14532d;">Why this matters:</strong>
+        <strong style="color:#14532d;">What happens next?</strong>
         <p style="color:#166534;margin-top:6px;margin-bottom:0;line-height:1.65;">
           ${isParking
-            ? "Private parking notices are not always easy to interpret. We'll review the notice and help you understand the main points before you decide what to do next."
-            : "Many people only realise they could have questioned the claim after they've already paid. Our review helps you understand what to check before paying."}
+            ? "We'll take a look at the notice and help you understand the main points before you decide what to do next."
+            : "We'll go through the document and let you know if there are any details worth looking at before you decide whether to pay."}
         </p>
       </div>
       <p style="font-size:.9rem;color:#6b7280;">→ Please also check your spam folder if you don't hear from us.</p>
@@ -287,10 +287,10 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
 
     // ── Non-parking stage 1 ───────────────────────────────────────────────────
     const subject = emailType === "trust"
-      ? "Your document has been reviewed"
+      ? (type === "bill" ? "Your bill review" : type === "quote" ? "Your quote has been reviewed" : type === "subscription" ? "Your subscription notice" : "Your document has been reviewed")
       : amountStr
-        ? `Before you pay ${amountStr} — check this first`
-        : "Before you pay — check this first";
+        ? `A quick review of your ${escapeHtml(labels.title)}${amountStr ? " — " + amountStr : ""}`
+        : `A quick review of your ${escapeHtml(labels.title)}`;
 
     let bodyHtml;
 
@@ -298,18 +298,22 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
       bodyHtml = `
         <p>Hi ${escapeHtml(name)},</p>
         <p>We checked your ${escapeHtml(labels.title)}${senderPart}${amountStr ? ` regarding the claimed amount of ${amountStr}` : ""}.</p>
-        <p>There are signs you could be paying more than you should.</p>
-        <p>Many people only realise this after they've already paid unnecessary charges or costs.</p>
-        <p><strong>What we noticed:</strong><br>
-        ${escapeHtml(triage?.teaser || "There may be aspects of this claim worth checking, including possible additional charges or unclear parts of the demand.")}</p>
+        <p>${escapeHtml(triage?.teaser || "There may be aspects of this letter worth looking at before you decide whether to pay.")}</p>
+        <p style="font-size:.9rem;color:#374151;">For larger balances and added collection fees, many people prefer to understand the detail before deciding what to do next.</p>
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
-        <p>If you want to know exactly what to do next, you can get a full analysis and a ready-to-send ${escapeHtml(labels.letter)}:</p>
+        <p>If you'd like a fuller picture of the document and the additional charges, a more detailed review is available:</p>
         <ul style="padding-left:20px;margin:8px 0 16px 0;list-style:none;">
-          <li>✓ Clear explanation of your situation</li>
-          <li>✓ Specific points worth checking</li>
-          <li>✓ A ready-to-send ${escapeHtml(labels.letter)} you can use immediately</li>
+          <li>✓ Plain English explanation of the main points</li>
+          <li>✓ Review of any added charges or unclear figures</li>
+          <li>✓ A response letter you can use if you decide to write to the company</li>
         </ul>
-        ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Full analysis + ${escapeHtml(labels.letter)} — £${escapeHtml(labels.price)} →</a></p>` : ""}
+        ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">${
+          type === "debt" ? "Review the claim in full" :
+          type === "bill" ? "Review the bill in full" :
+          type === "quote" ? "Review the quote in more detail" :
+          type === "subscription" ? "Review the contract details" :
+          "Full analysis + " + labels.letter
+        } — £${escapeHtml(labels.price)} →</a></p>` : ""}
         <p style="font-size:0.9rem;color:#374151;">Most people prefer to understand what they're being asked to pay — before they pay it.</p>`;
 
     } else if (emailType === "soft") {
@@ -320,7 +324,13 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
         <p>${escapeHtml(triage?.teaser || "There may be aspects of this claim worth checking before you pay.")}</p>
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
         <p>If you'd like a clearer picture, you can get a full analysis and a ready-to-send ${escapeHtml(labels.letter)}:</p>
-        ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Check before you pay — £${escapeHtml(labels.price)} →</a></p>` : ""}`;
+        ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">${
+          type === "debt" ? "Review the claim in full" :
+          type === "bill" ? "Review the bill in full" :
+          type === "quote" ? "Review the quote in more detail" :
+          type === "subscription" ? "Review the contract details" :
+          "Check before you pay"
+        } — £${escapeHtml(labels.price)} →</a></p>` : ""}`;
 
     } else {
       bodyHtml = `
@@ -362,9 +372,8 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
          <p>If you are still unsure whether to pay, the full review can help you understand the notice, the evidence and the possible next steps.</p>
          <p>The full review is still available for £${escapeHtml(labels.price)}:</p>`
       : `<p>Hi ${escapeHtml(name)},</p>
-         <p>Just a quick reminder about your ${escapeHtml(labels.title)}.</p>
-         <p>Many people end up paying more than they should simply because they don't check first.</p>
-         <p>You've already taken the first step — now you can see exactly what to do next.</p>`;
+         <p>Just a note about the ${escapeHtml(labels.title)} you sent through.</p>
+         <p>If you haven't had a chance to look at it yet, the full review can help you understand the main points — including any added charges — before you decide what to do.</p>`;
 
     await sendEmail(env, {
       to:      email,
