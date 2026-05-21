@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quote analysis is being created | DoIPayThat</title>
+  <title>Quote review | DoIPayThat</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -57,15 +57,15 @@
 
 <div class="wrap">
 
-  <div class="card" id="auto-card">
+  <div class="card hidden" id="auto-card">
     <div class="badge"><span class="dot"></span>Payment successful</div>
-    <h1>Quote analysis is being created…</h1>
-    <p>We are verifying your payment and automatically starting your full quote analysis based on your previously uploaded document.</p>
+    <h1>Parking analysis is being created…</h1>
+    <p>We are verifying your payment and automatically starting your full parking notice analysis based on your previously uploaded document.</p>
     <div id="auto-status" class="status-box info">Verifying your payment…</div>
-    <p class="note">You can leave this page open if you like. Your full review and ready-to-send response letter will be sent by email by the next working day before 4pm.</p>
+    <p class="note">You can leave this page open if you like. Your full review and ready-to-send appeal letter will be sent by email by the next working day before 4pm.</p>
   </div>
 
-  <div class="card hidden" id="thankyou-app">
+  <div class="card" id="thankyou-app">
     <div class="badge"><span class="dot"></span>Payment successful</div>
 
     <div class="progress-bar">
@@ -75,30 +75,30 @@
     </div>
 
     <h1>One final step before we begin</h1>
-    <p>Please upload your quote so we can prepare your full analysis and ready-to-send response letter. Once uploaded, your review will be prepared and sent by email by the next working day before 4pm.</p>
+    <p>Please upload your quote or estimate so we can prepare your full review and response letter. Once uploaded, your review will be prepared and sent by email by the next working day before 4pm.</p>
 
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
         <div>
           <div class="step-title">Upload your quote</div>
-          <div class="step-desc">Builder quote, service quote, repair estimate or cost proposal. PDF, JPG or PNG.</div>
+          <div class="step-desc">Contractor quote, tradesperson estimate, service proposal or pricing document. PDF, JPG or PNG.</div>
         </div>
       </div>
 
       <div class="step">
         <div class="step-num">2</div>
         <div>
-          <div class="step-title">We review the price</div>
-          <div class="step-desc">Pricing, cost breakdown, unusual charges, vague items and possible overpayment.</div>
+          <div class="step-title">We review the quote</div>
+          <div class="step-desc">Pricing, scope of work, itemisation, excluded costs, payment terms and timeframes.</div>
         </div>
       </div>
 
       <div class="step">
         <div class="step-num">3</div>
         <div>
-          <div class="step-title">Clear next steps by email</div>
-          <div class="step-desc">You receive the full analysis and practical response guidance by email.</div>
+          <div class="step-title">Review by email</div>
+          <div class="step-desc">You receive the full review and a response letter by email.</div>
         </div>
       </div>
     </div>
@@ -107,7 +107,13 @@
     <input id="customer-email" class="input" placeholder="Your email" type="email" autocomplete="email">
 
     <div id="upload-panel" class="upload-panel">
-      <div class="upload-icon">📄</div>
+      <div class="upload-icon">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#6B7A90" stroke-width="1.8">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
       <strong>Choose file or drag it here</strong><br>
       <span>PDF, JPG or PNG · max. 8 MB</span>
       <input id="real-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
@@ -144,7 +150,7 @@
     <div class="success-icon">✓</div>
     <h1>You are all set</h1>
     <p>Your analysis is now queued for review.</p>
-    <p>You will receive your full analysis and ready-to-send response letter by email by the next working day before 4pm.</p>
+    <p>You will receive your full review and response letter by email by the next working day before 4pm.</p>
     <p class="note">Please also check your spam folder if you have not received anything by then.</p>
   </div>
 
