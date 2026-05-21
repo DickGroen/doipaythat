@@ -192,7 +192,9 @@ function cleanAnalysis(text) {
   return text
     .replace(/\[TITLE\][\s\S]*?\[\/TITLE\]/g, '')
     .replace(/\[INTRO\][\s\S]*?\[\/INTRO\]/g, '')
-    .replace(/\[\/?\w+\]/g, '')
+    .replace(/\[LETTER\][\s\S]*?\[\/LETTER\]/g, '')
+    .replace(/\[\/?[A-Z_]+\]/g, '')
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
 
@@ -228,7 +230,8 @@ export function makeAnalysisDocx(analysis, name, email, triage, type) {
 }
 
 export function makeLetterDocx(analysis, name, triage, type) {
-  const letterBody = (extractTaggedSection(analysis, 'LETTER') || analysis).trim();
+  const raw = extractTaggedSection(analysis, 'LETTER') || analysis;
+  const letterBody = raw.replace(/\[\/?[A-Z_]+\]/g, '').trim();
   const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
   const paras = [
