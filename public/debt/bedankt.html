@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Analysis is being created | DoIPayThat</title>
+  <title>Debt letter review | DoIPayThat</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -57,16 +57,15 @@
 
 <div class="wrap">
 
-  <div class="card" id="auto-card">
+  <div class="card hidden" id="auto-card">
     <div class="badge"><span class="dot"></span>Payment successful</div>
-    <h1>Analysis is being created…</h1>
-    <p>We are verifying your payment and automatically starting your full debt analysis based on your previously uploaded document.</p>
+    <h1>Parking analysis is being created…</h1>
+    <p>We are verifying your payment and automatically starting your full parking notice analysis based on your previously uploaded document.</p>
     <div id="auto-status" class="status-box info">Verifying your payment…</div>
-    <p class="note">You can leave this page open if you like. Your full review and ready-to-send response letter will be sent by email by the next working day before 4pm.</p>
+    <p class="note">You can leave this page open if you like. Your full review and ready-to-send appeal letter will be sent by email by the next working day before 4pm.</p>
   </div>
 
-  <div class="card hidden" id="thankyou-app">
-
+  <div class="card" id="thankyou-app">
     <div class="badge"><span class="dot"></span>Payment successful</div>
 
     <div class="progress-bar">
@@ -76,50 +75,38 @@
     </div>
 
     <h1>One final step before we begin</h1>
-
-    <p>
-      Please upload your debt letter so we can prepare your full analysis and ready-to-send response letter. Once uploaded, your review will be prepared and sent by email by the next working day before 4pm.
-    </p>
+    <p>Please upload your debt letter so we can prepare your full review and response letter. Once uploaded, your review will be prepared and sent by email by the next working day before 4pm.</p>
 
     <div class="steps">
-
       <div class="step">
         <div class="step-num">1</div>
         <div>
           <div class="step-title">Upload your debt letter</div>
-          <div class="step-desc">
-            Debt collection letter, payment demand, solicitor letter or claim notice. PDF, JPG or PNG.
-          </div>
+          <div class="step-desc">Debt collection letter, payment demand, solicitor letter or claim notice. PDF, JPG or PNG.</div>
         </div>
       </div>
 
       <div class="step">
         <div class="step-num">2</div>
         <div>
-          <div class="step-title">We review everything</div>
-          <div class="step-desc">
-            Claimed amount, added fees, proof of debt, collection authority and possible warning signs.
-          </div>
+          <div class="step-title">We review the letter</div>
+          <div class="step-desc">Claimed amount, added fees, proof of debt, collection authority and the main points in the letter.</div>
         </div>
       </div>
 
       <div class="step">
         <div class="step-num">3</div>
         <div>
-          <div class="step-title">Analysis by email</div>
-          <div class="step-desc">
-            You receive the full analysis and ready-to-send response letter by email.
-          </div>
+          <div class="step-title">Review by email</div>
+          <div class="step-desc">You receive the full review and a response letter by email.</div>
         </div>
       </div>
-
     </div>
 
     <input id="customer-name" class="input" placeholder="Your name" autocomplete="name">
     <input id="customer-email" class="input" placeholder="Your email" type="email" autocomplete="email">
 
     <div id="upload-panel" class="upload-panel">
-
       <div class="upload-icon">
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#6B7A90" stroke-width="1.8">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -127,16 +114,12 @@
           <line x1="12" y1="3" x2="12" y2="15"/>
         </svg>
       </div>
-
       <strong>Choose file or drag it here</strong><br>
       <span>PDF, JPG or PNG · max. 8 MB</span>
-
       <input id="real-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
     </div>
 
-    <div class="security">
-      🔒 Secure connection · Document processed only for analysis · Never shared with third parties
-    </div>
+    <div class="security">🔒 Secure connection · Document processed only for analysis · Never shared with third parties</div>
 
     <div id="selected-file" class="selected-file">
       <strong id="selected-file-name"></strong><br>
@@ -144,26 +127,17 @@
       <a href="#" id="remove-file">Remove file</a>
     </div>
 
-    <button id="submit-btn" class="offer-cta" disabled>
-      Choose a file first
-    </button>
+    <button id="submit-btn" class="offer-cta" disabled>Choose a file first</button>
 
     <div id="status-box" class="status-box hidden"></div>
 
-    <p class="note">
-      This upload is only needed if the automatic connection could not be found.
-    </p>
+    <p class="note">This upload is only needed if the automatic connection could not be found.</p>
 
     <div class="fallback-box">
       <strong>Upload not working?</strong>
-      <p>
-        Email your debt letter directly to us and we will process it manually. Please include your name and the email address used for payment.
-      </p>
-      <a href="mailto:support@doipaythat.co.uk" class="fallback-email">
-        support@doipaythat.co.uk
-      </a>
+      <p>Email your debt letter directly to us and we will process it manually. Please include your name and the email address used for payment.</p>
+      <a href="mailto:support@doipaythat.co.uk" class="fallback-email">support@doipaythat.co.uk</a>
     </div>
-
   </div>
 
   <div class="card hidden" id="locked-screen">
@@ -175,8 +149,8 @@
   <div class="card hidden" id="success-screen">
     <div class="success-icon">✓</div>
     <h1>You are all set</h1>
-    <p>Your debt analysis is now queued for review.</p>
-    <p>You will receive your full analysis and ready-to-send response letter by email by the next working day before 4pm.</p>
+    <p>Your analysis is now queued for review.</p>
+    <p>You will receive your full review and response letter by email by the next working day before 4pm.</p>
     <p class="note">Please also check your spam folder if you have not received anything by then.</p>
   </div>
 
@@ -224,7 +198,6 @@
     [autoCard, fallback, locked, success].forEach(node => {
       if (node) node.classList.add("hidden");
     });
-
     if (el) el.classList.remove("hidden");
   }
 
@@ -240,9 +213,7 @@
     const hasEmail = Boolean(emailEl.value.trim());
 
     submitBtn.disabled = !(hasFile && hasName && hasEmail);
-    submitBtn.textContent = hasFile
-      ? "Start my analysis"
-      : "Choose a file first";
+    submitBtn.textContent = hasFile ? "Start my analysis" : "Choose a file first";
   }
 
   function setFile(file) {
@@ -257,13 +228,10 @@
     }
 
     chosenFile = file;
-
     selectedFileName.textContent = file.name;
     selectedFileMeta.textContent = formatFileSize(file.size);
-
     selectedFile.classList.add("show");
     statusBox.classList.add("hidden");
-
     updateSubmitState();
   }
 
@@ -295,12 +263,9 @@
 
   removeFile.addEventListener("click", e => {
     e.preventDefault();
-
     chosenFile = null;
     fileInput.value = "";
-
     selectedFile.classList.remove("show");
-
     updateSubmitState();
   });
 
@@ -322,34 +287,23 @@
       });
 
       track("paid_fallback_upload_completed", { type });
-
       showOnly(success);
-
     } catch (err) {
-
       track("paid_fallback_upload_failed", {
         type,
         error: err.message
       });
 
-      setStatus(
-        "error",
-        err.message || "Upload failed. Please try again."
-      );
-
+      setStatus("error", err.message || "Upload failed. Please try again.");
       submitBtn.disabled = false;
       submitBtn.textContent = "Start my analysis";
     }
   });
 
   if (!sessionId || !sessionId.startsWith("cs_")) {
-
     showOnly(locked);
-
   } else {
-
     try {
-
       autoStatus.textContent = "Verifying your payment…";
 
       await submitAutoPaid({
@@ -361,37 +315,23 @@
       });
 
       track("auto_paid_analysis_started", { type });
-
       showOnly(success);
-
     } catch (err) {
-
       if (err.needUpload) {
-
         track("auto_paid_fallback_upload_needed", {
           type,
           reason: err.message
         });
 
-        if (emailEl && params.get("email")) {
-          emailEl.value = params.get("email");
-        }
-
-        if (nameEl && params.get("name")) {
-          nameEl.value = params.get("name");
-        }
+        if (emailEl && params.get("email")) emailEl.value = params.get("email");
+        if (nameEl && params.get("name")) nameEl.value = params.get("name");
 
         showOnly(fallback);
-
         updateSubmitState();
-
       } else {
-
         autoStatus.className = "status-box error";
-
         autoStatus.textContent =
-          err.message ||
-          "Automatic analysis failed. Please contact support@doipaythat.co.uk";
+          err.message || "Automatic analysis failed. Please contact support@doipaythat.co.uk";
       }
     }
   }
