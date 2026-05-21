@@ -272,7 +272,7 @@
   nameEl.addEventListener("input", updateSubmitState);
   emailEl.addEventListener("input", updateSubmitState);
 
-    submitBtn.addEventListener("click", async () => {
+      submitBtn.addEventListener("click", async () => {
     const name  = nameEl.value.trim();
     const email = emailEl.value.trim();
 
@@ -281,7 +281,6 @@
     submitBtn.disabled = true;
     submitBtn.textContent = "Uploading…";
 
-    // Show success immediately — analysis runs in background
     showOnly(success);
 
     track("paid_fallback_upload_started", { type });
