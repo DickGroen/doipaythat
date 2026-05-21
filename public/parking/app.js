@@ -10,7 +10,7 @@ import {
   closeModal,
   track
 } from '../app.js';
- 
+
 window.openModal = openModal;
 window.closeModal = closeModal;
 
@@ -120,6 +120,9 @@ window.startGratisUpload = async function() {
     track('free_triage_completed', { type: TYPE });
 
     renderTeaser(triage);
+
+    const freeCard = document.getElementById('free-card');
+    if (freeCard) freeCard.style.display = 'none';
 
     if (status) {
       status.className = 'optie-status optie-status--success';
