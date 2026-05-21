@@ -10,9 +10,9 @@ SITE_URL = "https://doipaythat.co.uk"
 
 # Stripe Payment Links (public — not secrets)
 STRIPE_LINK_DEBT         = "https://buy.stripe.com/test_cNi7sMgpS62H1Lw6pC1440e"
-STRIPE_LINK_PARKING      = "https://buy.stripe.com/REPLACE_WITH_PARKING_LINK"
-STRIPE_LINK_BILL         = "https://buy.stripe.com/REPLACE_WITH_BILL_LINK"
-STRIPE_LINK_SUBSCRIPTION = "https://buy.stripe.com/REPLACE_WITH_SUBSCRIPTION_LINK"
+STRIPE_LINK_PARKING      = "https://buy.stripe.com/test_5kQfZi0qU62H9dY8xK14406"
+STRIPE_LINK_BILL         = "https://buy.stripe.com/test_7sYdRab5yezd89U15i14407"
+STRIPE_LINK_SUBSCRIPTION = "https://buy.stripe.com/test_3cI14o5LeaiX3TEeW814408"
 STRIPE_LINK_QUOTE        = "https://buy.stripe.com/REPLACE_WITH_QUOTE_LINK"
 
 # Secrets via Cloudflare Dashboard:
