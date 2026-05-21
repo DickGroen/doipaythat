@@ -2,6 +2,7 @@
 
 import { escapeHtml } from "../utils/html.js";
 import { makeAnalysisRtf, makeLetterRtf, rtfToBase64 } from "../utils/rtf.js";
+import { makeAnalysisDocx, makeLetterDocx, docxToBase64 } from "../utils/docx.js";
 
 const FROM       = "DoIPayThat <noreply@doipaythat.co.uk>";
 const DISCLAIMER = "This is informational analysis only and does not constitute legal advice. DoIPayThat does not provide legal representation.";
@@ -25,35 +26,35 @@ const TYPE_LABELS = {
     title:        "debt letter",
     letter:       "dispute letter",
     price:        "49",
-    filename:     "Dispute-Letter.rtf",
+    filename:     "Response-Letter.docx",
     stripe_label: "Full analysis + dispute letter — £49"
   },
   parking: {
     title:        "parking charge notice",
     letter:       "appeal letter",
     price:        "19",
-    filename:     "Appeal-Letter.rtf",
+    filename:     "Response-Letter.docx",
     stripe_label: "Full analysis + appeal letter — £19"
   },
   bill: {
     title:        "bill",
     letter:       "dispute letter",
     price:        "29",
-    filename:     "Dispute-Letter.rtf",
+    filename:     "Response-Letter.docx",
     stripe_label: "Full analysis + dispute letter — £29"
   },
   subscription: {
     title:        "subscription charge",
     letter:       "cancellation letter",
     price:        "29",
-    filename:     "Cancellation-Letter.rtf",
+    filename:     "Response-Letter.docx",
     stripe_label: "Full analysis + cancellation letter — £29"
   },
   quote: {
     title:        "quote or estimate",
     letter:       "response letter",
     price:        "29",
-    filename:     "Response-Letter.rtf",
+    filename:     "Response-Letter.docx",
     stripe_label: "Analysis + response letter — £29"
   }
 };
@@ -174,7 +175,7 @@ export async function notifyAdminFree(env, { name, email, type, triage, stripeLi
 }
 
 export async function notifyAdminPaid(env, { name, email, type, triage, analysis }) {
-  const analysisRtf = makeAnalysisRtf(analysis, name, email, triage, type);
+  const analysisDocx = makeAnalysisDocx(analysis, name, email, triage, type);
 
   await sendEmail(env, {
     to:      env.ADMIN_EMAIL,
@@ -191,7 +192,7 @@ export async function notifyAdminPaid(env, { name, email, type, triage, analysis
       <p><strong>Risk:</strong> ${escapeHtml(triage?.risk || "")}</p>
     </div>`,
     attachments: [
-      { filename: "Analysis.rtf", content: rtfToBase64(analysisRtf) }
+      { filename: "Analysis.docx", content: docxToBase64(analysisDocx) }
     ]
   });
 }
@@ -432,9 +433,9 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
 
 export async function sendPaidEmail(env, { name, email, type, triage, analysis }) {
   const labels      = TYPE_LABELS[type] || TYPE_LABELS.debt;
-  const analysisRtf = makeAnalysisRtf(analysis, name, email, triage, type);
-  const letterRtf   = makeLetterRtf(analysis, name, triage, type);
-  const isParking   = type === "parking";
+  const analysisDocx = makeAnalysisDocx(analysis, name, email, triage, type);
+  const letterDocx   = makeLetterDocx(analysis, name, triage, type);
+  const isParking    = type === "parking";
 
   const subject = isParking
     ? "Your parking notice review is ready — DoIPayThat"
@@ -453,7 +454,7 @@ export async function sendPaidEmail(env, { name, email, type, triage, analysis }
       <p>You now have everything you need to ${isParking ? "decide whether to appeal and how" : "understand the situation and respond with confidence"}.</p>
       <p>Please find attached:</p>
       <ul style="padding-left:20px;margin:8px 0 16px 0;list-style:none;">
-        <li>✓ <strong>Analysis.rtf</strong> — full breakdown with findings and next steps</li>
+        <li>✓ <strong>Analysis.docx</strong> — full breakdown with findings and next steps</li>
         <li>✓ <strong>${escapeHtml(labels.filename)}</strong> — ready-to-send ${escapeHtml(labels.letter)}</li>
       </ul>
       <p style="background:#f0fdf4;border-left:4px solid #22c55e;padding:12px;border-radius:4px;font-size:0.9rem;">
@@ -465,8 +466,8 @@ export async function sendPaidEmail(env, { name, email, type, triage, analysis }
       <p style="font-size:0.8rem;color:#6b7280;margin-top:24px;">${escapeHtml(DISCLAIMER)}</p>
     </div>`,
     attachments: [
-      { filename: "Analysis.rtf",  content: rtfToBase64(analysisRtf) },
-      { filename: labels.filename, content: rtfToBase64(letterRtf)   }
+      { filename: "Analysis.docx",  content: docxToBase64(analysisDocx) },
+      { filename: labels.filename,  content: docxToBase64(letterDocx) }
     ]
   });
 
