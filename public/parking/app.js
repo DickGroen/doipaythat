@@ -185,10 +185,16 @@ function renderTeaser(triage) {
     teaser.classList.add('teaser--visible');
   }, 10);
 
+  const isParkingDoc = ['private_pcn','council_pcn','police_fixed_penalty'].includes(triage.documentType);
+  const docLabel = isParkingDoc ? 'your parking notice' : 'the document you uploaded';
+  const whatNext = isParkingDoc
+    ? "We'll take a look at the notice and send you a first assessment by email. If there are any points worth checking before you decide whether to pay, we'll explain them there."
+    : "We'll review the document carefully and send you a first assessment by email. If there are points worth looking at before you decide what to do next, we'll explain them there.";
+
   teaser.innerHTML = `
     <div class="offer-card teaser-card" style="border-color:var(--green);background:#f0fdf4;max-width:620px;margin:0 auto;">
       <div style="font-size:1.1rem;font-weight:700;color:#14532d;margin-bottom:12px;">
-        ✓ We've received your parking notice.
+        ✓ We've received ${esc(docLabel)}.
       </div>
       <p style="color:#166534;margin-bottom:12px;line-height:1.7;">
         You'll receive your first review by email shortly — by the next working day before 4pm at the latest.
@@ -196,7 +202,7 @@ function renderTeaser(triage) {
       <div style="background:#fff;border:1px solid #bbf7d0;border-radius:8px;padding:14px;margin-bottom:14px;">
         <strong style="color:#14532d;">What happens next?</strong>
         <p style="color:#166534;margin-top:6px;margin-bottom:0;line-height:1.65;">
-          We'll take a look at the notice and send you a first assessment by email. If there are any points worth checking before you decide whether to pay, we'll explain them there.
+          ${esc(whatNext)}
         </p>
       </div>
       <p style="font-size:.85rem;color:#166534;">
