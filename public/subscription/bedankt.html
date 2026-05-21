@@ -149,7 +149,7 @@
   <div class="card hidden" id="success-screen">
     <div class="success-icon">✓</div>
     <h1>You are all set</h1>
-    <p>Your analysis is now queued for review.</p>
+    <p>Your analysis is now queued for review by our team.</p>
     <p>You will receive your full review and response letter by email by the next working day before 4pm.</p>
     <p class="note">Please also check your spam folder if you have not received anything by then.</p>
   </div>
@@ -158,29 +158,24 @@
 
 <script type="module">
   import {
-    submitAutoPaid,
     submitPaid,
     validateFile,
     formatFileSize,
     track
   } from "/app.js";
 
-  const params = new URLSearchParams(window.location.search);
-
+  const params    = new URLSearchParams(window.location.search);
   const sessionId = params.get("session_id");
-  const type = params.get("type") || "subscription";
+  const type      = params.get("type") || "subscription";
 
-  const autoCard = document.getElementById("auto-card");
-  const autoStatus = document.getElementById("auto-status");
-  const fallback = document.getElementById("thankyou-app");
-  const locked = document.getElementById("locked-screen");
-  const success = document.getElementById("success-screen");
-
-  const nameEl = document.getElementById("customer-name");
-  const emailEl = document.getElementById("customer-email");
+  const fallback  = document.getElementById("thankyou-app");
+  const locked    = document.getElementById("locked-screen");
+  const success   = document.getElementById("success-screen");
+  const nameEl    = document.getElementById("customer-name");
+  const emailEl   = document.getElementById("customer-email");
   const uploadPanel = document.getElementById("upload-panel");
   const fileInput = document.getElementById("real-file-input");
-  const selectedFile = document.getElementById("selected-file");
+  const selectedFileEl = document.getElementById("selected-file");
   const selectedFileName = document.getElementById("selected-file-name");
   const selectedFileMeta = document.getElementById("selected-file-meta");
   const removeFile = document.getElementById("remove-file");
@@ -189,49 +184,33 @@
 
   let chosenFile = null;
 
-  track("paid_thankyou_view", {
-    type,
-    has_session: Boolean(sessionId)
-  });
+  track("paid_thankyou_view", { type, has_session: Boolean(sessionId) });
 
   function showOnly(el) {
-    [autoCard, fallback, locked, success].forEach(node => {
-      if (node) node.classList.add("hidden");
-    });
+    [fallback, locked, success].forEach(n => n && n.classList.add("hidden"));
     if (el) el.classList.remove("hidden");
   }
 
-  function setStatus(kind, message) {
-    statusBox.className = `status-box ${kind || ""}`;
-    statusBox.textContent = message;
-    statusBox.classList.remove("hidden");
-  }
-
   function updateSubmitState() {
-    const hasFile = Boolean(chosenFile);
-    const hasName = Boolean(nameEl.value.trim());
+    const hasFile  = Boolean(chosenFile);
+    const hasName  = Boolean(nameEl.value.trim());
     const hasEmail = Boolean(emailEl.value.trim());
-
     submitBtn.disabled = !(hasFile && hasName && hasEmail);
     submitBtn.textContent = hasFile ? "Start my analysis" : "Choose a file first";
   }
 
   function setFile(file) {
     const error = validateFile(file);
-
     if (error) {
       chosenFile = null;
-      selectedFile.classList.remove("show");
-      setStatus("error", error);
+      selectedFileEl.classList.remove("show");
       updateSubmitState();
       return;
     }
-
     chosenFile = file;
     selectedFileName.textContent = file.name;
     selectedFileMeta.textContent = formatFileSize(file.size);
-    selectedFile.classList.add("show");
-    statusBox.classList.add("hidden");
+    selectedFileEl.classList.add("show");
     updateSubmitState();
   }
 
@@ -242,20 +221,12 @@
     if (file) setFile(file);
   });
 
-  ["dragenter", "dragover"].forEach(eventName => {
-    uploadPanel.addEventListener(eventName, e => {
-      e.preventDefault();
-      uploadPanel.classList.add("drag-over");
-    });
+  ["dragenter", "dragover"].forEach(ev => {
+    uploadPanel.addEventListener(ev, e => { e.preventDefault(); uploadPanel.classList.add("drag-over"); });
   });
-
-  ["dragleave", "drop"].forEach(eventName => {
-    uploadPanel.addEventListener(eventName, e => {
-      e.preventDefault();
-      uploadPanel.classList.remove("drag-over");
-    });
+  ["dragleave", "drop"].forEach(ev => {
+    uploadPanel.addEventListener(ev, e => { e.preventDefault(); uploadPanel.classList.remove("drag-over"); });
   });
-
   uploadPanel.addEventListener("drop", e => {
     const file = e.dataTransfer.files && e.dataTransfer.files[0];
     if (file) setFile(file);
@@ -265,90 +236,38 @@
     e.preventDefault();
     chosenFile = null;
     fileInput.value = "";
-    selectedFile.classList.remove("show");
+    selectedFileEl.classList.remove("show");
     updateSubmitState();
   });
 
   nameEl.addEventListener("input", updateSubmitState);
   emailEl.addEventListener("input", updateSubmitState);
 
-    submitBtn.addEventListener("click", async () => {
+  submitBtn.addEventListener("click", () => {
     const name  = nameEl.value.trim();
     const email = emailEl.value.trim();
-
     if (!chosenFile || !name || !email) return;
 
     submitBtn.disabled = true;
     submitBtn.textContent = "Uploading…";
 
-    // Show success immediately — analysis runs in background
+    // Show success immediately
     showOnly(success);
-
     track("paid_fallback_upload_started", { type });
 
-    submitPaid({
-      file: chosenFile,
-      name,
-      email,
-      type,
-      sessionId,
-      onStatus: () => {}
-    }).then(() => {
-      track("paid_fallback_upload_completed", { type });
-    }).catch((err) => {
-      track("paid_fallback_upload_failed", { type, error: err.message });
-      console.error("Upload error:", err.message);
-    });
+    submitPaid({ file: chosenFile, name, email, type, sessionId, onStatus: () => {} })
+      .then(() => track("paid_fallback_upload_completed", { type }))
+      .catch(err => { track("paid_fallback_upload_failed", { type, error: err.message }); console.error(err.message); });
   });
 
-      track("paid_fallback_upload_completed", { type });
-      showOnly(success);
-    } catch (err) {
-      track("paid_fallback_upload_failed", {
-        type,
-        error: err.message
-      });
-
-      setStatus("error", err.message || "Upload failed. Please try again.");
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Start my analysis";
-    }
-  });
-
+  // Show upload form or locked screen
   if (!sessionId || !sessionId.startsWith("cs_")) {
     showOnly(locked);
   } else {
-    try {
-      autoStatus.textContent = "Verifying your payment…";
-
-      await submitAutoPaid({
-        type,
-        sessionId,
-        onStatus: (_, msg) => {
-          autoStatus.textContent = msg;
-        }
-      });
-
-      track("auto_paid_analysis_started", { type });
-      showOnly(success);
-    } catch (err) {
-      if (err.needUpload) {
-        track("auto_paid_fallback_upload_needed", {
-          type,
-          reason: err.message
-        });
-
-        if (emailEl && params.get("email")) emailEl.value = params.get("email");
-        if (nameEl && params.get("name")) nameEl.value = params.get("name");
-
-        showOnly(fallback);
-        updateSubmitState();
-      } else {
-        autoStatus.className = "status-box error";
-        autoStatus.textContent =
-          err.message || "Automatic analysis failed. Please contact support@doipaythat.co.uk";
-      }
-    }
+    showOnly(fallback);
+    if (emailEl && params.get("email")) emailEl.value = params.get("email");
+    if (nameEl  && params.get("name"))  nameEl.value  = params.get("name");
+    updateSubmitState();
   }
 </script>
 
