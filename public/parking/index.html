@@ -68,6 +68,7 @@
     .optie-status--info{color:var(--accent);}
     .teaser{display:none;margin-top:30px;opacity:0;transform:translateY(10px);transition:.25s ease;}
     .teaser--visible{opacity:1;transform:translateY(0);}
+    .teaser--active #free-card{display:none!important;}
     .teaser-card{border-color:var(--warn);background:#fffdf2;}
     .teaser-heading{font-weight:800;font-size:1.2rem;color:var(--ink);}
     .teaser-sub{margin-top:6px;color:var(--muted);font-size:.92rem;}
@@ -127,13 +128,15 @@
     .modal__security{text-align:center;font-size:.78rem;color:var(--muted);}
     .modal__close{display:block;text-align:center;margin-top:14px;font-size:.84rem;color:var(--muted);cursor:pointer;}
     .modal__close:hover{color:var(--ink);}
+    #free-card[style*="display: none"] ~ * #upload-security-note,
+    #free-card[style*="display:none"] #upload-security-note{display:none!important;}
     .footer-trust{padding:32px 0 16px;font-size:.85rem;color:var(--ink-3);line-height:1.75;border-top:1px solid var(--line);}
     .disclaimer{padding:16px 0 20px;font-size:.78rem;color:var(--muted);line-height:1.7;}
   </style>
 </head>
 <body>
 
-<div class="warning-banner">⏱️ Check before you pay — parking notices can contain timing, evidence or signage issues</div>
+<div class="warning-banner">⏱️ Received a parking notice? It may be worth checking the main points before you pay.</div>
 
 <header class="header">
   <div class="container">
@@ -146,14 +149,14 @@
 
 <section class="hero">
   <div class="container">
-    <h1>Before you pay a parking charge, check whether it is clear</h1>
-    <p class="hero__sub">Upload your parking charge notice, PCN or Notice to Keeper and get a free first check. If there are points worth reviewing, you can choose a full analysis with a ready-to-send appeal draft.</p>
+    <h1>Received a parking charge notice? It may be worth a closer look before you pay.</h1>
+    <p class="hero__sub">Upload your parking charge notice, PCN or Notice to Keeper and receive a free first review. If there are points worth looking at, a full review with a draft response letter is available.</p>
     <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">Many people pay first and only later realise they could have asked for evidence, clarification or a formal review.</p>
     <a href="#free-check" class="hero-cta">Start free check →</a>
     <div class="hero-sub-note">PDF, JPG or PNG · no subscription · full analysis optional</div>
 
     <div class="trust-triggers">
-      <div class="trust-trigger"><span>●</span><div><strong>Timing and procedure</strong>Private parking notices may need to meet specific keeper-liability requirements.</div></div>
+      <div class="trust-trigger"><span>●</span><div><strong>Timing and procedure</strong>Private parking notices are not always straightforward — timing, evidence and the notice wording can all be relevant.</div></div>
       <div class="trust-trigger"><span>●</span><div><strong>Evidence and signage</strong>Photographs, timestamps, location and signage may all be relevant.</div></div>
     </div>
   </div>
@@ -180,7 +183,7 @@
       </div>
 
       <div id="gratis-status" class="optie-status"></div>
-      <div class="offer-security">🔒 Your document is processed securely for analysis and is not shared with third parties.</div>
+      <div class="offer-security" id="upload-security-note">🔒 Your document is processed securely for analysis and is not shared with third parties.</div>
     </div>
 
     <div id="teaser" class="teaser">
@@ -204,22 +207,22 @@
       <span class="value-item"><span class="vi-check">✓</span> Timing review</span>
       <span class="value-item"><span class="vi-check">✓</span> Signage check</span>
       <span class="value-item"><span class="vi-check">✓</span> Evidence review</span>
-      <span class="value-item"><span class="vi-check">✓</span> Appeal draft</span>
+      <span class="value-item"><span class="vi-check">✓</span> Draft response</span>
       <span class="value-item"><span class="vi-check">✓</span> One-off £19</span>
     </div>
 
     <div class="offer-card">
       <div class="offer-badge">After first check</div>
-      <div class="offer-title">Full analysis + appeal draft</div>
-      <p class="offer-desc">We review the notice for possible appeal points and prepare a professional appeal draft. You stay in control and decide what to do next.</p>
+      <div class="offer-title">Full parking notice review</div>
+      <p class="offer-desc">We review the notice carefully and prepare a draft response letter you can use if you decide to write back. You stay in control and decide what to do next.</p>
 
       <ul class="offer-list">
-        <li>Review of timing, deadlines and Notice to Keeper wording</li>
+        <li>Review of timing, deadlines and notice wording</li>
         <li>Check whether signage, location or photographs may require clarification</li>
         <li>Review of ANPR timestamps and stated parking duration where visible</li>
-        <li>Private operator vs council PCN handling</li>
+        <li>Private parking companies and council notices work differently — we explain which applies</li>
         <li>Clear next steps in plain English</li>
-        <li>Ready-to-send appeal draft</li>
+        <li>Draft response letter</li>
       </ul>
 
       <hr class="offer-divider">
@@ -238,7 +241,7 @@
     <div class="steps">
       <div class="step"><div class="step__num">01</div><div class="step__title">Upload your notice</div><div class="step__desc">Upload your Parking Charge Notice, PCN, Notice to Keeper or parking demand.</div></div>
       <div class="step"><div class="step__num">02</div><div class="step__title">Get a free first check</div><div class="step__desc">See whether the notice may contain points worth reviewing.</div></div>
-      <div class="step"><div class="step__num">03</div><div class="step__title">Optional full analysis</div><div class="step__desc">If you want more detail, get the full analysis plus a ready-to-send appeal draft.</div></div>
+      <div class="step"><div class="step__num">03</div><div class="step__title">Optional full analysis</div><div class="step__desc">If you want more detail, the full review includes a draft response letter you can adapt if needed.</div></div>
     </div>
   </div>
 </section>
@@ -248,7 +251,7 @@
     <div class="section-label">What we check</div>
     <h2>Common parking notice issues</h2>
     <div class="trust-grid">
-      <div class="trust-item"><div class="trust-item__label">Timing and deadlines</div><div class="trust-item__text">Notice timing, appeal deadlines and keeper-liability wording may be important.</div></div>
+      <div class="trust-item"><div class="trust-item__label">Timing and deadlines</div><div class="trust-item__text">The timing of the notice, stated deadlines and the wording used can all be relevant.</div></div>
       <div class="trust-item"><div class="trust-item__label">Signs and location</div><div class="trust-item__text">The terms, signs and location evidence may need to be clear and consistent.</div></div>
       <div class="trust-item"><div class="trust-item__label">ANPR and evidence</div><div class="trust-item__text">Camera timestamps, vehicle details and photographs may require clarification.</div></div>
     </div>
@@ -262,7 +265,7 @@
     <div class="fit-rows">
       <div class="fit-row"><span>✓</span><span>You received a parking charge notice, PCN or Notice to Keeper</span></div>
       <div class="fit-row"><span>✓</span><span>You want to understand the notice before you pay or appeal</span></div>
-      <div class="fit-row"><span>✓</span><span>You want a professional appeal draft if clarification is needed</span></div>
+      <div class="fit-row"><span>✓</span><span>You want a draft response letter if you decide to write back</span></div>
     </div>
   </div>
 </section>
@@ -274,7 +277,7 @@
     <div class="faq-list">
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">Is this legal advice? <span class="faq-chevron">⌄</span></div>
-        <div class="faq-a">No. DoIPayThat provides informational document analysis and appeal drafts. It does not provide legal advice or legal representation.</div>
+        <div class="faq-a">No. DoIPayThat provides informational document analysis and draft response letters. It does not provide legal advice or legal representation.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">Can you guarantee the charge will be cancelled? <span class="faq-chevron">⌄</span></div>
@@ -282,7 +285,7 @@
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">Do I have to buy the full analysis? <span class="faq-chevron">⌄</span></div>
-        <div class="faq-a">No. The free first check is free. The full analysis is optional and is only useful if you want a more detailed review and appeal draft.</div>
+        <div class="faq-a">No. The free first review is free. The full review is optional and includes a more detailed assessment and a draft response letter.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">Does this work for private parking and council PCNs? <span class="faq-chevron">⌄</span></div>
@@ -295,7 +298,7 @@
 <section class="final-cta">
   <div class="container">
     <h2>Check before you pay</h2>
-    <p>Parking notice received? Start with a free first check.</p>
+    <p>Received a parking notice? Start with a free review.</p>
     <a href="#free-check" class="final-cta-btn">Free check →</a>
     <div class="final-cta-note">PDF, JPG or PNG · no subscription · full analysis optional</div>
   </div>
@@ -303,7 +306,7 @@
 
 <div class="container">
   <div class="footer-trust"><strong>DoIPayThat</strong> helps people understand parking notices before they decide what to do.<br>Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a></div>
-  <div class="disclaimer">DoIPayThat provides informational document analysis and appeal drafts. It is not legal advice and does not provide legal representation. Documents are processed for analysis. &copy; 2026 DoIPayThat</div>
+  <div class="disclaimer">DoIPayThat provides informational document analysis and draft response letters. It is not legal advice and does not provide legal representation. Documents are processed for analysis. &copy; 2026 DoIPayThat</div>
 </div>
 
 <footer style="border-top:1px solid var(--line);padding:20px 0;text-align:center;background:var(--white);">
@@ -328,14 +331,14 @@
   <div class="modal">
     <div class="modal__header">
       <div class="modal__eyebrow">Full analysis</div>
-      <div class="modal__title">Analysis + appeal draft</div>
+      <div class="modal__title">Full parking review</div>
       <div class="modal__price">£19 <span>one-off</span></div>
     </div>
     <div class="modal__body">
-      <div class="modal__feature"><span class="check">✓</span><span>Review of timing, evidence and signage</span></div>
-      <div class="modal__feature"><span class="check">✓</span><span>Private operator or council PCN next steps</span></div>
-      <div class="modal__feature"><span class="check">✓</span><span>Ready-to-send appeal draft</span></div>
-      <div class="modal__disclaimer">Informational analysis and appeal draft. Not legal advice.</div>
+      <div class="modal__feature"><span class="check">✓</span><span>Review of timing, evidence and notice wording</span></div>
+      <div class="modal__feature"><span class="check">✓</span><span>Plain English explanation of next steps</span></div>
+      <div class="modal__feature"><span class="check">✓</span><span>Draft response letter</span></div>
+      <div class="modal__disclaimer">Informational document review and draft response. Not legal advice.</div>
       <a href="https://buy.stripe.com/REPLACE_WITH_PARKING_STRIPE_LINK" class="modal__cta js-stripe-link" data-type="parking" data-price="19">Get full analysis →</a>
       <div class="modal__security">🔒 Secure payment via Stripe — card details are never stored · no subscription</div>
       <div class="modal__close" onclick="closeModal('modal')">Back</div>
