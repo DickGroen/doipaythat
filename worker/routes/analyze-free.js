@@ -27,7 +27,26 @@ function getTriageDecision({ chance, flags }) {
   return { tier: "tier3", showUpsell: false, emailType: "trust" };
 }
 
+// ── Debug mock triage ─────────────────────────────────────────────────────────
+
+function mockTriage(type) {
+  return {
+    documentType:   type,
+    sender:         "Debug Sender Ltd",
+    amount_claimed: 150,
+    risk:           "medium",
+    route:          "HAIKU",
+    chance:         55,
+    flagCount:      2,
+    teaser:         "[DEBUG] This is a mock triage result. No API call was made.",
+    possible_excessive_fees: true,
+    possible_no_proof:       true,
+  };
+}
+
 export async function handleAnalyzeFree(request, env) {
+  const debugMode = env.API_DEBUG_MODE === "true";
+
   try {
     const formData = await request.formData();
 
@@ -46,28 +65,47 @@ export async function handleAnalyzeFree(request, env) {
 
     const { base64, mediaType } = await fileToBase64(file);
 
-    const prompts = await loadPrompts(type);
+    // ── API cost log ────────────────────────────────────────────────────────
+    console.log("API_CALL_LOG:", JSON.stringify({
+      route:      "analyze-free",
+      model:      "haiku",
+      type,
+      free_paid:  "free",
+      file:       !!file,
+      file_size:  file?.size || 0,
+      debug_mode: debugMode,
+      timestamp:  new Date().toISOString(),
+    }));
 
-    if (!prompts?.triage) {
-      return jsonResponse({ ok: false, error: `Triage prompt not found for type: ${type}` }, 500);
+    let triage;
+
+    if (debugMode) {
+      console.log("[DEBUG] Skipping Anthropic API call — debug mode enabled");
+      triage = normalizeTriage(mockTriage(type));
+    } else {
+      const prompts = await loadPrompts(type);
+
+      if (!prompts?.triage) {
+        return jsonResponse({ ok: false, error: `Triage prompt not found for type: ${type}` }, 500);
+      }
+
+      const raw = await runTriage(env, {
+        fileBase64:   base64,
+        mediaType,
+        triagePrompt: prompts.triage,
+      });
+
+      triage = normalizeTriage(safeJsonParse(raw) || {
+        documentType: null,
+        sender:       null,
+        amount_claimed: null,
+        risk:    "medium",
+        route:   "SONNET",
+        chance:  50,
+        flagCount: 0,
+        teaser:  "There may be aspects of this document worth checking before you respond or pay.",
+      });
     }
-
-    const raw = await runTriage(env, {
-      fileBase64:   base64,
-      mediaType,
-      triagePrompt: prompts.triage,
-    });
-
-    const triage = normalizeTriage(safeJsonParse(raw) || {
-      documentType: null,
-      sender:       null,
-      amount_claimed: null,
-      risk:    "medium",
-      route:   "SONNET",
-      chance:  50,
-      flagCount: 0,
-      teaser:  "There may be aspects of this document worth checking before you respond or pay.",
-    });
 
     console.log("FREE TRIAGE:", JSON.stringify(triage));
 
@@ -79,19 +117,13 @@ export async function handleAnalyzeFree(request, env) {
     const stripeLink = getStripeLink(env, type) || null;
 
     console.log("FREE DECISION:", JSON.stringify(decision));
-    console.log("FREE STRIPE LINK:", stripeLink);
 
     try {
       await saveFreeCase(env, {
-        type,
-        name,
-        email,
-        triage,
-        stripeLink,
-        fileBase64: base64,
-        mediaType,
-        fileName: file.name  || null,
-        fileSize: file.size  || null,
+        type, name, email, triage, stripeLink,
+        fileBase64: base64, mediaType,
+        fileName: file.name || null,
+        fileSize: file.size || null,
       });
       console.log("saveFreeCase: OK");
     } catch (err) {
@@ -107,29 +139,34 @@ export async function handleAnalyzeFree(request, env) {
       return jsonResponse({ ok: false, error: "enqueueFree failed: " + err.message }, 500);
     }
 
-    try {
-      await sendConfirmationEmail(env, { name, email, type });
-      console.log("sendConfirmationEmail: OK");
-    } catch (err) {
-      console.error("sendConfirmationEmail failed:", err.message);
-    }
+    if (!debugMode) {
+      try {
+        await sendConfirmationEmail(env, { name, email, type });
+        console.log("sendConfirmationEmail: OK");
+      } catch (err) {
+        console.error("sendConfirmationEmail failed:", err.message);
+      }
 
-    try {
-      await notifyAdminFree(env, { name, email, type, triage, stripeLink });
-      console.log("notifyAdminFree: OK");
-    } catch (err) {
-      console.error("notifyAdminFree failed:", err.message);
-    }
+      try {
+        await notifyAdminFree(env, { name, email, type, triage, stripeLink });
+        console.log("notifyAdminFree: OK");
+      } catch (err) {
+        console.error("notifyAdminFree failed:", err.message);
+      }
 
-    try {
-      await sendFreeEmail(env, { name, email, type, triage, stripeLink, stage: 1 });
-      console.log("sendFreeEmail stage 1: OK");
-    } catch (err) {
-      console.error("sendFreeEmail stage 1 failed:", err.message);
+      try {
+        await sendFreeEmail(env, { name, email, type, triage, stripeLink, stage: 1 });
+        console.log("sendFreeEmail stage 1: OK");
+      } catch (err) {
+        console.error("sendFreeEmail stage 1 failed:", err.message);
+      }
+    } else {
+      console.log("[DEBUG] Skipping emails — debug mode enabled");
     }
 
     return jsonResponse({
       ok:        true,
+      debug:     debugMode,
       type,
       tier:      decision.tier,
       emailType: decision.emailType,
@@ -150,7 +187,7 @@ export async function handleAnalyzeFree(request, env) {
         text:          triage.teaser,
         stripeLink,
       },
-      message: "Your first check is ready.",
+      message: debugMode ? "[DEBUG] Mock triage returned. No API call made." : "Your first check is ready.",
     });
 
   } catch (err) {
@@ -196,7 +233,6 @@ function normalizeFlagCount(triage) {
 }
 
 function normalizeTeaser(risk, teaser) {
-  // Use AI-generated teaser if available and non-empty
   if (teaser && typeof teaser === "string" && teaser.trim().length > 10) {
     return teaser.trim();
   }
