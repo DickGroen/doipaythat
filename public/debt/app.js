@@ -128,6 +128,9 @@ window.startGratisUpload = async function() {
 
     track('free_triage_completed', { type: TYPE });
 
+    const freeCard = document.getElementById('free-card');
+    if (freeCard) freeCard.style.display = 'none';
+
     renderTeaser(triage);
 
     if (status) {
@@ -200,18 +203,18 @@ function renderTeaser(triage) {
         ✓ We've received your document.
       </div>
       <p style="color:#166534;margin-bottom:12px;line-height:1.7;">
-        We'll review it carefully and send your first check by email by the next working day before 4pm.
+        You'll receive your first review by email shortly — by the next working day before 4pm at the latest.
       </p>
       <div style="background:#fff;border:1px solid #bbf7d0;border-radius:8px;padding:14px;margin-bottom:14px;">
-        <strong style="color:#14532d;">Why this matters:</strong>
+        <strong style="color:#14532d;">What happens next?</strong>
         <p style="color:#166534;margin-top:6px;margin-bottom:0;line-height:1.65;">
-          Our review helps you understand what to check before paying. Many people only realise they could have questioned the claim after they've already paid.
+          We'll go through the document and let you know if there are any details worth looking at before you decide whether to pay.
         </p>
       </div>
       <p style="font-size:.85rem;color:#166534;">
         → Please also check your spam folder if you don't hear from us.
       </p>
-      <p style="font-size:.85rem;color:#166534;margin-top:8px;">Thank you for trusting us with this.</p>
+      <p style="font-size:.85rem;color:#166534;margin-top:8px;">Thank you for using DoIPayThat.</p>
     </div>
   `;
 
