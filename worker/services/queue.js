@@ -47,7 +47,7 @@ function isTier3({ triage, tier, emailType } = {}) {
 function nextWorkdayAt15UK(fromMs = Date.now()) {
   const d = new Date(fromMs);
   d.setUTCDate(d.getUTCDate() + 1);
-  d.setUTCHours(15, 0, 0, 0);
+  d.setUTCHours(15, 18, 0, 0);
 
   while (d.getUTCDay() === 0 || d.getUTCDay() === 6) {
     d.setUTCDate(d.getUTCDate() + 1);
@@ -253,7 +253,7 @@ export async function enqueuePaid(env, {
     file_name: fileName || null,
     file_size: fileSize || null,
     created_at: new Date().toISOString(),
-    send_at: new Date(Date.now() + PAID_SEND_DELAY_MS).toISOString(),
+    send_at: nextWorkdayAt15UK(Date.now()),
   };
 
   await kv(env).put(key, JSON.stringify(entry), {
