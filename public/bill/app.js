@@ -83,6 +83,9 @@ window.startGratisUpload = async function() {
     const freeCard = document.getElementById('free-card');
     if (freeCard) freeCard.style.display = 'none';
 
+    const gratisStatus = document.getElementById('gratis-status');
+    if (gratisStatus) gratisStatus.style.display = 'none';
+
     renderTeaser(triage);
 
     if (status) { status.className = 'optie-status optie-status--success'; status.textContent = 'Your first check is ready.'; }
