@@ -61,17 +61,47 @@ async function findFreeCase(env, email, preferredType = null) {
     }
   }
 
+  // Stap 1: exacte lookup op email+type
   for (const type of orderedTypes) {
     const saved = await getFreeCase(env, { type, email });
-
     if (saved) {
-      console.log(`FREE CASE FOUND: type=${type}, email=${email}`);
+      console.log(`FREE CASE FOUND (exact): type=${type}, email=${email}`);
       return { saved, type };
     }
   }
 
-  console.warn(`NO FREE CASE FOUND for email=${email}`);
+  // Stap 2: fallback via KV list scan — Stripe email kan afwijken van formulier email
+  console.warn(`Exact lookup failed for ${email} — fallback to KV list scan`);
+  try {
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+    let cursor;
+    do {
+      const list = await env.DEBT_QUEUE.list(cursor
+        ? { prefix: "free_case:", cursor }
+        : { prefix: "free_case:" }
+      );
+      cursor = list.cursor;
 
+      for (const key of list.keys) {
+        try {
+          const raw = await env.DEBT_QUEUE.get(key.name);
+          if (!raw) continue;
+          const entry = JSON.parse(raw);
+          if (!entry?.file_base64 || !entry?.triage) continue;
+          const storedEmail = String(entry.email || "").trim().toLowerCase();
+          if (storedEmail !== normalizedEmail) continue;
+          const type = entry.type || key.name.split(":")[1];
+          if (!ALLOWED_TYPES.includes(type)) continue;
+          console.log(`FREE CASE FOUND (list scan): key=${key.name}, email=${storedEmail}`);
+          return { saved: entry, type };
+        } catch (_) {}
+      }
+    } while (cursor);
+  } catch (err) {
+    console.error("KV list scan failed:", err.message);
+  }
+
+  console.warn(`NO FREE CASE FOUND for email=${email}`);
   return { saved: null, type: null };
 }
 
