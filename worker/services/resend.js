@@ -4,7 +4,8 @@ import { escapeHtml } from "../utils/html.js";
 import { makeAnalysisRtf, makeLetterRtf, rtfToBase64 } from "../utils/rtf.js";
 import { makeAnalysisDocx, makeLetterDocx, docxToBase64 } from "../utils/docx.js";
 
-const FROM       = "DoIPayThat <noreply@doipaythat.co.uk>";
+const FROM       = "DoIPayThat Support <support@doipaythat.co.uk>";
+const REPLY_TO   = "support@doipaythat.co.uk";
 const DISCLAIMER = "This is informational analysis only and does not constitute legal advice. DoIPayThat does not provide legal representation.";
 
 async function trackEvent(env, event, data = {}) {
@@ -64,6 +65,7 @@ const TYPE_LABELS = {
 async function sendEmail(env, { to, subject, html, attachments = [] }) {
   const body = {
     from: FROM,
+    reply_to: REPLY_TO,
     to:   Array.isArray(to) ? to : [to],
     subject,
     html
