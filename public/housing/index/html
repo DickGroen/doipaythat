@@ -139,7 +139,7 @@
   <div class="container">
     <div class="header__inner">
       <div class="logo"><span class="logo-dot"></span>DoIPayThat</div>
-      <a href="#free-check" class="header-cta">Get a free first check</a>
+      <a href="#free-check" class="header-cta">Get a first overview</a>
     </div>
   </div>
 </header>
@@ -147,15 +147,15 @@
 <section class="hero">
   <div class="container">
     <h1>Housing or service charge received? Understand it before you pay.</h1>
-    <p class="hero__sub">Upload your service charge demand, management fee notice or maintenance invoice and get a free first review. If there are points worth clarifying before you pay, a full review with a response letter is available.</p>
-    <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">Housing and service charges can include management fees, maintenance costs and shared building expenses that are not always clearly broken down. Most people pay without questioning — and only ask later whether they should have checked first.</p>
-    <a href="#free-check" class="hero-cta">Get a free first check</a>
+    <p class="hero__sub">Upload your service charge demand, management fee notice or maintenance invoice and get a free first review. If there are points worth clarifying before you pay, a fuller overview with written response guidance is available.</p>
+    <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">Service charges and management fees are not always clearly broken down. Most people pay without asking questions — and only wonder later whether they should have checked first.</p>
+    <a href="#free-check" class="hero-cta">Get a free first overview</a>
     <div class="hero-sub-note">PDF, JPG or PNG · no commitment · full review optional</div>
 
     <div class="trust-triggers">
-      <div class="trust-trigger"><span>●</span><div><strong>What the charge covers</strong>Service charge demands and management fee notices are not always clear about what each cost relates to.</div></div>
-      <div class="trust-trigger"><span>●</span><div><strong>Management fees and maintenance</strong>What counts as a reasonable management fee or shared maintenance cost is not always obvious from the demand alone.</div></div>
-      <div class="trust-trigger"><span>●</span><div><strong>Before you pay or respond</strong>A written query about specific line items is easier to raise before paying than after. Understanding the charge first gives you a clearer basis.</div></div>
+      <div class="trust-trigger"><span>●</span><div><strong>What the charge covers</strong>Service charge demands are not always clear about what each line item relates to.</div></div>
+      <div class="trust-trigger"><span>●</span><div><strong>Management fees and maintenance</strong>How management fees are calculated, and what maintenance costs relate to, is not always clear.</div></div>
+      <div class="trust-trigger"><span>●</span><div><strong>Before you pay or respond</strong>Understanding what you are being charged for gives you a clearer basis for any next step.</div></div>
     </div>
   </div>
 </section>
@@ -177,11 +177,11 @@
         <input id="gratis-name" class="input" placeholder="Your name">
         <input id="gratis-email" class="input" placeholder="Your email" type="email" autocomplete="email">
         <div id="gratis-email-hint" class="input-hint"></div>
-        <button id="gratis-btn" onclick="startGratisUpload()" disabled class="offer-cta">Get a free first check</button>
+        <button id="gratis-btn" onclick="startGratisUpload()" disabled class="offer-cta">Get a free first overview</button>
       </div>
 
       <div id="gratis-status" class="optie-status"></div>
-      <div class="offer-security">🔒 Your document is processed securely for analysis and is not shared with third parties.</div>
+      <div class="offer-security">🔒 Your document is processed securely and is not shared with third parties.</div>
     </div>
 
     <div id="teaser" class="teaser">
@@ -211,8 +211,8 @@
 
     <div class="offer-card">
       <div class="offer-badge">After first check</div>
-      <div class="offer-title">Full review + written query letter</div>
-      <p class="offer-desc">We review the service charge demand or management fee notice in plain language — what each item covers, how costs have been calculated and whether any charges are unclear or unexplained. You receive a written query letter you can use. You decide what to do next.</p>
+      <div class="offer-title">Full review + response guidance</div>
+      <p class="offer-desc">We review the service charge demand or management fee notice in plain language — what each item covers, how costs have been calculated and whether any charges are unclear or unexplained. You receive suggested wording for a written response you can use. You decide what to do next.</p>
 
       <ul class="offer-list">
         <li>Review of management fees and what they are stated to cover</li>
@@ -220,12 +220,12 @@
         <li>Check for unexplained line items or missing breakdowns</li>
         <li>Review of shared building costs and basis of calculation</li>
         <li>Clear next steps in plain English</li>
-        <li>Ready-to-use written query letter</li>
+        <li>Suggested wording for a written response</li>
       </ul>
 
       <hr class="offer-divider">
       <div class="offer-price">£29 <span>one-off · no subscription</span></div>
-      <a href="#free-check" class="offer-cta">Start with a free first check</a>
+      <a href="#free-check" class="offer-cta">Start with a free first overview</a>
       <div class="offer-security">🔒 Secure payment via Stripe — card details are never stored</div>
       <div class="offer-refund">If the review does not cover what you uploaded, get in touch. We will take another look.</div>
     </div>
@@ -239,7 +239,7 @@
     <div class="steps">
       <div class="step"><div class="step__num">01</div><div class="step__title">Upload your document</div><div class="step__desc">Upload your service charge demand, management fee notice, maintenance invoice or leasehold cost summary. PDF, JPG or PNG.</div></div>
       <div class="step"><div class="step__num">02</div><div class="step__title">Receive a free first overview</div><div class="step__desc">You receive a plain-language overview of the main charges and whether any line items are unclear or worth querying before you pay.</div></div>
-      <div class="step"><div class="step__num">03</div><div class="step__title">Optional full review + query letter</div><div class="step__desc">If you want more detail, a full review with a written query letter is available for £29.</div></div>
+      <div class="step"><div class="step__num">03</div><div class="step__title">Optional fuller overview</div><div class="step__desc">If you want more detail, a fuller overview with suggested response wording is available for £29.</div></div>
     </div>
   </div>
 </section>
@@ -249,9 +249,9 @@
     <div class="section-label">What we check</div>
     <h2>What housing charges often leave unclear</h2>
     <div class="trust-grid">
-      <div class="trust-item"><div class="trust-item__label">Management fees</div><div class="trust-item__text">What a management fee covers — and how it is calculated — should be clear from the demand. A general management charge without a breakdown can be worth querying before paying.</div></div>
-      <div class="trust-item"><div class="trust-item__label">Maintenance and repair costs</div><div class="trust-item__text">Shared maintenance charges should explain what work was done, when and how costs have been divided. Unexplained maintenance items may be worth querying before paying.</div></div>
-      <div class="trust-item"><div class="trust-item__label">Shared building costs</div><div class="trust-item__text">How shared building expenses are allocated between residents or units is not always clearly stated. The basis of calculation can be relevant before you agree to pay.</div></div>
+      <div class="trust-item"><div class="trust-item__label">Management fees</div><div class="trust-item__text">What a management fee covers and how it is calculated should be clear from the demand. Without a clear breakdown, it can be difficult to know what you are paying for.</div></div>
+      <div class="trust-item"><div class="trust-item__label">Maintenance and repair costs</div><div class="trust-item__text">Shared maintenance charges should explain what work was carried out and how costs have been divided. Unexplained items are worth understanding before paying.</div></div>
+      <div class="trust-item"><div class="trust-item__label">Shared building costs</div><div class="trust-item__text">How shared building expenses are allocated between residents or units is not always clearly stated. How those costs are divided between residents is not always made clear.</div></div>
     </div>
   </div>
 </section>
@@ -263,7 +263,7 @@
     <div class="fit-rows">
       <div class="fit-row"><span>✓</span><span>You received a service charge demand, management fee notice or maintenance invoice that is not clearly explained</span></div>
       <div class="fit-row"><span>✓</span><span>The breakdown does not make clear what each item relates to or how amounts were calculated</span></div>
-      <div class="fit-row"><span>✓</span><span>The charge appears higher than expected and you want to understand it before paying</span></div>
+      <div class="fit-row"><span>✓</span><span>The charge appears higher than expected and you would like a clearer picture before paying</span></div>
       <div class="fit-row"><span>✓</span><span>You want a clear, professional written query to send before paying</span></div>
     </div>
   </div>
@@ -275,7 +275,7 @@
     <h2>How people experienced the review</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:8px;">
       <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
-        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"I received a service charge demand with a management fee that wasn't broken down. The review helped me understand what questions I was entitled to ask before paying."</p>
+        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"I received a service charge demand where the management fee wasn't broken down. Getting a plain-language overview helped me understand what I was actually paying for."</p>
         <p style="font-size:.78rem;color:var(--muted);margin:0;">Customer from Bristol</p>
       </div>
       <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
@@ -287,7 +287,7 @@
         <p style="font-size:.78rem;color:var(--muted);margin:0;">Customer from Manchester</p>
       </div>
       <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
-        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"The query letter was professional and measured. I wouldn't have known how to phrase it that way without it sounding confrontational."</p>
+        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"The suggested wording was professional and measured. I wouldn't have known how to phrase it without it sounding like a complaint."</p>
         <p style="font-size:.78rem;color:var(--muted);margin:0;">User from Birmingham</p>
       </div>
     </div>
@@ -307,15 +307,15 @@
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">What happens after I upload? <span class="faq-chevron">⌄</span></div>
-        <div class="faq-a">You receive a free first check by email — typically by the next working day before 4pm. This gives you an overview of the bill and flags any areas worth looking at. A full analysis with a dispute letter is then available for £29 if you want more detail.</div>
+        <div class="faq-a">You receive a free first check by email — typically by the next working day before 4pm. This gives you an overview of the bill and flags any areas worth looking at. A fuller overview with suggested response wording is available for £29 if you want more detail.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">Do I have to pay a service charge before I can ask questions? <span class="faq-chevron">⌄</span></div>
-        <div class="faq-a">In many cases, you can raise a written query before the payment deadline. Understanding which specific items you want to ask about — and having a professional letter to send — makes that process more straightforward.</div>
+        <div class="faq-a">In many cases, you can ask written questions before the payment deadline. Understanding which items you want clarity on — and having professional wording to use — makes that process more straightforward.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">Is this legal advice? <span class="faq-chevron">⌄</span></div>
-        <div class="faq-a">No. DoIPayThat provides plain-language charge reviews and written query drafts. It does not provide legal advice or legal representation. For complex leasehold disputes, you may wish to seek specialist advice.</div>
+        <div class="faq-a">No. DoIPayThat provides plain-language charge reviews and suggested response wording. It does not provide legal advice or legal representation. For complex leasehold matters, specialist advice may be worth seeking.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">What happens to my document? <span class="faq-chevron">⌄</span></div>
@@ -327,16 +327,16 @@
 
 <section class="final-cta">
   <div class="container">
-    <h2>Understand the charge before you pay.</h2>
-    <p>Service charge or management fee received? A free first review gives you a plain-language overview before you pay or write back.</p>
-    <a href="#free-check" class="final-cta-btn">Get a free first review</a>
+    <h2>Housing charge received? Get a clearer picture first.</h2>
+    <p>Service charge or management fee received? A free first overview gives you a clearer picture before you pay or respond.</p>
+    <a href="#free-check" class="final-cta-btn">Get a free first overview</a>
     <div class="final-cta-note">PDF, JPG or PNG · no commitment · full review optional</div>
   </div>
 </section>
 
 <div class="container">
-  <div class="footer-trust"><strong>DoIPayThat</strong> helps people better understand housing and service charges before paying or responding.<br>Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a></div>
-  <div class="disclaimer">DoIPayThat provides plain-language charge reviews and written query drafts. It is not legal advice and does not provide legal representation. Documents are processed for review purposes only. &copy; 2026 DoIPayThat</div>
+  <div class="footer-trust"><strong>DoIPayThat</strong> helps people better understand housing and service charges before deciding what to do.<br>Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a></div>
+  <div class="disclaimer">DoIPayThat provides plain-language charge overviews and response guidance. It is not legal advice and does not provide legal representation. &copy; 2026 DoIPayThat</div>
 </div>
 
 <footer style="border-top:1px solid var(--line);padding:20px 0;text-align:center;background:var(--white);">
@@ -351,25 +351,25 @@
 
 <div class="sticky-footer" id="sticky-footer">
   <div>
-    <div class="sticky-footer__text" style="font-weight:500;font-size:.88rem;">Understand the charge before you pay.</div>
+    <div class="sticky-footer__text" style="font-weight:400;font-size:.86rem;color:rgba(255,255,255,.9);">Housing charge received? Get a clearer picture first.</div>
     <div class="sticky-footer__sub">Free first check · no commitment</div>
   </div>
-  <a href="#free-check" class="sticky-cta">Get a free first check</a>
+  <a href="#free-check" class="sticky-cta">Get a first overview</a>
 </div>
 
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <div class="modal__header">
-      <div class="modal__eyebrow">Full analysis</div>
-      <div class="modal__title">Full review + query letter</div>
+      <div class="modal__eyebrow">Fuller overview</div>
+      <div class="modal__title">Full review + response guidance</div>
       <div class="modal__price">£29 <span>one-off</span></div>
     </div>
     <div class="modal__body">
       <div class="modal__feature"><span class="check">✓</span><span>Review of management fees and charge breakdown</span></div>
       <div class="modal__feature"><span class="check">✓</span><span>Clear explanation and next steps</span></div>
-      <div class="modal__feature"><span class="check">✓</span><span>Dispute letter included</span></div>
-      <div class="modal__disclaimer">Plain-language housing charge review and query letter. Not legal advice or legal representation.</div>
-      <a href="https://buy.stripe.com/REPLACE_WITH_HOUSING_STRIPE_LINK" class="modal__cta js-stripe-link" data-type="bill" data-price="29">Get full review</a>
+      <div class="modal__feature"><span class="check">✓</span><span>Suggested response wording included</span></div>
+      <div class="modal__disclaimer">Plain-language housing charge overview and response guidance. Not legal advice or legal representation.</div>
+      <a href="https://buy.stripe.com/REPLACE_WITH_HOUSING_STRIPE_LINK" class="modal__cta js-stripe-link" data-type="bill" data-price="29">Get a fuller overview</a>
       <div class="modal__security">🔒 Secure payment via Stripe — card details are never stored · no subscription</div>
       <div class="modal__close" onclick="closeModal('modal')">Back</div>
     </div>
