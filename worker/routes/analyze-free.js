@@ -12,7 +12,7 @@ import {
 import { loadPrompts } from "../config/prompts.js";
 import { getStripeLink } from "../services/stripe.js";
  
-const ALLOWED_TYPES = ["debt", "parking", "bill", "subscription", "quote"];
+const ALLOWED_TYPES = ["debt", "parking", "bill", "subscription", "quote", "contract", "housing"];
 
 function getTriageDecision({ chance, flags }) {
   const c = Number(chance) || 0;
