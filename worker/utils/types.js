@@ -6,6 +6,8 @@ export const TYPE_MAP = {
   bill:         "bill",
   subscription: "subscription",
   quote:        "quote",
+  contract:     "contract",
+  housing:      "housing",
 };
 
 export const TYPE_LANG = {
@@ -14,6 +16,8 @@ export const TYPE_LANG = {
   bill:         "en",
   subscription: "en",
   quote:        "en",
+  contract:     "en",
+  housing:      "en",
 };
 
 export function normalizeType(input) {
