@@ -62,7 +62,7 @@
     <h1>Parking analysis is being created…</h1>
     <p>We are verifying your payment and automatically starting your full parking notice analysis based on your previously uploaded document.</p>
     <div id="auto-status" class="status-box info">Verifying your payment…</div>
-    <p class="note">You can leave this page open if you like. Your full review and ready-to-send appeal letter will be sent by email by the next working day before 4pm.</p>
+    <p class="note">You can leave this page open if you like. Your full review and response letter will be sent by email by the next working day before 4pm.</p>
   </div>
 
   <div class="card" id="thankyou-app">
@@ -135,7 +135,7 @@
 
     <div class="fallback-box">
       <strong>Upload not working?</strong>
-      <p>Email your parking notice directly to us and we will process it manually. Please include your name and the email address used for payment.</p>
+      <p>Email your parking notice directly to us and we will take care of it from there. If an analysis has already been ordered, please also include the email address used during checkout.</p>
       <a href="mailto:support@doipaythat.co.uk" class="fallback-email">support@doipaythat.co.uk</a>
     </div>
   </div>
@@ -149,20 +149,21 @@
   <div class="card hidden" id="success-screen">
     <div class="success-icon">✓</div>
     <h1>You are all set</h1>
-    <p>Your analysis is now queued for review by our team.</p>
+    <p>Your document has been received and your review is now being prepared.</p>
     <p>You will receive your full review and response letter by email by the next working day before 4pm.</p>
     <p class="note">Please also check your spam folder if you have not received anything by then.</p>
   </div>
 
 </div>
 
-<script type="module">
-  import {
-    submitPaid,
-    validateFile,
-    formatFileSize,
-    track
-  } from "/app.js";
+<script src="/app.js"></script>
+<script>
+  function formatFileSize(bytes) {
+    if (!Number.isFinite(bytes)) return "0 B";
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  }
 
   const params    = new URLSearchParams(window.location.search);
   const sessionId = params.get("session_id");
@@ -186,8 +187,11 @@
 
   track("paid_thankyou_view", { type, has_session: Boolean(sessionId) });
 
+  const autoCard   = document.getElementById("auto-card");
+  const autoStatus = document.getElementById("auto-status");
+
   function showOnly(el) {
-    [fallback, locked, success].forEach(n => n && n.classList.add("hidden"));
+    [autoCard, fallback, locked, success].forEach(n => n && n.classList.add("hidden"));
     if (el) el.classList.remove("hidden");
   }
 
@@ -264,10 +268,23 @@
   if (!sessionId || !sessionId.startsWith("cs_")) {
     showOnly(locked);
   } else {
-    showOnly(fallback);
     if (emailEl && params.get("email")) emailEl.value = params.get("email");
     if (nameEl  && params.get("name"))  nameEl.value  = params.get("name");
-    updateSubmitState();
+
+    showOnly(autoCard);
+    autoStatus.textContent = "Verifying your payment…";
+
+    submitAutoPaid({ type, sessionId, onStatus: (kind, msg) => { autoStatus.textContent = msg; } })
+      .then(() => {
+        autoStatus.className = "status-box success";
+        autoStatus.textContent = "Analysis started. Your review will be sent by email by the next working day before 4pm.";
+        track("paid_auto_success", { type });
+      })
+      .catch(err => {
+        track("paid_auto_failed", { type, needUpload: err.needUpload, error: err.message });
+        showOnly(fallback);
+        updateSubmitState();
+      });
   }
 </script>
 
