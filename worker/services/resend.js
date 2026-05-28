@@ -278,7 +278,7 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
         html:    `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1f2937;line-height:1.7;">
           ${bodyHtml}
           <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
-          <p>If you have any questions, simply reply to this email.</p>
+          <p>If you have any questions, you can reach us at <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a>.</p>
           <p>Best regards,<br><strong>DoIPayThat</strong></p>
           <p style="font-size:0.8rem;color:#6b7280;margin-top:24px;">${escapeHtml(DISCLAIMER)}</p>
         </div>`
@@ -351,7 +351,7 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
       html:    `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1f2937;line-height:1.7;">
         ${bodyHtml}
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
-        <p>If you have any questions, simply reply to this email.</p>
+        <p>If you have any questions, you can reach us at <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a>.</p>
         <p>Best regards,<br><strong>DoIPayThat</strong></p>
         <p style="font-size:0.8rem;color:#6b7280;margin-top:24px;">${escapeHtml(DISCLAIMER)}</p>
       </div>`
@@ -463,7 +463,7 @@ export async function sendPaidEmail(env, { name, email, type, triage, analysis }
         💡 Tip: ${escapeHtml(tip)}
       </p>
       ${isParking ? `<p style="font-size:0.9rem;color:#374151;">The assessment also includes some notes on next steps, should you decide to take the matter further.</p>` : ""}
-      <p>If anything is unclear, you can simply reply to this email.</p>
+      <p>If anything is unclear, you can contact us at <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a>.</p>
       <p>Best regards,<br><strong>DoIPayThat</strong></p>
       <p style="font-size:0.8rem;color:#6b7280;margin-top:24px;">${escapeHtml(DISCLAIMER)}</p>
     </div>`,
