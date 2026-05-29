@@ -189,6 +189,22 @@
       </div>
 
       <div id="gratis-status" class="optie-status"></div>
+
+    <!-- Confirmation card shown after free upload -->
+    <div id="confirmation-card" style="display:none;margin-top:24px;background:#f0fdf4;border:2px solid #86efac;border-radius:16px;padding:28px 28px 24px;max-width:580px;margin-left:auto;margin-right:auto;">
+      <div style="font-size:1.1rem;font-weight:700;color:#14532d;margin-bottom:10px;">&#10003; We&#39;ve received your document.</div>
+      <p style="font-size:.95rem;color:#166534;margin-bottom:16px;line-height:1.7;">
+        You&#39;ll receive your first review by email shortly &mdash; by the next working day before 4pm at the latest.
+      </p>
+      <div style="background:#fff;border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+        <div style="font-weight:700;font-size:.9rem;color:#14532d;margin-bottom:6px;">What happens next?</div>
+        <p style="font-size:.88rem;color:#166534;line-height:1.65;margin:0;">
+          We&#39;ll go through the bill and let you know if there are any charges worth looking at before you decide whether to pay.
+        </p>
+      </div>
+      <p style="font-size:.84rem;color:#166534;margin-bottom:6px;">&#8594; Please also check your spam folder if you don&#39;t hear from us.</p>
+      <p style="font-size:.84rem;color:#166534;margin:0;">Thank you for your trust.</p>
+    </div>
       <div class="offer-security">🔒 Your document is processed securely to prepare your overview — not shared with third parties.</div>
     </div>
 
@@ -397,5 +413,29 @@
 </script>
 
 <script type="module" src="./app.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var status = document.getElementById('gratis-status');
+    var card   = document.getElementById('confirmation-card');
+    if (!status || !card) return;
+
+    var observer = new MutationObserver(function() {
+      if (status.classList.contains('optie-status--success') ||
+          (status.textContent && status.textContent.trim().length > 0 &&
+           !status.classList.contains('optie-status--error'))) {
+        card.style.display = 'block';
+        status.style.display = 'none';
+        var zone = document.getElementById('gratis-upload-zone');
+        var fields = document.getElementById('gratis-contact-fields');
+        if (zone)   zone.style.display   = 'none';
+        if (fields) fields.style.display = 'none';
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    observer.observe(status, { childList: true, subtree: true, attributes: true, characterData: true });
+  });
+</script>
 </body>
 </html>
