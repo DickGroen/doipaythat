@@ -1,424 +1,292 @@
-import {
-  validateFile,
-  formatFileSize,
-  submitFree,
-  submitPaid,
-  initFaq,
-  initModal,
-  initStickyFooter,
-  openModal,
-  closeModal,
-  track
-} from '../app.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Housing charge overview | DoIPayThat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+ 
+  <style>
+    body{font-family:'DM Sans',sans-serif;background:#f7f9fc;color:#0f1923;margin:0;-webkit-font-smoothing:antialiased;}
+    h1,h2{font-family:'Lora',Georgia,serif;line-height:1.2;}
+    .wrap{max-width:760px;margin:56px auto;padding:0 24px 120px;}
+    .card{background:#fff;border-radius:16px;padding:34px 28px;box-shadow:0 12px 40px rgba(26,58,107,.1);}
+    .hidden{display:none;}
+    h1{margin-top:0;color:#1d3a6e;}
+    p{line-height:1.7;}
+    .status-box{margin-top:14px;padding:13px 15px;border-radius:10px;background:#f3f4f6;font-size:.95rem;font-weight:600;line-height:1.6;}
+    .status-box.error{background:#fee2e2;color:#991b1b;border:1px solid #fecaca;}
+    .status-box.success{background:#dcfce7;color:#166534;border:1px solid #bbf7d0;}
+    .status-box.info{background:#eef4ff;color:#1d3a6e;border:1px solid #dbeafe;}
+    .badge{display:inline-flex;align-items:center;gap:8px;background:#dcfce7;color:#166534;border-radius:100px;padding:6px 14px;font-size:.78rem;font-weight:700;margin-bottom:18px;}
+    .dot{width:8px;height:8px;background:#166534;border-radius:50%;}
+    .progress-bar{display:flex;align-items:center;gap:8px;font-size:.8rem;color:#718096;margin-bottom:18px;}
+    .progress-bar__step--done{color:#166534;font-weight:700;}
+    .progress-bar__step--current{color:#1d3a6e;font-weight:700;}
+    .progress-bar__divider{width:24px;height:1px;background:#e2e8f0;}
+    .steps{display:grid;gap:14px;margin:22px 0 28px;background:#f7f9fc;border:1px solid #e2e8f0;border-radius:12px;padding:18px 18px 8px;}
+    .step{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+    .step-num{width:28px;height:28px;flex-shrink:0;border-radius:50%;background:#eef4ff;color:#1d3a6e;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;}
+    .step-title{font-weight:700;color:#0f1923;font-size:.95rem;margin-bottom:2px;}
+    .step-desc{color:#718096;font-size:.86rem;line-height:1.7;}
+    .input{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:8px;margin-bottom:10px;font-size:1rem;box-sizing:border-box;font-family:'DM Sans',sans-serif;}
+    .input:focus{outline:none;border-color:#1d3a6e;}
+    .upload-panel{border:2px dashed #d1d5db;border-radius:12px;padding:28px 22px;text-align:center;cursor:pointer;margin:18px 0 12px;background:#f9fafb;transition:.2s;}
+    .upload-panel:hover,.upload-panel.drag-over{border-color:#1d3a6e;background:#eef4ff;}
+    .upload-icon{width:52px;height:52px;margin:0 auto 14px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;display:flex;align-items:center;justify-content:center;}
+    .selected-file{display:none;margin:10px 0 16px;padding:12px;background:#f3f4f6;border-radius:8px;font-size:.92rem;}
+    .selected-file.show{display:block;}
+    .selected-file a{color:#1d3a6e;font-size:.85rem;}
+    .offer-cta{display:block;width:100%;background:#1d3a6e;color:#fff;border:none;border-radius:10px;padding:15px;font-weight:700;font-size:1rem;cursor:pointer;margin-top:16px;font-family:'DM Sans',sans-serif;}
+    .offer-cta:hover{background:#2d5499;}
+    .offer-cta:disabled{opacity:.55;cursor:not-allowed;}
+    .note{font-size:.84rem;color:#6b7280;margin-top:12px;}
+    .security{text-align:center;font-size:.78rem;color:#718096;margin:12px 0 16px;}
+    .fallback-box{margin-top:24px;padding:18px;background:#f7f9fc;border:1px solid #e2e8f0;border-radius:12px;}
+    .fallback-box strong{display:block;margin-bottom:6px;color:#0f1923;font-size:.9rem;}
+    .fallback-box p{color:#718096;font-size:.83rem;line-height:1.7;margin:0;}
+    .fallback-email{font-weight:700;font-size:.98rem;color:#1d3a6e;margin-top:6px;display:inline-block;}
+    .success-icon{width:54px;height:54px;border-radius:999px;background:#dcfce7;color:#166534;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.6rem;margin-bottom:14px;}
+    @media(max-width:600px){.wrap{padding:32px 16px 100px;margin:0 auto}.card{padding:24px 18px;}}
+  </style>
+</head>
 
-window.openModal = openModal;
-window.closeModal = closeModal;
+<body>
 
-const TYPE  = 'housing';
-const PRICE = 29;
+<div class="wrap">
 
-let gratisFile   = null;
-let selectedFile = null;
-let stripeLink   = null;
+  <div class="card hidden" id="auto-card">
+    <div class="badge"><span class="dot"></span>Payment successful</div>
+    <h1>Thank you. Your payment was successful.</h1>
+    <p>Your documents and payment have been received. Our team can now begin reviewing your case.</p>
+    <div id="auto-status" class="status-box success">Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by 4:00pm on the next working day.</div>
+    <p class="note">You will receive your assessment by email by 4:00pm on the next working day.</p>
+  </div>
 
-track('page_view', { type: TYPE });
+  <div class="card" id="thankyou-app">
+    <div class="badge"><span class="dot"></span>Payment successful</div>
 
-// ── Free triage flow ─────────────────────────────────────────────────────────
-
-window.handleGratisFileSelect = function(input) {
-  if (!input.files?.[0]) return;
-
-  gratisFile = input.files[0];
-
-  track('free_upload_started', { type: TYPE });
-
-  const err    = validateFile(gratisFile);
-  const status = document.getElementById('gratis-status');
-
-  if (err) {
-    if (status) {
-      status.className = 'optie-status optie-status--error';
-      status.textContent = err;
-    }
-    return;
-  }
-
-  const zone = document.getElementById('gratis-upload-zone');
-
-  if (zone) {
-    zone.innerHTML = `
-      <div class="upload-label" style="color:var(--green);">✓ ${esc(gratisFile.name)}</div>
-      <div class="upload-hint">${formatFileSize(gratisFile.size)}</div>
-    `;
-  }
-
-  const fields = document.getElementById('gratis-contact-fields');
-  if (fields) fields.style.display = 'flex';
-
-  checkGratisReady();
-};
-
-function checkGratisReady() {
-  const name  = document.getElementById('gratis-name')?.value.trim();
-  const email = document.getElementById('gratis-email')?.value.trim();
-  const btn   = document.getElementById('gratis-btn');
-  const hint  = document.getElementById('gratis-email-hint');
-
-  if (!btn) return;
-
-  const emailOk = email.includes('@') && email.includes('.');
-  const ready   = !!(gratisFile && name && emailOk);
-
-  btn.disabled = !ready;
-
-  if (hint) {
-    if (email.length > 3 && !emailOk) {
-      hint.textContent = 'Please enter a valid email address.';
-      hint.style.display = 'block';
-    } else {
-      hint.style.display = 'none';
-    }
-  }
-}
-
-document.getElementById('gratis-name')?.addEventListener('input', checkGratisReady);
-document.getElementById('gratis-email')?.addEventListener('input', checkGratisReady);
-
-window.startGratisUpload = async function() {
-  const name   = document.getElementById('gratis-name')?.value.trim();
-  const email  = document.getElementById('gratis-email')?.value.trim();
-  const btn    = document.getElementById('gratis-btn');
-  const status = document.getElementById('gratis-status');
-
-  if (!gratisFile || !name || !email) return;
-
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Working…';
-  }
-
-  try {
-    const data = await submitFree({
-      file: gratisFile,
-      name,
-      email,
-      type: TYPE,
-      onStatus: (kind, msg) => {
-        if (!status) return;
-        status.className = `optie-status optie-status--${kind}`;
-        status.textContent = msg;
-      }
-    });
-
-    const triage = normalizeTriage(data.triage || {});
-    stripeLink =
-      data.stripeLink ||
-      data.teaser?.stripeLink ||
-      triage.stripeLink ||
-      stripeLink;
-
-    track('free_triage_completed', { type: TYPE });
-
-    const freeCard = document.getElementById('free-card');
-    if (freeCard) freeCard.style.display = 'none';
-
-    renderTeaser(triage);
-
-    if (status) {
-      status.className = 'optie-status optie-status--success';
-      status.textContent = 'First overview complete.';
-    }
-
-    if (btn) {
-      btn.textContent = 'Done ✓';
-    }
-  } catch (err) {
-    if (status) {
-      status.className = 'optie-status optie-status--error';
-      status.textContent = err.message || 'Upload failed. Please try again.';
-    }
-
-    if (btn) {
-      btn.disabled = false;
-      btn.textContent = 'Get a free first overview';
-    }
-  }
-};
-
-function normalizeTriage(triage) {
-  const risk = ['low', 'medium', 'high'].includes(triage.risk)
-    ? triage.risk
-    : 'medium';
-
-  return {
-    ...triage,
-    risk,
-    teaser: triage.teaser || getFallbackTeaser(risk)
-  };
-}
-
-function getFallbackTeaser(risk) {
-  if (risk === 'high') {
-    return 'There are points in this service charge demand that are worth understanding before you pay — particularly around management fee calculations or unexplained line items.';
-  }
-
-  if (risk === 'medium') {
-    return 'There are one or more items in this service charge that may benefit from clarification before you pay. A fuller overview will identify what to look at.';
-  }
-
-  return 'The service charge appears relatively straightforward, though some line items may still be worth understanding before you pay or respond.';
-}
-
-function renderTeaser(triage) {
-  const teaser = document.getElementById('teaser');
-  if (!teaser) return;
-
-  track('teaser_shown', {
-    type: TYPE,
-    risk: triage.risk || 'medium'
-  });
-
-  teaser.style.display = 'block';
-
-  setTimeout(() => {
-    teaser.classList.add('teaser--visible');
-  }, 10);
-
-  const features = [];
-  features.push('Management fee basis and calculation explained');
-  features.push('Maintenance and repair cost items identified');
-  features.push('Reserve fund contributions clarified');
-  if (triage.risk === 'high' || triage.risk === 'medium') {
-    features.push('Suggested response wording included');
-  }
-
-  teaser.innerHTML = `
-    <div class="offer-card teaser-card" style="border-color:var(--green);background:#f0fdf4;max-width:620px;margin:0 auto;">
-      <div style="font-size:1.1rem;font-weight:700;color:#14532d;margin-bottom:12px;">
-        ✓ Your document has been received.
-      </div>
-      <p style="color:#166534;margin-bottom:12px;line-height:1.7;">
-        ${esc(triage.teaser)}
-      </p>
-      <div style="background:#fff;border:1px solid #bbf7d0;border-radius:8px;padding:14px;margin-bottom:14px;">
-        <strong style="color:#14532d;">Your first overview will include:</strong>
-        <ul style="color:#166534;margin:8px 0 0;padding-left:20px;line-height:1.8;">
-          ${features.map(f => `<li>${esc(f)}</li>`).join('')}
-        </ul>
-      </div>
-      <p style="font-size:.85rem;color:#166534;">
-        You will receive your overview by email — typically by the next working day before 4pm.
-      </p>
-      ${stripeLink ? `
-        <a href="${esc(stripeLink)}" class="offer-cta" style="margin-top:14px;display:inline-block;">
-          Get a further overview — £${PRICE}
-        </a>
-      ` : ''}
+    <div class="progress-bar">
+      <span class="progress-bar__step progress-bar__step--done">✓ Paid</span>
+      <span class="progress-bar__divider"></span>
+      <span class="progress-bar__step progress-bar__step--current">One final step before we begin</span>
     </div>
-  `;
 
-  teaser.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
+    <h1>One final step before we begin</h1>
+    <p>Please upload your housing document so we can prepare your full review and response letter. Once uploaded, your review will be prepared and sent by email by the next working day before 4pm.</p>
 
-window.goToStripe = function() {
-  track('stripe_clicked', {
-    type:  TYPE,
-    price: PRICE
-  });
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Upload your document</div>
+          <div class="step-desc">Subscription agreement, membership contract, renewal notice or cancellation correspondence. PDF, JPG or PNG.</div>
+        </div>
+      </div>
 
-  if (stripeLink) {
-    window.location.href = stripeLink;
-    return;
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">We review the contract</div>
+          <div class="step-desc">Contract terms, renewal clauses, cancellation rights, price increases and unclear commitments.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Review by email</div>
+          <div class="step-desc">You receive the full review and a response letter by email.</div>
+        </div>
+      </div>
+    </div>
+
+    <input id="customer-name" class="input" placeholder="Your name" autocomplete="name">
+    <input id="customer-email" class="input" placeholder="Your email" type="email" autocomplete="email">
+
+    <div id="upload-panel" class="upload-panel">
+      <div class="upload-icon">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#6B7A90" stroke-width="1.8">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <strong>Choose file or drag it here</strong><br>
+      <span>PDF, JPG or PNG · max. 8 MB</span>
+      <input id="real-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+    </div>
+
+    <div class="security">🔒 Secure connection · Document processed only for analysis · Never shared with third parties</div>
+
+    <div id="selected-file" class="selected-file">
+      <strong id="selected-file-name"></strong><br>
+      <span id="selected-file-meta"></span><br>
+      <a href="#" id="remove-file">Remove file</a>
+    </div>
+
+    <button id="submit-btn" class="offer-cta" disabled>Choose a file first</button>
+
+    <div id="status-box" class="status-box hidden"></div>
+
+    <p class="note">This upload is only needed if the automatic connection could not be found.</p>
+
+    <div class="fallback-box">
+      <strong>Upload not working?</strong>
+      <p>Email your housing document directly to us and we will take care of it from there. If an analysis has already been ordered, please also include the email address used during checkout.</p>
+      <a href="mailto:support@doipaythat.co.uk" class="fallback-email">support@doipaythat.co.uk</a>
+    </div>
+  </div>
+
+  <div class="card hidden" id="locked-screen">
+    <h1>Payment not found</h1>
+    <p>Please restart the process from the housing check page.</p>
+    <div class="status-box error">No valid payment session was found.</div>
+  </div>
+
+  <div class="card hidden" id="success-screen">
+    <div class="success-icon">✓</div>
+    <h1>You are all set</h1>
+    <p>Your document has been received and your review is now being prepared.</p>
+    <p>You will receive your full review and response letter by email by the next working day before 4pm.</p>
+    <p class="note">Please also check your spam folder if you have not received anything by then.</p>
+  </div>
+
+</div>
+
+<script src="/app.js"></script>
+<script>
+  function formatFileSize(bytes) {
+    if (!Number.isFinite(bytes)) return "0 B";
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
   }
 
-  openModal('modal');
-};
-
-// ── Paid upload fallback flow for thankyou.html ──────────────────────────────
-
-if (document.getElementById('submit-btn')) {
-  const fileInput = document.getElementById('real-file-input');
-
-  fileInput?.addEventListener('change', () => {
-    if (fileInput.files?.[0]) updateSelectedFile(fileInput.files[0]);
-  });
-
-  const uploadPanel = document.getElementById('upload-panel');
-
-  uploadPanel?.addEventListener('dragover', e => {
-    e.preventDefault();
-    uploadPanel.classList.add('drag-over');
-  });
-
-  uploadPanel?.addEventListener('dragleave', () => {
-    uploadPanel.classList.remove('drag-over');
-  });
-
-  uploadPanel?.addEventListener('drop', e => {
-    e.preventDefault();
-    uploadPanel.classList.remove('drag-over');
-
-    if (e.dataTransfer.files?.[0]) {
-      fileInput.files = e.dataTransfer.files;
-      updateSelectedFile(e.dataTransfer.files[0]);
-    }
-  });
-
-  document.getElementById('remove-file')?.addEventListener('click', e => {
-    e.preventDefault();
-    clearFile();
-  });
-
-  document.getElementById('submit-btn')?.addEventListener('click', doSubmit);
-
-  validateSession();
-}
-
-function validateSession() {
   const params    = new URLSearchParams(window.location.search);
-  const sessionId = params.get('session_id');
-  const autoCard  = document.getElementById('auto-card');
+  const sessionId = params.get("session_id");
+  const type      = params.get("type") || "housing";
 
-  if (autoCard) return;
+  const fallback  = document.getElementById("thankyou-app");
+  const locked    = document.getElementById("locked-screen");
+  const success   = document.getElementById("success-screen");
+  const nameEl    = document.getElementById("customer-name");
+  const emailEl   = document.getElementById("customer-email");
+  const uploadPanel = document.getElementById("upload-panel");
+  const fileInput = document.getElementById("real-file-input");
+  const selectedFileEl = document.getElementById("selected-file");
+  const selectedFileName = document.getElementById("selected-file-name");
+  const selectedFileMeta = document.getElementById("selected-file-meta");
+  const removeFile = document.getElementById("remove-file");
+  const submitBtn = document.getElementById("submit-btn");
+  const statusBox = document.getElementById("status-box");
 
-  if (sessionId?.startsWith('cs_')) {
-    const app = document.getElementById('thankyou-app');
-    if (app) app.style.display = 'block';
+  let chosenFile = null;
 
-    const emailEl = document.getElementById('customer-email');
-    if (emailEl && params.get('email')) {
-      emailEl.value = params.get('email');
-    }
-  } else {
-    const locked = document.getElementById('locked-screen');
-    if (locked) locked.style.display = 'block';
-  }
-}
+  track("paid_thankyou_view", { type, has_session: Boolean(sessionId) });
 
-function updateSelectedFile(file) {
-  const err = validateFile(file);
+  const autoCard   = document.getElementById("auto-card");
+  const autoStatus = document.getElementById("auto-status");
 
-  if (err) {
-    showStatus(err, 'error');
-    return;
-  }
-
-  selectedFile = file;
-
-  document.getElementById('selected-file')?.classList.add('show');
-
-  const name = document.getElementById('selected-file-name');
-  if (name) name.textContent = file.name;
-
-  const meta = document.getElementById('selected-file-meta');
-  if (meta) meta.textContent = formatFileSize(file.size) + ' · ready';
-
-  const btn = document.getElementById('submit-btn');
-  if (btn) {
-    btn.disabled = false;
-    btn.textContent = 'Upload and start overview';
-  }
-}
-
-function clearFile() {
-  selectedFile = null;
-
-  const input = document.getElementById('real-file-input');
-  if (input) input.value = '';
-
-  document.getElementById('selected-file')?.classList.remove('show');
-
-  const btn = document.getElementById('submit-btn');
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Choose a file first';
-  }
-}
-
-function showStatus(msg, type) {
-  const box = document.getElementById('status-box');
-  if (!box) return;
-
-  box.classList.remove('hidden');
-  box.className = 'status-box ' + type;
-  box.innerHTML = esc(msg);
-}
-
-async function doSubmit() {
-  const name   = document.getElementById('customer-name')?.value.trim();
-  const email  = document.getElementById('customer-email')?.value.trim();
-  const params = new URLSearchParams(window.location.search);
-  const file   = document.getElementById('real-file-input')?.files?.[0] || selectedFile;
-
-  const emailOk =
-    email &&
-    email.includes('@') &&
-    email.includes('.') &&
-    email.length > 5;
-
-  if (!name || !emailOk || !file) {
-    showStatus('Please fill in all fields correctly.', 'error');
-    return;
+  function showOnly(el) {
+    [autoCard, fallback, locked, success].forEach(n => n && n.classList.add("hidden"));
+    if (el) el.classList.remove("hidden");
   }
 
-  const btn = document.getElementById('submit-btn');
-
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Uploading…';
+  function updateSubmitState() {
+    const hasFile  = Boolean(chosenFile);
+    const hasName  = Boolean(nameEl.value.trim());
+    const hasEmail = Boolean(emailEl.value.trim());
+    submitBtn.disabled = !(hasFile && hasName && hasEmail);
+    submitBtn.textContent = hasFile ? "Start my analysis" : "Choose a file first";
   }
 
-  try {
-    await submitPaid({
-      file,
-      name,
-      email,
-      type: TYPE,
-      sessionId: params.get('session_id'),
-      onStatus:  showStatus
-    });
-
-    const fallback = document.getElementById('thankyou-app');
-    if (fallback) fallback.classList.add('hidden');
-
-    const success = document.getElementById('success-screen');
-    if (success) {
-      success.classList.remove('hidden');
+  function setFile(file) {
+    const error = validateFile(file);
+    if (error) {
+      chosenFile = null;
+      selectedFileEl.classList.remove("show");
+      updateSubmitState();
       return;
     }
-
-    const card = document.querySelector('.thankyou-card');
-    if (card) {
-      card.innerHTML = `
-        <div class="success-screen">
-          <div class="success-screen__icon">✓</div>
-          <h2>Upload complete</h2>
-          <p>We will go through your service charge and send the overview and any suggested response wording by email to <strong>${esc(email)}</strong> — before 4pm the next working day.</p>
-          <p style="font-size:.82rem;color:var(--muted);">Please also check your spam folder.</p>
-        </div>`;
-    }
-  } catch (err) {
-    showStatus('Upload failed: ' + err.message, 'error');
-
-    if (btn) {
-      btn.disabled = false;
-      btn.textContent = 'Upload and start overview';
-    }
+    chosenFile = file;
+    selectedFileName.textContent = file.name;
+    selectedFileMeta.textContent = formatFileSize(file.size);
+    selectedFileEl.classList.add("show");
+    updateSubmitState();
   }
-}
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+  uploadPanel.addEventListener("click", () => fileInput.click());
 
-function esc(str) {
-  return String(str || '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
-}
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files && fileInput.files[0];
+    if (file) setFile(file);
+  });
 
-// ── Init ─────────────────────────────────────────────────────────────────────
+  ["dragenter", "dragover"].forEach(ev => {
+    uploadPanel.addEventListener(ev, e => { e.preventDefault(); uploadPanel.classList.add("drag-over"); });
+  });
+  ["dragleave", "drop"].forEach(ev => {
+    uploadPanel.addEventListener(ev, e => { e.preventDefault(); uploadPanel.classList.remove("drag-over"); });
+  });
+  uploadPanel.addEventListener("drop", e => {
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file) setFile(file);
+  });
 
-initFaq();
-initModal();
-initStickyFooter();
+  removeFile.addEventListener("click", e => {
+    e.preventDefault();
+    chosenFile = null;
+    fileInput.value = "";
+    selectedFileEl.classList.remove("show");
+    updateSubmitState();
+  });
+
+  nameEl.addEventListener("input", updateSubmitState);
+  emailEl.addEventListener("input", updateSubmitState);
+
+  submitBtn.addEventListener("click", () => {
+    const name  = nameEl.value.trim();
+    const email = emailEl.value.trim();
+    if (!chosenFile || !name || !email) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Uploading…";
+
+    // Show success immediately
+    showOnly(success);
+    track("paid_fallback_upload_started", { type });
+
+    submitPaid({ file: chosenFile, name, email, type, sessionId, onStatus: () => {} })
+      .then(() => track("paid_fallback_upload_completed", { type }))
+      .catch(err => { track("paid_fallback_upload_failed", { type, error: err.message }); console.error(err.message); });
+  });
+
+  // Show upload form or locked screen
+  if (!sessionId || !sessionId.startsWith("cs_")) {
+    showOnly(locked);
+  } else {
+    if (emailEl && params.get("email")) emailEl.value = params.get("email");
+    if (nameEl  && params.get("name"))  nameEl.value  = params.get("name");
+
+    showOnly(autoCard);
+    autoStatus.textContent = "Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by 4:00pm on the next working day.";
+
+    submitAutoPaid({ type, sessionId, onStatus: (kind, msg) => { autoStatus.textContent = msg; } })
+      .then(() => {
+        autoStatus.className = "status-box success";
+        autoStatus.textContent = "Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by 4:00pm on the next working day.";
+        track("paid_auto_success", { type });
+      })
+      .catch(err => {
+        track("paid_auto_failed", { type, needUpload: err.needUpload, error: err.message });
+        showOnly(fallback);
+        updateSubmitState();
+      });
+  }
+</script>
+
+</body>
+</html>
