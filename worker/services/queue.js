@@ -47,7 +47,19 @@ function isTier3({ triage, tier, emailType } = {}) {
 function nextWorkdayAt15UK(fromMs = Date.now()) {
   const d = new Date(fromMs);
   d.setUTCDate(d.getUTCDate() + 1);
-  d.setUTCHours(15, 18, 0, 0);
+  d.setUTCHours(15, 15, 0, 0); // 15:15 UK
+
+  while (d.getUTCDay() === 0 || d.getUTCDay() === 6) {
+    d.setUTCDate(d.getUTCDate() + 1);
+  }
+
+  return d.toISOString();
+}
+
+function nextWorkdayAt1519UK(fromMs = Date.now()) {
+  const d = new Date(fromMs);
+  d.setUTCDate(d.getUTCDate() + 1);
+  d.setUTCHours(15, 19, 0, 0); // 15:19 UK
 
   while (d.getUTCDay() === 0 || d.getUTCDay() === 6) {
     d.setUTCDate(d.getUTCDate() + 1);
@@ -181,17 +193,19 @@ export async function enqueueFree(env, {
   const emailKey = safeEmailKey(normalized);
   const baseKey = `free:${type}:${createdAt}:${emailKey}`;
 
-  // Stage 1 is sent immediately by analyze-free.js.
-  // Queue only recovery stages.
+  // Stage 1 via cron — next workday 15:15 UK.
+  // Stage 2 and 3 are recovery at +24h and +48h.
+  const stage1SendAt = nextWorkdayAt15UK(createdAt);
   const stage2SendAt = addHours(createdAt, 24);
   const stage3SendAt = addHours(createdAt, 48);
 
   const sendAts = {
+    1: stage1SendAt,
     2: stage2SendAt,
     3: stage3SendAt,
   };
 
-  for (const stage of [2, 3]) {
+  for (const stage of [1, 2, 3]) {
     const key = `${baseKey}:stage_${stage}`;
 
     const entry = {
@@ -253,7 +267,7 @@ export async function enqueuePaid(env, {
     file_name: fileName || null,
     file_size: fileSize || null,
     created_at: new Date().toISOString(),
-    send_at: nextWorkdayAt15UK(Date.now()),
+    send_at: nextWorkdayAt1519UK(Date.now()),
   };
 
   await kv(env).put(key, JSON.stringify(entry), {
