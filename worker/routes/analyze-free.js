@@ -7,7 +7,6 @@ import { enqueueFree, saveFreeCase } from "../services/queue.js";
 import {
   notifyAdminFree,
   sendConfirmationEmail,
-  sendFreeEmail,
 } from "../services/resend.js";
 import { loadPrompts } from "../config/prompts.js";
 import { getStripeLink } from "../services/stripe.js";
@@ -154,12 +153,7 @@ export async function handleAnalyzeFree(request, env) {
         console.error("notifyAdminFree failed:", err.message);
       }
 
-      try {
-        await sendFreeEmail(env, { name, email, type, triage, stripeLink, stage: 1 });
-        console.log("sendFreeEmail stage 1: OK");
-      } catch (err) {
-        console.error("sendFreeEmail stage 1 failed:", err.message);
-      }
+
     } else {
       console.log("[DEBUG] Skipping emails — debug mode enabled");
     }
