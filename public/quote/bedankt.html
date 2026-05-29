@@ -59,10 +59,10 @@
 
   <div class="card hidden" id="auto-card">
     <div class="badge"><span class="dot"></span>Payment successful</div>
-    <h1>Quote analysis is being created…</h1>
-    <p>We are verifying your payment and automatically starting your full quote analysis based on your previously uploaded document.</p>
-    <div id="auto-status" class="status-box info">Verifying your payment…</div>
-    <p class="note">You can leave this page open if you like. Your full review and response letter will be sent by email by the next working day before 4pm.</p>
+    <h1>Thank you. Your payment was successful.</h1>
+    <p>Your documents and payment have been received. Our team can now begin reviewing your case.</p>
+    <div id="auto-status" class="status-box success">Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by 4:00pm on the next working day.</div>
+    <p class="note">You will receive your assessment by email by 4:00pm on the next working day.</p>
   </div>
 
   <div class="card" id="thankyou-app">
@@ -272,7 +272,7 @@
     if (nameEl  && params.get("name"))  nameEl.value  = params.get("name");
 
     showOnly(autoCard);
-    autoStatus.textContent = "Verifying your payment…";
+    autoStatus.textContent = "Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by 4:00pm on the next working day.";
 
     submitAutoPaid({ type, sessionId, onStatus: (kind, msg) => { autoStatus.textContent = msg; } })
       .then(() => {
