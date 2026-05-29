@@ -277,7 +277,7 @@
     submitAutoPaid({ type, sessionId, onStatus: (kind, msg) => { autoStatus.textContent = msg; } })
       .then(() => {
         autoStatus.className = "status-box success";
-        autoStatus.textContent = "Analysis started. Your review will be sent by email by the next working day before 4pm.";
+        autoStatus.textContent = "Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by 4:00pm on the next working day.";
         track("paid_auto_success", { type });
       })
       .catch(err => {
