@@ -1,3 +1,4 @@
+// v2026-05-30
 import {
   validateFile,
   formatFileSize,
