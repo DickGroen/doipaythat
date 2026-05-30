@@ -14,7 +14,7 @@ function kv(env) {
 function normalizeEmail(email) {
   return String(email || "").trim().toLowerCase();
 }
-
+ 
 function safeEmailKey(email) {
   return normalizeEmail(email).replace(/[^a-z0-9]/gi, "_");
 }
