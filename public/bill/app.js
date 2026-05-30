@@ -124,7 +124,7 @@ function renderTeaser(triage) {
         <p style="color:#166534;margin-top:6px;margin-bottom:0;line-height:1.65;">We'll go through the bill and let you know if there are any details worth looking at before you decide whether to pay.</p>
       </div>
       <p style="font-size:.85rem;color:#166534;">\u2192 Please also check your spam folder if you don't hear from us.</p>
-      <p style="font-size:.85rem;color:#166534;margin-top:8px;">Thank you for using DoIPayThat.</p>
+      <p style="font-size:.85rem;color:#166534;margin-top:8px;">Thank you for your trust.</p>
     </div>`;
   const modalLink = document.querySelector('.js-stripe-link, .modal__cta');
   if (modalLink && stripeLink) modalLink.href = stripeLink;
