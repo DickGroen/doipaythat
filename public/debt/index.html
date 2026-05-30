@@ -1039,13 +1039,16 @@
     var card   = document.getElementById('confirmation-card');
     if (!status || !card) return;
 
+    var shown = false;
+
     var observer = new MutationObserver(function() {
-      if (status.classList.contains('optie-status--success') ||
-          (status.textContent && status.textContent.trim().length > 0 &&
-           !status.classList.contains('optie-status--error'))) {
-        card.style.display = 'block';
+      if (shown) return;
+      if (status.classList.contains('optie-status--success')) {
+        shown = true;
+        observer.disconnect();
         status.style.display = 'none';
-        var zone = document.getElementById('gratis-upload-zone');
+        card.style.display = 'block';
+        var zone   = document.getElementById('gratis-upload-zone');
         var fields = document.getElementById('gratis-contact-fields');
         if (zone)   zone.style.display   = 'none';
         if (fields) fields.style.display = 'none';
@@ -1053,7 +1056,7 @@
       }
     });
 
-    observer.observe(status, { childList: true, subtree: true, attributes: true, characterData: true });
+    observer.observe(status, { attributes: true, attributeFilter: ['class'] });
   });
 </script>
 </body>
