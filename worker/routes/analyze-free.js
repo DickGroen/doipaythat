@@ -147,7 +147,7 @@ export async function handleAnalyzeFree(request, env) {
       }
 
       try {
-       await sendFreeEmail(env, { name, email, type, triage, stripeLink, stage: 1 });
+        await notifyAdminFree(env, { name, email, type, triage, stripeLink });
         console.log("notifyAdminFree: OK");
       } catch (err) {
         console.error("notifyAdminFree failed:", err.message);
