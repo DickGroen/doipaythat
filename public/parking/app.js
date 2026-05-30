@@ -211,7 +211,7 @@ function renderTeaser(triage) {
       <p style="font-size:.85rem;color:#166534;">
         → Please also check your spam folder if you don't hear from us.
       </p>
-      <p style="font-size:.85rem;color:#166534;margin-top:8px;">Thank you for using DoIPayThat.</p>
+      <p style="font-size:.85rem;color:#166534;margin-top:8px;">Thank you for your trust.</p>
     </div>
   `;
 
