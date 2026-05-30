@@ -1,6 +1,6 @@
 // worker/routes/analyze-free.js — doipaythat
 
-import { fileToBase64, safeJsonParse, extractTaggedSection } from "../utils/files.js";
+import { fileToBase64, safeJsonParse } from "../utils/files.js";
 import { jsonResponse } from "../utils/response.js";
 import { runTriage } from "../services/claude.js";
 import { enqueueFree, saveFreeCase } from "../services/queue.js";
@@ -10,9 +10,9 @@ import {
 } from "../services/resend.js";
 import { loadPrompts } from "../config/prompts.js";
 import { getStripeLink } from "../services/stripe.js";
- 
+
 const ALLOWED_TYPES = ["debt", "parking", "bill", "subscription", "quote", "contract", "housing"];
- 
+
 function getTriageDecision({ chance, flags }) {
   const c = Number(chance) || 0;
   const f = Number(flags) || 0;
@@ -26,18 +26,16 @@ function getTriageDecision({ chance, flags }) {
   return { tier: "tier3", showUpsell: false, emailType: "trust" };
 }
 
-// ── Debug mock triage ─────────────────────────────────────────────────────────
-
 function mockTriage(type) {
   return {
-    documentType:   type,
-    sender:         "Debug Sender Ltd",
-    amount_claimed: 150,
-    risk:           "medium",
-    route:          "HAIKU",
-    chance:         55,
-    flagCount:      2,
-    teaser:         "[DEBUG] This is a mock triage result. No API call was made.",
+    documentType:            type,
+    sender:                  "Debug Sender Ltd",
+    amount_claimed:          150,
+    risk:                    "medium",
+    route:                   "HAIKU",
+    chance:                  55,
+    flagCount:               2,
+    teaser:                  "[DEBUG] This is a mock triage result. No API call was made.",
     possible_excessive_fees: true,
     possible_no_proof:       true,
   };
@@ -64,13 +62,11 @@ export async function handleAnalyzeFree(request, env) {
 
     const { base64, mediaType } = await fileToBase64(file);
 
-    // ── API cost log ────────────────────────────────────────────────────────
     console.log("API_CALL_LOG:", JSON.stringify({
       route:      "analyze-free",
       model:      "haiku",
       type,
       free_paid:  "free",
-      file:       !!file,
       file_size:  file?.size || 0,
       debug_mode: debugMode,
       timestamp:  new Date().toISOString(),
@@ -95,14 +91,14 @@ export async function handleAnalyzeFree(request, env) {
       });
 
       triage = normalizeTriage(safeJsonParse(raw) || {
-        documentType: null,
-        sender:       null,
+        documentType:   null,
+        sender:         null,
         amount_claimed: null,
-        risk:    "medium",
-        route:   "SONNET",
-        chance:  50,
+        risk:      "medium",
+        route:     "SONNET",
+        chance:    50,
         flagCount: 0,
-        teaser:  "There may be aspects of this document worth checking before you respond or pay.",
+        teaser:    "There may be aspects of this document worth checking before you respond or pay.",
       });
     }
 
@@ -139,21 +135,23 @@ export async function handleAnalyzeFree(request, env) {
     }
 
     if (!debugMode) {
+      // Mail 1: bevestiging — direct
       try {
         await sendConfirmationEmail(env, { name, email, type });
         console.log("sendConfirmationEmail: OK");
       } catch (err) {
-        console.error("sendConfirmationEmail failed:", err.message);
+        console.error("sendConfirmationEmail FAILED:", err.message);
       }
 
+      // Admin notificatie — direct
       try {
         await notifyAdminFree(env, { name, email, type, triage, stripeLink });
         console.log("notifyAdminFree: OK");
       } catch (err) {
-        console.error("notifyAdminFree failed:", err.message);
+        console.error("notifyAdminFree FAILED:", err.message);
       }
 
-
+      // Mail 2 (triage-resultaat) gaat via cron — volgende werkdag 15:15 UK
     } else {
       console.log("[DEBUG] Skipping emails — debug mode enabled");
     }
@@ -181,7 +179,9 @@ export async function handleAnalyzeFree(request, env) {
         text:          triage.teaser,
         stripeLink,
       },
-      message: debugMode ? "[DEBUG] Mock triage returned. No API call made." : "Your first check is ready.",
+      message: debugMode
+        ? "[DEBUG] Mock triage returned. No API call made."
+        : "Your first check is ready.",
     });
 
   } catch (err) {
