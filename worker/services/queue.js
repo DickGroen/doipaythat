@@ -10,7 +10,7 @@ const PAID_SEND_DELAY_MS = 0;
 function kv(env) {
   return env.DEBT_QUEUE || env.SESSIONS_KV;
 }
-
+ 
 function normalizeEmail(email) {
   return String(email || "").trim().toLowerCase();
 }
