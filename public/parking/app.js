@@ -138,7 +138,7 @@ window.startGratisUpload = async function() {
   } catch (err) {
     if (status) {
       status.className = 'optie-status optie-status--error';
-      status.textContent = 'Fehler: ' + err.message;
+      status.textContent = 'Error: ' + err.message;
     }
 
     if (btn) {
@@ -162,14 +162,14 @@ function normalizeTriage(triage) {
 
 function getFallbackTeaser(risk) {
   if (risk === 'high') {
-    return 'Es deutet einiges darauf hin, dass hier mögliche Unstimmigkeiten bestehen. Wenn du nicht reagierst, kann sich die Situation finanziell deutlich verschlechtern.';
+    return 'There are aspects of this parking notice that may be worth checking carefully before you decide whether to pay or appeal.';
   }
 
   if (risk === 'medium') {
-    return 'In diesem Schreiben könnten Ansatzpunkte vorliegen, die ohne rechtzeitige Reaktion zu unnötigen Mehrkosten führen können.';
+    return 'There may be points in this parking notice worth looking at before you decide what to do next.';
   }
 
-  return 'Es gibt Hinweise darauf, dass diese Forderung nicht vollständig eindeutig ist. Ohne Reaktion könnten jedoch zusätzliche Kosten entstehen.';
+  return 'The notice appears relatively straightforward, though it may still be worth checking the main points before paying.';
 }
 
 function renderTeaser(triage) {
@@ -219,9 +219,9 @@ function renderTeaser(triage) {
 }
 
 function ctaText(risk) {
-  if (risk === 'high') return `Jetzt prüfen und unnötige Kosten vermeiden — €${PRICE} →`;
-  if (risk === 'low')  return `Klarheit schaffen mit vollständiger Analyse — €${PRICE} →`;
-  return `Vollständige Analyse + Widerspruch erhalten — €${PRICE} →`;
+  if (risk === 'high') return `Check this before you pay — £${PRICE} →`;
+  if (risk === 'low')  return `Get clarity with a full review — £${PRICE} →`;
+  return `Get full review + appeal letter — £${PRICE} →`;
 }
 
 window.goToStripe = function() {
