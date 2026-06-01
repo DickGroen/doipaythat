@@ -161,6 +161,16 @@
     <div class="hero-sub-note">PDF, JPG or PNG · no commitment · further overview available
     </div>
 
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Can I speak to someone by phone?
+          <span>⌄</span>
+        </div>
+        <div class="faq-a">
+          Our service is designed around document review and written assessments delivered by email. By working primarily through email rather than telephone consultations, we are able to keep the service affordable while ensuring every document receives a careful and consistent review. If you have a question about an order, you are always welcome to contact us by email.
+        </div>
+      </div>
+
     <div class="trust-triggers">
       <div class="trust-trigger"><span>●</span><div><strong>What the charge covers</strong>Service charge demands are not always clear about what each item relates to.</div></div>
       <div class="trust-trigger"><span>●</span><div><strong>Management fees and maintenance</strong>How management fees are calculated and what maintenance costs cover is not always stated clearly.</div></div>
@@ -190,22 +200,6 @@
       </div>
 
       <div id="gratis-status" class="optie-status"></div>
-
-    <!-- Confirmation card shown after free upload -->
-    <div id="confirmation-card" style="display:none;margin-top:24px;background:#f0fdf4;border:2px solid #86efac;border-radius:16px;padding:28px 28px 24px;max-width:580px;margin-left:auto;margin-right:auto;">
-      <div style="font-size:1.1rem;font-weight:700;color:#14532d;margin-bottom:10px;">&#10003; We&#39;ve received your document.</div>
-      <p style="font-size:.95rem;color:#166534;margin-bottom:16px;line-height:1.7;">
-        You&#39;ll receive your first review by email shortly &mdash; by the next working day before 4pm at the latest.
-      </p>
-      <div style="background:#fff;border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
-        <div style="font-weight:700;font-size:.9rem;color:#14532d;margin-bottom:6px;">What happens next?</div>
-        <p style="font-size:.88rem;color:#166534;line-height:1.65;margin:0;">
-          We&#39;ll go through the document and let you know if there are any charges worth looking at before you decide whether to pay.
-        </p>
-      </div>
-      <p style="font-size:.84rem;color:#166534;margin-bottom:6px;">&#8594; Please also check your spam folder if you don&#39;t hear from us.</p>
-      <p style="font-size:.84rem;color:#166534;margin:0;">Thank you for your trust.</p>
-    </div>
       <div class="offer-security">🔒 Processed securely to prepare your overview — not shared with third parties.</div>
     </div>
 
@@ -252,6 +246,9 @@
       <div class="offer-price">£29 <span>one-off · no subscription</span></div>
       <a href="#free-check" class="offer-cta">Start with a free first overview</a>
       <div class="offer-security">🔒 Secure payment via Stripe — card details are never stored</div>
+      
+      <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:14px;">Includes a written assessment delivered by email. We do not offer telephone consultations or appointments. This helps us keep the service affordable while ensuring every document receives the same careful review.</p>
+
       <div class="offer-refund">If the overview does not cover what you uploaded, get in touch. We will take another look.</div>
     </div>
   </div>
@@ -340,7 +337,7 @@
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">Is this legal advice? <span class="faq-chevron">⌄</span></div>
-        <div class="faq-a">No. DoIPayThat provides plain-language document overviews and response guidance. Not legal advice. Not legal representation. © 2026 DoIPayThat</div>
+        <div class="faq-a">No. DoIPayThat provides plain-language charge reviews and suggested response wording. It does not provide legal advice or legal representation. For complex leasehold matters, specialist advice may be worth seeking.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">What happens to my document? <span class="faq-chevron">⌄</span></div>
@@ -362,7 +359,7 @@
 
 <div class="container">
   <div class="footer-trust"><strong>DoIPayThat</strong> helps people better understand housing and service charges before deciding what to do.<br>Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a></div>
-  <div class="disclaimer">DoIPayThat provides plain-language document overviews and response guidance. Not legal advice. Not legal representation. © 2026 DoIPayThat</div>
+  <div class="disclaimer">DoIPayThat provides plain-language charge overviews and response guidance. It is not legal advice and does not provide legal representation. &copy; 2026 DoIPayThat</div>
 </div>
 
 <footer style="border-top:1px solid var(--line);padding:20px 0;text-align:center;background:var(--white);">
@@ -394,7 +391,7 @@
       <div class="modal__feature"><span class="check">✓</span><span>Review of management fees and charge breakdown</span></div>
       <div class="modal__feature"><span class="check">✓</span><span>Clear explanation and next steps</span></div>
       <div class="modal__feature"><span class="check">✓</span><span>Suggested response wording included</span></div>
-      <div class="modal__disclaimer">DoIPayThat provides plain-language document overviews and response guidance. Not legal advice. Not legal representation. © 2026 DoIPayThat</div>
+      <div class="modal__disclaimer">Plain-language housing charge overview and response guidance. Not legal advice or legal representation.</div>
       <a href="https://buy.stripe.com/REPLACE_WITH_HOUSING_STRIPE_LINK" class="modal__cta js-stripe-link" data-type="bill" data-price="29">Get a fuller overview</a>
       <div class="modal__security">🔒 Secure payment via Stripe — card details are never stored · no subscription</div>
       <div class="modal__close" onclick="closeModal('modal')">Back</div>
@@ -412,29 +409,5 @@
 </script>
 
 <script type="module" src="./app.js"></script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var status = document.getElementById('gratis-status');
-    var card   = document.getElementById('confirmation-card');
-    if (!status || !card) return;
-
-    var observer = new MutationObserver(function() {
-      if (status.classList.contains('optie-status--success') ||
-          (status.textContent && status.textContent.trim().length > 0 &&
-           !status.classList.contains('optie-status--error'))) {
-        card.style.display = 'block';
-        status.style.display = 'none';
-        var zone = document.getElementById('gratis-upload-zone');
-        var fields = document.getElementById('gratis-contact-fields');
-        if (zone)   zone.style.display   = 'none';
-        if (fields) fields.style.display = 'none';
-        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-
-    observer.observe(status, { childList: true, subtree: true, attributes: true, characterData: true });
-  });
-</script>
 </body>
 </html>
