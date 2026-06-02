@@ -611,16 +611,6 @@
       PDF, JPG or PNG · no commitment · fuller overview available
     </div>
 
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          Can I speak to someone by phone?
-          <span>⌄</span>
-        </div>
-        <div class="faq-a">
-          Our service is designed around document review and written assessments delivered by email. By working primarily through email rather than telephone consultations, we are able to keep the service affordable while ensuring every document receives a careful and consistent review. If you have a question about an order, you are always welcome to contact us by email.
-        </div>
-      </div>
-
     <div class="trust-triggers">
 
       <div class="trust-trigger">
@@ -655,7 +645,7 @@
 <section class="section" id="free-check">
   <div class="container" style="max-width:640px;">
 
-    <div class="offer-card" id="free-card">
+    <div class="offer-card">
 
       <div class="offer-badge">Free overview</div>
 
@@ -683,6 +673,18 @@
         </button>
       </div>
       <div id="gratis-status" class="optie-status" style="margin-top:10px;"></div>
+<p style="font-size:.95rem;color:#166534;margin-bottom:16px;line-height:1.7;">
+        You&#39;ll receive your first review by email shortly &mdash; by the next working day before 4pm at the latest.
+      </p>
+      <div style="background:#fff;border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+        <div style="font-weight:700;font-size:.9rem;color:#14532d;margin-bottom:6px;">What happens next?</div>
+        <p style="font-size:.88rem;color:#166534;line-height:1.65;margin:0;">
+          We&#39;ll go through the document and let you know if there are any details worth looking at before you decide whether to pay.
+        </p>
+      </div>
+      <p style="font-size:.84rem;color:#166534;margin-bottom:6px;">&#8594; Please also check your spam folder if you don&#39;t hear from us.</p>
+      <p style="font-size:.84rem;color:#166534;margin:0;">Thank you for your trust.</p>
+    </div>
 
       <div class="offer-security">
         🔒 Your document is processed securely and is not shared with third parties.
@@ -738,9 +740,6 @@
       <div class="offer-security">
         🔒 Secure payment via Stripe — card details are never stored
       </div>
-
-      
-      <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:14px;">Includes a written assessment delivered by email. We do not offer telephone consultations or appointments. This helps us keep the service affordable while ensuring every document receives the same careful review.</p>
 
       <div class="offer-refund">
         If the review does not meet expectations, get in touch. We will take another look.
@@ -1024,18 +1023,7 @@
 </div>
 
 <script>
-  function toggleFaq(el){
-    const item = el.closest('.faq-item');
-    const open = item.classList.contains('faq-item--open');
-
-    document.querySelectorAll('.faq-item--open').forEach(i => {
-      i.classList.remove('faq-item--open');
-    });
-
-    if(!open){
-      item.classList.add('faq-item--open');
-    }
-  }
+  function toggleFaq(el){ /* handled by initFaq */ }
 </script>
 
 <script type="module" src="./app.js"></script>
