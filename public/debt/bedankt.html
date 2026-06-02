@@ -51,6 +51,15 @@
     .success-icon{width:54px;height:54px;border-radius:999px;background:#dcfce7;color:#166534;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.6rem;margin-bottom:14px;}
     @media(max-width:600px){.wrap{padding:32px 16px 100px;margin:0 auto}.card{padding:24px 18px;}}
   </style>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-959204464"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-959204464');
+</script>
 </head>
 
 <body>
@@ -60,13 +69,14 @@
   <div class="card hidden" id="auto-card">
     <div class="badge"><span class="dot"></span>Payment successful</div>
     <h1>Thank you. Your payment was successful.</h1>
-    <p>Your documents and payment have been received. Our team can now begin reviewing your case.</p>
-    <div id="auto-status" class="status-box success">Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by 4:00pm on the next working day.</div>
-          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px 16px;margin-top:16px;font-size:.88rem;color:#166534;line-height:1.7;">
-            Your assessment will be delivered by email. We do not provide telephone consultations or individual appointments. By working primarily through email, we are able to keep the service affordable and consistent for all customers. If you have a question about your order, you are welcome to contact us at <a href="mailto:support@doipaythat.co.uk" style="color:#166534;">support@doipaythat.co.uk</a>.
-          </div>
+    <p>Your payment and documents have been received. Our team can now begin reviewing your case.</p>
+    <div id="auto-status" class="status-box success">Your payment has been received. Your review is being prepared.</div>
 
-    <p class="note">You will receive your assessment by email by 4:00pm on the next working day.</p>
+    <div style="background:#f7f9fc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-top:16px;font-size:.85rem;color:#4a5568;line-height:1.75;">
+      Your review will be delivered by email. We do not provide telephone consultations or individual appointments — by working through email rather than appointments, we are able to keep the service affordable while ensuring every document receives the same careful review. Questions about your order? <a href="mailto:support@doipaythat.co.uk" style="color:#1a3a6b;">support@doipaythat.co.uk</a>
+    </div>
+
+    <p class="note">Your review is underway. You will receive the full written overview and response draft by email by the next working day before 4pm.</p>
   </div>
 
   <div class="card" id="thankyou-app">
@@ -135,11 +145,11 @@
 
     <div id="status-box" class="status-box hidden"></div>
 
-    <p class="note">This upload is only needed if the automatic connection could not be found.</p>
+    <p class="note">This step is only needed if your document wasn't automatically matched to your payment.</p>
 
     <div class="fallback-box">
-      <strong>Upload not working?</strong>
-      <p>Email your debt letter directly to us and we will take care of it from there. If an analysis has already been ordered, please also include the email address used during checkout.</p>
+      <strong>Having trouble uploading?</strong>
+      <p>Email your debt letter directly to us and we will process it manually. Please include your name and the email address used for payment.</p>
       <a href="mailto:support@doipaythat.co.uk" class="fallback-email">support@doipaythat.co.uk</a>
     </div>
   </div>
@@ -153,25 +163,37 @@
   <div class="card hidden" id="success-screen">
     <div class="success-icon">✓</div>
     <h1>You are all set</h1>
-    <p>Your document has been received and your review is now being prepared.</p>
+    <p>Your analysis is now queued for review by our team.</p>
     <p>You will receive your full review and response letter by email by the next working day before 4pm.</p>
     <p class="note">Please also check your spam folder if you have not received anything by then.</p>
   </div>
 
 </div>
 
-<script src="/app.js"></script>
-<script>
-  function formatFileSize(bytes) {
-    if (!Number.isFinite(bytes)) return "0 B";
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
-  }
+<script type="module">
+  import {
+    submitPaid,
+    validateFile,
+    formatFileSize,
+    track
+  } from "/app.js";
 
   const params    = new URLSearchParams(window.location.search);
   const sessionId = params.get("session_id");
   const type      = params.get("type") || "debt";
+
+  // Google Ads conversion — fires once on successful payment
+  if (sessionId && sessionId.startsWith('cs_')) {
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'conversion', {
+        'send_to': 'AW-959204464/purchase',
+        'value': 49.0,
+        'currency': 'GBP',
+        'transaction_id': sessionId
+      });
+    }
+  }
+
 
   const fallback  = document.getElementById("thankyou-app");
   const locked    = document.getElementById("locked-screen");
@@ -191,11 +213,8 @@
 
   track("paid_thankyou_view", { type, has_session: Boolean(sessionId) });
 
-  const autoCard   = document.getElementById("auto-card");
-  const autoStatus = document.getElementById("auto-status");
-
   function showOnly(el) {
-    [autoCard, fallback, locked, success].forEach(n => n && n.classList.add("hidden"));
+    [fallback, locked, success].forEach(n => n && n.classList.add("hidden"));
     if (el) el.classList.remove("hidden");
   }
 
@@ -272,23 +291,10 @@
   if (!sessionId || !sessionId.startsWith("cs_")) {
     showOnly(locked);
   } else {
+    showOnly(fallback);
     if (emailEl && params.get("email")) emailEl.value = params.get("email");
     if (nameEl  && params.get("name"))  nameEl.value  = params.get("name");
-
-    showOnly(autoCard);
-    autoStatus.textContent = "Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by 4:00pm on the next working day.";
-
-    submitAutoPaid({ type, sessionId, onStatus: (kind, msg) => { autoStatus.textContent = msg; } })
-      .then(() => {
-        autoStatus.className = "status-box success";
-        autoStatus.textContent = "Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by 4:00pm on the next working day.";
-        track("paid_auto_success", { type });
-      })
-      .catch(err => {
-        track("paid_auto_failed", { type, needUpload: err.needUpload, error: err.message });
-        showOnly(fallback);
-        updateSubmitState();
-      });
+    updateSubmitState();
   }
 </script>
 
