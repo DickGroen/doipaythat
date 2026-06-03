@@ -51,6 +51,14 @@
     .success-icon{width:54px;height:54px;border-radius:999px;background:#dcfce7;color:#166534;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.6rem;margin-bottom:14px;}
     @media(max-width:600px){.wrap{padding:32px 16px 100px;margin:0 auto}.card{padding:24px 18px;}}
   </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18193666186"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-18193666186');
+</script>
 </head>
 
 <body>
@@ -61,12 +69,12 @@
     <div class="badge"><span class="dot"></span>Payment successful</div>
     <h1>Thank you. Your payment was successful.</h1>
     <p>Your documents and payment have been received. Our team can now begin reviewing your case.</p>
-    <div id="auto-status" class="status-box success">Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by 4:00pm on the next working day.</div>
+    <div id="auto-status" class="status-box success">Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by email by the next working day before 4pm.</div>
           <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px 16px;margin-top:16px;font-size:.88rem;color:#166534;line-height:1.7;">
             Your assessment will be delivered by email. We do not provide telephone consultations or individual appointments. By working primarily through email, we are able to keep the service affordable and consistent for all customers. If you have a question about your order, you are welcome to contact us at <a href="mailto:support@doipaythat.co.uk" style="color:#166534;">support@doipaythat.co.uk</a>.
           </div>
 
-    <p class="note">You will receive your assessment by email by 4:00pm on the next working day.</p>
+    <p class="note">You will receive your assessment by email by the next working day before 4pm.</p>
   </div>
 
   <div class="card" id="thankyou-app">
@@ -171,6 +179,13 @@
 
   const params    = new URLSearchParams(window.location.search);
   const sessionId = params.get("session_id");
+
+  // Google Ads conversion
+  if (sessionId && sessionId.startsWith("cs_")) {
+    if (typeof gtag !== "undefined") {
+      gtag("event", "conversion", {"send_to": "AW-18193666186/purchase","value": 29.0,"currency": "GBP","transaction_id": sessionId});
+    }
+  }
   const type      = params.get("type") || "quote";
 
   const fallback  = document.getElementById("thankyou-app");
@@ -276,12 +291,12 @@
     if (nameEl  && params.get("name"))  nameEl.value  = params.get("name");
 
     showOnly(autoCard);
-    autoStatus.textContent = "Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by 4:00pm on the next working day.";
+    autoStatus.textContent = "Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by email by the next working day before 4pm.";
 
     submitAutoPaid({ type, sessionId, onStatus: (kind, msg) => { autoStatus.textContent = msg; } })
       .then(() => {
         autoStatus.className = "status-box success";
-        autoStatus.textContent = "Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by 4:00pm on the next working day.";
+        autoStatus.textContent = "Your documents have been received successfully. Our team can now begin reviewing your case. You will receive your assessment by email by the next working day before 4pm.";
         track("paid_auto_success", { type });
       })
       .catch(err => {
