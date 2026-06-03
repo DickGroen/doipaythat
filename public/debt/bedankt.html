@@ -209,12 +209,14 @@
   const submitBtn = document.getElementById("submit-btn");
   const statusBox = document.getElementById("status-box");
 
+  const autoCard   = document.getElementById("auto-card");
+  const autoStatus = document.getElementById("auto-status");
   let chosenFile = null;
 
   track("paid_thankyou_view", { type, has_session: Boolean(sessionId) });
 
   function showOnly(el) {
-    [fallback, locked, success].forEach(n => n && n.classList.add("hidden"));
+    [autoCard, fallback, locked, success].forEach(n => n && n.classList.add("hidden"));
     if (el) el.classList.remove("hidden");
   }
 
@@ -291,10 +293,23 @@
   if (!sessionId || !sessionId.startsWith("cs_")) {
     showOnly(locked);
   } else {
-    showOnly(fallback);
     if (emailEl && params.get("email")) emailEl.value = params.get("email");
     if (nameEl  && params.get("name"))  nameEl.value  = params.get("name");
-    updateSubmitState();
+
+    showOnly(autoCard);
+    autoStatus.textContent = "Your payment has been received. Your review is being prepared.";
+
+    submitAutoPaid({ type, sessionId, onStatus: (kind, msg) => { autoStatus.textContent = msg; } })
+      .then(() => {
+        autoStatus.className = "status-box success";
+        autoStatus.textContent = "Your review is being prepared. You will receive your full written overview and response draft by email by the next working day before 4pm.";
+        track("paid_auto_success", { type });
+      })
+      .catch(err => {
+        track("paid_auto_failed", { type, needUpload: err.needUpload, error: err.message });
+        showOnly(fallback);
+        updateSubmitState();
+      });
   }
 </script>
 
