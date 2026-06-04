@@ -399,5 +399,23 @@
 </script>
 
 <script type="module" src="./app.js"></script>
+
+<script>
+  // Google Ads upload conversion
+  document.addEventListener('DOMContentLoaded', function(){
+    var el = document.getElementById('gratis-status');
+    if(!el) return;
+    var fired = false;
+    new MutationObserver(function(){
+      if(fired) return;
+      if(el.classList.contains('optie-status--success')){
+        fired = true;
+        if(typeof gtag !== 'undefined'){
+          gtag('event', 'conversion', {'send_to': 'AW-18193666186/CONVERSION_LABEL'});
+        }
+      }
+    }).observe(el, {attributes: true, attributeFilter: ['class']});
+  });
+</script>
 </body>
 </html>
