@@ -625,6 +625,13 @@
       color:var(--muted);
       line-height:1.7;
     }
+  
+    .sticky-footer{position:fixed;bottom:0;left:0;right:0;background:var(--ink);color:var(--white);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;transform:translateY(100%);transition:transform .3s ease;z-index:200;}
+    .sticky-footer.visible,.sticky-footer--visible{transform:translateY(0);}
+    .sticky-footer__text{font-size:.9rem;font-weight:600;}
+    .sticky-footer__sub{font-size:.76rem;color:rgba(255,255,255,.6);margin-top:2px;}
+    .sticky-cta{background:var(--white);color:var(--accent);border:none;border-radius:8px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;text-decoration:none;}
+    @media(max-width:500px){.sticky-footer{flex-direction:column;text-align:center;}.sticky-cta{width:100%;}}
   </style>
 </head>
 
@@ -1103,6 +1110,45 @@
 </footer>
 
 <script type="module" src="./app.js"></script>
+
+
+<script>
+  // Google Ads upload conversion
+  document.addEventListener('DOMContentLoaded', function(){
+    var el = document.getElementById('gratis-status');
+    if(!el) return;
+    var fired = false;
+    new MutationObserver(function(){
+      if(fired) return;
+      if(el.classList.contains('optie-status--success')){
+        fired = true;
+        if(typeof gtag !== 'undefined'){
+          gtag('event', 'conversion', {'send_to': 'AW-18193666186/CONVERSION_LABEL'});
+        }
+      }
+    }).observe(el, {attributes: true, attributeFilter: ['class']});
+  });
+</script>
+
+<div class="sticky-footer" id="sticky-footer">
+  <div>
+    <div class="sticky-footer__text" style="font-weight:400;font-size:.86rem;color:rgba(255,255,255,.9);">Subscription or renewal question? Understand the terms first.</div>
+    <div class="sticky-footer__sub">Free first overview &middot; no commitment</div>
+  </div>
+  <a href="#free-check" class="sticky-cta">Get a free first overview</a>
+</div>
+
+<script>
+  (function(){
+    var sf = document.getElementById('sticky-footer');
+    if(!sf) return;
+    window.addEventListener('scroll', function(){
+      var y = window.scrollY;
+      var near = y + window.innerHeight > document.documentElement.scrollHeight - 200;
+      sf.classList.toggle('sticky-footer--visible', y > 400 && !near);
+    }, {passive:true});
+  })();
+</script>
 
 </body>
 </html>
