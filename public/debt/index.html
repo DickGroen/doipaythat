@@ -649,7 +649,7 @@
       <div id="gratis-upload-zone" class="upload-zone" onclick="document.getElementById('gratis-file-input').click()">
         <div class="upload-label">Choose file</div>
         <div class="upload-hint">PDF, JPG or PNG · max. 8 MB</div>
-        <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="handleGratisFileSelect(this)">
+        <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" >
       </div>
 
       <div id="gratis-contact-fields" class="contact-fields">
@@ -657,7 +657,7 @@
         <input id="gratis-email" class="input" placeholder="Your email" type="email">
 
         <div id="gratis-email-hint" class="input-hint" style="display:none;color:#991b1b;font-size:.82rem;margin-top:-6px;margin-bottom:6px;"></div>
-        <button id="gratis-btn" onclick="startGratisUpload()" class="offer-cta" disabled>
+        <button id="gratis-btn" class="offer-cta" disabled>
           Get a free first overview
         </button>
       </div>
