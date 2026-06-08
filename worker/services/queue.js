@@ -194,10 +194,11 @@ export async function enqueueFree(env, {
   const baseKey = `free:${type}:${createdAt}:${emailKey}`;
 
   // Stage 1 via cron — next workday 15:15 UK.
-  // Stage 2 and 3 are recovery at +24h and +48h.
+  // Stage 2 and 3 are scheduled relative to the previous stage,
+  // so they can never become due before an earlier stage.
   const stage1SendAt = nextWorkdayAt15UK(createdAt);
-  const stage2SendAt = addHours(createdAt, 24);
-  const stage3SendAt = addHours(createdAt, 48);
+  const stage2SendAt = addHours(new Date(stage1SendAt).getTime(), 24);
+  const stage3SendAt = addHours(new Date(stage2SendAt).getTime(), 24);
 
   const sendAts = {
     1: stage1SendAt,
