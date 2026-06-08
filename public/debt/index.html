@@ -657,7 +657,7 @@
         <input id="gratis-email" class="input" placeholder="Your email" type="email">
 
         <div id="gratis-email-hint" class="input-hint" style="display:none;color:#991b1b;font-size:.82rem;margin-top:-6px;margin-bottom:6px;"></div>
-        <button id="gratis-btn" class="offer-cta" disabled>
+        <button id="gratis-btn" class="offer-cta" onclick="startGratisUpload()" disabled>
           Get a free first overview
         </button>
       </div>
@@ -1049,7 +1049,7 @@
       var zone = document.getElementById('gratis-upload-zone');
       // More reliable file detection across Chrome, Edge and mobile browsers
       var fileInput = document.getElementById('gratis-file-input');
-      var hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+      var hasFile = window._gratisFileReady || (fileInput && fileInput.files && fileInput.files.length > 0);
 
       if (btn) {
         btn.disabled = !(name && emailOk && hasFile);
