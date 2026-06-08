@@ -25,6 +25,7 @@ window.handleGratisFileSelect = function(input) {
   const file = input?.files?.[0] || (input instanceof File ? input : null);
   if (!file) return;
   freeFile = file;
+  window._gratisFileReady = true; // signal for inline mobileCheckReady (iOS/Chrome file.files unreliable)
   track('free_upload_started', { type: TYPE });
   const err    = validateFile(freeFile);
   const status = document.getElementById('gratis-status');
