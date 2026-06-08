@@ -47,7 +47,7 @@ function isTier3({ triage, tier, emailType } = {}) {
 function nextWorkdayAt15UK(fromMs = Date.now()) {
   const d = new Date(fromMs);
   d.setUTCDate(d.getUTCDate() + 1);
-  d.setUTCHours(15, 15, 0, 0); // 15:15 UK
+  d.setUTCHours(13, 15, 0, 0); // 13:15 UTC
 
   while (d.getUTCDay() === 0 || d.getUTCDay() === 6) {
     d.setUTCDate(d.getUTCDate() + 1);
@@ -59,7 +59,7 @@ function nextWorkdayAt15UK(fromMs = Date.now()) {
 function nextWorkdayAt1519UK(fromMs = Date.now()) {
   const d = new Date(fromMs);
   d.setUTCDate(d.getUTCDate() + 1);
-  d.setUTCHours(15, 19, 0, 0); // 15:19 UK
+  d.setUTCHours(13, 19, 0, 0); // 13:19 UTC
 
   while (d.getUTCDay() === 0 || d.getUTCDay() === 6) {
     d.setUTCDate(d.getUTCDate() + 1);
