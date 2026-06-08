@@ -1047,10 +1047,12 @@
       var emailOk = email.includes('@') && email.includes('.');
       // Only enable if file was also selected (check zone text changed)
       var zone = document.getElementById('gratis-upload-zone');
-      var hasFile = zone && zone.querySelector('.upload-label') &&
-                    zone.querySelector('.upload-label').style.color === 'var(--green)';
-      if (btn && name && emailOk && hasFile) {
-        btn.disabled = false;
+      // More reliable file detection across Chrome, Edge and mobile browsers
+      var fileInput = document.getElementById('gratis-file-input');
+      var hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+
+      if (btn) {
+        btn.disabled = !(name && emailOk && hasFile);
       }
     }
 
