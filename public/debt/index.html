@@ -657,7 +657,7 @@
         <input id="gratis-email" class="input" placeholder="Your email" type="email">
 
         <div id="gratis-email-hint" class="input-hint" style="display:none;color:#991b1b;font-size:.82rem;margin-top:-6px;margin-bottom:6px;"></div>
-        <button id="gratis-btn" class="offer-cta" onclick="startGratisUpload()" disabled>
+        <button id="gratis-btn" class="offer-cta" onclick="if(typeof startGratisUpload==='function')startGratisUpload()" disabled>
           Get a free first overview
         </button>
       </div>
@@ -1024,42 +1024,70 @@
   }
 </script>
 
-<script type="module" src="./app.js"></script>
 <script>
-  // Mobile fallback: attach change listener after module loads
-  window.addEventListener('load', function() {
-    var input = document.getElementById('gratis-file-input');
-    if (!input) return;
-    input.addEventListener('change', function() {
-      if (typeof window.handleGratisFileSelect === 'function') {
-        window.handleGratisFileSelect(this);
-      }
-    });
+  // Inline bootstrap — no module dependency. Handles file select,
+  // field visibility, button state. Module (app.js) handles submitFree.
+  (function () {
+    var _fileReady = false;
 
-    // iOS autofill fix: trigger checkFreeReady on change events too
-    var nameEl  = document.getElementById('gratis-name');
-    var emailEl = document.getElementById('gratis-email');
-    var btn     = document.getElementById('gratis-btn');
+    function esc(s) {
+      return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
 
-    function mobileCheckReady() {
-      var name  = nameEl ? nameEl.value.trim() : '';
-      var email = emailEl ? emailEl.value.trim() : '';
-      var emailOk = email.includes('@') && email.includes('.');
-      // Only enable if file was also selected (check zone text changed)
-      var zone = document.getElementById('gratis-upload-zone');
-      // More reliable file detection across Chrome, Edge and mobile browsers
-      var fileInput = document.getElementById('gratis-file-input');
-      var hasFile = window._gratisFileReady || (fileInput && fileInput.files && fileInput.files.length > 0);
-
-      if (btn) {
-        btn.disabled = !(name && emailOk && hasFile);
+    function checkReady() {
+      var name  = ((document.getElementById('gratis-name')||{}).value||'').trim();
+      var email = ((document.getElementById('gratis-email')||{}).value||'').trim();
+      var btn   = document.getElementById('gratis-btn');
+      var hint  = document.getElementById('gratis-email-hint');
+      var emailOk = email.indexOf('@') > 0 && email.lastIndexOf('.') > email.indexOf('@');
+      if (btn) btn.disabled = !(_fileReady && name && emailOk);
+      if (hint) {
+        if (email.length > 3 && !emailOk) { hint.textContent = 'Please enter a valid email address.'; hint.style.display = 'block'; }
+        else { hint.style.display = 'none'; }
       }
     }
 
-    if (nameEl)  { nameEl.addEventListener('change',  mobileCheckReady); nameEl.addEventListener('blur', mobileCheckReady); }
-    if (emailEl) { emailEl.addEventListener('change', mobileCheckReady); emailEl.addEventListener('blur', mobileCheckReady); }
-  });
+    function onFileChange() {
+      var input = document.getElementById('gratis-file-input');
+      var file  = input && input.files && input.files[0];
+      if (!file) return;
+      _fileReady = true;
+      window._gratisFileReady = true;
+      var zone = document.getElementById('gratis-upload-zone');
+      if (zone) {
+        zone.innerHTML = '<div class="upload-label" style="color:var(--green);">&#10003; ' + esc(file.name) + '</div>'
+          + '<div class="upload-hint">' + Math.round(file.size/1024) + ' KB</div>'
+          + '<input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" '
+          + 'style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:100px;">';
+        var ni = document.getElementById('gratis-file-input');
+        if (ni) ni.addEventListener('change', onFileChange);
+      }
+      var fields = document.getElementById('gratis-contact-fields');
+      if (fields) fields.style.display = 'flex';
+      checkReady();
+      if (typeof window.handleGratisFileSelect === 'function') {
+        window.handleGratisFileSelect(input || file);
+      }
+    }
+
+    function boot() {
+      var input   = document.getElementById('gratis-file-input');
+      var nameEl  = document.getElementById('gratis-name');
+      var emailEl = document.getElementById('gratis-email');
+      var btn     = document.getElementById('gratis-btn');
+      if (input)   input.addEventListener('change', onFileChange);
+      if (nameEl)  ['input','change','blur'].forEach(function(e){ nameEl.addEventListener(e, checkReady); });
+      if (emailEl) ['input','change','blur'].forEach(function(e){ emailEl.addEventListener(e, checkReady); });
+      if (btn) btn.addEventListener('click', function() {
+        if (typeof window.startGratisUpload === 'function') window.startGratisUpload();
+      });
+    }
+
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', boot); }
+    else { boot(); }
+  })();
 </script>
+<script type="module" src="./app.js"></script>
 
 
 <script>
