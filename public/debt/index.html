@@ -1035,6 +1035,27 @@
         window.handleGratisFileSelect(this);
       }
     });
+
+    // iOS autofill fix: trigger checkFreeReady on change events too
+    var nameEl  = document.getElementById('gratis-name');
+    var emailEl = document.getElementById('gratis-email');
+    var btn     = document.getElementById('gratis-btn');
+
+    function mobileCheckReady() {
+      var name  = nameEl ? nameEl.value.trim() : '';
+      var email = emailEl ? emailEl.value.trim() : '';
+      var emailOk = email.includes('@') && email.includes('.');
+      // Only enable if file was also selected (check zone text changed)
+      var zone = document.getElementById('gratis-upload-zone');
+      var hasFile = zone && zone.querySelector('.upload-label') &&
+                    zone.querySelector('.upload-label').style.color === 'var(--green)';
+      if (btn && name && emailOk && hasFile) {
+        btn.disabled = false;
+      }
+    }
+
+    if (nameEl)  { nameEl.addEventListener('change',  mobileCheckReady); nameEl.addEventListener('blur', mobileCheckReady); }
+    if (emailEl) { emailEl.addEventListener('change', mobileCheckReady); emailEl.addEventListener('blur', mobileCheckReady); }
   });
 </script>
 
