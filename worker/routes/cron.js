@@ -89,7 +89,8 @@ export async function handleCron(env) {
 
         const stripeLink = getStripeLink(entry);
 
-        await sendFreeEmail(env, {
+        console.log("ABOUT TO SEND FREE", key, entry.email, entry.stage || 1, entry.type);
+        const freeResult = await sendFreeEmail(env, {
           name: entry.name,
           email: entry.email,
           type: entry.type,
@@ -98,6 +99,11 @@ export async function handleCron(env) {
           stripeLink,
           stage: entry.stage || 1,
         });
+        console.log("FREE SEND RESULT", JSON.stringify(freeResult));
+        if (!freeResult) {
+          console.warn("FREE SEND RETURNED NO RESULT — keeping queue entry", key);
+          continue;
+        }
 
         console.log(
           `Cron: free email sent: ${entry.email}, stage ${entry.stage || 1}`
