@@ -646,10 +646,10 @@
         Upload your debt letter, collection notice or payment demand. You will receive a plain-language overview of the key points — before you pay or respond.
       </p>
 
-      <div id="gratis-upload-zone" class="upload-zone" onclick="document.getElementById('gratis-file-input').click()">
+      <div id="gratis-upload-zone" class="upload-zone" style="position:relative;overflow:hidden;">
         <div class="upload-label">Choose file</div>
         <div class="upload-hint">PDF, JPG or PNG · max. 8 MB</div>
-        <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="opacity:0;position:absolute;width:1px;height:1px;pointer-events:none;" >
+        <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:100px;">
       </div>
 
       <div id="gratis-contact-fields" class="contact-fields">
