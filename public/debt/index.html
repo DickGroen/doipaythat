@@ -1025,6 +1025,18 @@
 </script>
 
 <script type="module" src="./app.js"></script>
+<script>
+  // Mobile fallback: attach change listener after module loads
+  window.addEventListener('load', function() {
+    var input = document.getElementById('gratis-file-input');
+    if (!input) return;
+    input.addEventListener('change', function() {
+      if (typeof window.handleGratisFileSelect === 'function') {
+        window.handleGratisFileSelect(this);
+      }
+    });
+  });
+</script>
 
 
 <script>
