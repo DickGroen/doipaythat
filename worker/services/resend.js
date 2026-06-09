@@ -285,7 +285,7 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
       });
 
       await trackEvent(env, "email_sent", { type, stage: 1, kind: "free", emailType });
-      return;
+      return true;
     }
 
     // ── Non-parking stage 1 ───────────────────────────────────────────────────
@@ -358,7 +358,7 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
     });
 
     await trackEvent(env, "email_sent", { type, stage: 1, kind: "free", emailType });
-    return;
+    return true;
   }
 
   // ── Stage 2 ───────────────────────────────────────────────────────────────
@@ -396,7 +396,7 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
     });
 
     await trackEvent(env, "email_sent", { type, stage: 2, kind: "free", emailType });
-    return;
+    return true;
   }
 
   // ── Stage 3 ───────────────────────────────────────────────────────────────
@@ -429,6 +429,7 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
   });
 
   await trackEvent(env, "email_sent", { type, stage: 3, kind: "free", emailType });
+  return true;
 }
 
 // ── Paid email ────────────────────────────────────────────────────────────────
