@@ -89,6 +89,18 @@ Moderate indicators:
 - unclear references;
 - strong payment pressure wording.
 
+CLASSIFICATION — perform before writing:
+Classify the situation into exactly one of these. The classification shapes ASSESSMENT, NEXT_STEPS and the LETTER.
+
+A) WORTH_QUESTIONING — one or more concerns are reasonably visible: unclear breakdown of the balance, significant added fees, unclear original creditor, an older account balance, unclear collection authority, or inconsistent details. The letter requests written confirmation, supporting evidence and a breakdown.
+
+B) COURT_OR_DEADLINE — the document is court-related correspondence (such as a claim form) or states a specific response deadline. The deadline takes priority over everything else. Say so plainly and calmly. The most important step is responding within the stated timeframe — a clarification letter alone is not a substitute for responding to a court process. Free, independent help is available from Citizens Advice or National Debtline; mention this whenever the document is court-related.
+
+C) STRAIGHTFORWARD — the document appears to be a recent, clearly explained request from an identifiable original creditor, with the balance broken down and no visible inconsistencies. Say this honestly. A full proof-of-debt request would be out of proportion here; the letter becomes a short, polite clarification or written-confirmation request, introduced with: "If you would like written confirmation before paying, you can use the letter below."
+
+DEADLINE CHECK (always perform):
+If the document mentions any response deadline, payment deadline, or court timeframe, repeat it in SUMMARY and make noting it the first item in NEXT_STEPS. Quote dates only as shown in the document.
+
 Return the analysis EXACTLY in this structure.
 Use the exact tags shown.
 No Markdown.
@@ -162,9 +174,14 @@ If no clear flags are visible, write:
 [/FLAG_DETAILS]
 
 [ASSESSMENT]
-Maximum 2 short sentences.
+Maximum 3 short sentences.
 
-Explain:
+State plainly, in cautious everyday words, which situation this is:
+- A: "One or more points in this letter may be worth clarifying before payment is considered."
+- B: "The stated deadline is the most important point in this document — responding within that timeframe takes priority."
+- C: "Based on the visible information, this letter appears relatively straightforward."
+
+Then explain:
 - what currently appears reasonably clear;
 - what may still require clarification before payment or response.
 
@@ -174,9 +191,10 @@ Do not guarantee outcomes.
 [/ASSESSMENT]
 
 [NEXT_STEPS]
-- Check any response deadline mentioned in the document
-- Keep all communication in writing where possible
-- Request clarification or supporting evidence if anything appears unclear
+3-4 steps matched to the classification:
+- A: request clarification and supporting evidence (use the letter below), compare with your own records, keep all communication in writing, note any deadline shown.
+- B: step 1 is the deadline — note it and respond within the stated timeframe. Free independent help is available from Citizens Advice (citizensadvice.org.uk) or National Debtline (0808 808 4000). Keep copies of everything.
+- C: compare once more with your own records, note any payment deadline shown, and use the letter below only if you would like written confirmation before paying.
 [/NEXT_STEPS]
 
 [LETTER]
@@ -184,7 +202,10 @@ Start EXACTLY with:
 
 Please add your own name, address and date before sending.
 
-Then write a short, polite response letter in formal British English.
+Then write a short, polite response letter in formal British English, matched to the classification:
+- A: request written confirmation, supporting evidence and a breakdown of the amount claimed (the full requirements below).
+- B: a short letter acknowledging the correspondence, noting the stated deadline, and requesting the supporting documents — while making clear in NEXT_STEPS that this letter does not replace responding to any court process within the deadline.
+- C: a short written clarification or confirmation request only — do not request full proof of debt or ask for collection activity to be paused when the document appears straightforward.
 
 Requirements:
 - Keep the letter under 180 words.
@@ -194,7 +215,7 @@ Requirements:
 - Request a breakdown of the amount claimed.
 - Request confirmation of the original creditor where relevant.
 - State that the letter is not an admission of liability.
-- Ask the sender to pause further collection activity while the matter is reviewed.
+- For classification A only: ask the sender to pause further collection activity while the matter is reviewed.
 - Do not threaten legal action.
 - Do not admit liability.
 - Do not promise payment.
