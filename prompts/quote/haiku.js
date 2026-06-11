@@ -53,6 +53,18 @@ ANTI-HALLUCINATION RULES:
   "may require clarification".
 - Never speculate about the provider's intentions.
 
+CLASSIFICATION — perform before writing:
+Classify the situation into exactly one of these. The classification shapes ASSESSMENT, NEXT_STEPS and the LETTER.
+
+A) WORTH_CLARIFYING — one or more points are reasonably unclear: no itemised breakdown, unclear scope of work, possible additional costs, unclear payment or deposit terms, VAT not stated. The letter asks for clarification of those specific points before agreeing (standard case).
+
+B) VALIDITY_DEADLINE — the quote states a specific validity or acceptance period, or uses urgency wording. Name the stated date calmly: it shapes the timing of any questions, but a stated deadline does not change what should be clear before agreeing. Asking questions before the deadline is entirely normal. If the deadline appears unusually short or pressure-framed, note that factually — without anti-provider framing.
+
+C) STRAIGHTFORWARD — the quote appears clearly itemised, with scope, costs and terms explained. Say this honestly. A list of queries would be out of proportion; the letter becomes a short, polite confirmation request (e.g. confirming in writing what is included), introduced with: "If you would like written confirmation before agreeing, you can use the letter below."
+
+VALIDITY CHECK (always perform):
+If the quote states a validity period, acceptance deadline, or expiry date, repeat it in SUMMARY exactly as shown and make noting it the first item in NEXT_STEPS. Quote dates only as shown in the document.
+
 Read the document carefully and return the analysis in this exact structure.
 Do not add text before [TITLE] or after [/LETTER].
 
@@ -69,6 +81,7 @@ Explain:
 - what work, product or service is involved;
 - the quoted amount if visible;
 - whether anything may be worth checking before agreement.
+If the quote states a validity period or expiry date: name it here (see VALIDITY CHECK).
 
 Use cautious wording only.
 Do not make legal or pricing conclusions.
@@ -122,12 +135,16 @@ Examples:
 
 [ASSESSMENT]
 Maximum 2 short paragraphs.
-Maximum 4 sentences total.
+Maximum 5 sentences total.
 
-Explain:
+State plainly, in cautious everyday words, which situation this is:
+- A: "One or more points in this quote may be worth clarifying before agreeing."
+- B: "The stated validity date is worth noting — asking your questions before that date keeps all options open."
+- C: "Based on the visible information, this quote appears relatively straightforward."
+
+Then explain:
 - what appears reasonably clear from the quote;
-- what may still require clarification;
-- why requesting further detail may be sensible before agreement.
+- what may still require clarification before agreement.
 
 Do not:
 - claim the quote is unfair;
@@ -137,24 +154,26 @@ Do not:
 [/ASSESSMENT]
 
 [NEXT_STEPS]
-- Check whether the quote includes VAT, materials and labour separately.
-- Request written confirmation of anything discussed verbally.
-- Ask whether additional costs could arise during the work.
-- Keep copies of revised quotes and written communication before agreeing.
+3-4 steps matched to the classification:
+- A: ask for the specific unclear points in writing (use the letter below) — breakdown, VAT, scope, possible additional costs — and keep copies of all communication.
+- B: step 1 is the stated validity date — note it and send your questions in good time before it. A stated deadline does not change what should be clear before agreeing.
+- C: compare the quote once more with what was discussed, request written confirmation of anything agreed verbally, and use the letter below only if you would like written confirmation before agreeing.
 [/NEXT_STEPS]
 
 [LETTER]
 Start with this exact sentence:
 "Please add your personal details, address and the date before sending."
 
-Write a short, professional clarification request in British English.
+Write a short, professional clarification request in British English, matched to the classification:
+- A: ask for clarification on the specific unclear pricing or scope points identified above.
+- B: the same questions, with a polite reference to the stated validity date (e.g. asking for a response before that date, or whether the quote can remain open while the points are clarified).
+- C: a short confirmation request only (e.g. confirming in writing what is included) — do not list multiple queries when the quote appears straightforward.
 
 The letter must:
 - begin with "Dear Sir or Madam,"
 - refer to the quote, estimate or reference number where visible;
-- ask for clarification on unclear pricing or scope points;
 - request confirmation of what is and is not included;
-- ask whether any additional costs may arise;
+- ask whether any additional costs may arise (where relevant per the classification);
 - clearly state that the message does not constitute acceptance of the quote;
 - remain calm, professional and commercially reasonable;
 - stay under 180 words.
