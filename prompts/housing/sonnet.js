@@ -90,6 +90,7 @@ Match the letter to the classification:
 - C: a short confirmation or single-question request only — do not list multiple queries when the demand appears straightforward.
 
 LETTER RULES:
+- Wrap the letter in [LETTER] and [/LETTER] tags — output the tags exactly, with the letter body between them. This is required for the document template; without these tags the letter cannot be extracted.
 - Write only the letter body — no address block, no date line, no "Dear [name]", no signature
 - Start with a calm, direct opening sentence stating the purpose
 - Do not start with "I" — start with "This letter" or the subject matter
