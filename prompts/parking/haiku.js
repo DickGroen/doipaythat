@@ -69,6 +69,20 @@ CHECK FOR:
 - landowner authority for private charges;
 - disproportionate or unclear added charges.
 
+CLASSIFICATION — perform before writing:
+Classify the document into exactly one of these. The classification shapes ASSESSMENT, NEXT_STEPS and the LETTER.
+
+A) COUNCIL_PCN — an official Penalty Charge Notice from a council or transport authority. A statutory process applies: the challenge or representations route stated on the notice itself governs. Name the stated deadlines and any discount period exactly as shown. The letter is a challenge or representations following the route stated on the notice.
+
+B) PRIVATE_CHARGE — a parking charge notice or Notice to Keeper from a private operator. A contractual claim: the appeal route stated on the notice (operator first, then the stated independent appeals service) governs. The letter is an appeal to the operator requesting the evidence relied upon and clarification of the relevant points.
+
+C) STRAIGHTFORWARD — the notice appears complete and consistent: clear photographs or evidence referenced, clear location, dates and amounts, clear appeal route. Say this honestly. The letter becomes a short, polite request for the evidence or a single clarification, introduced with: "If you would like to see the evidence before deciding, you can use the letter below."
+
+ESCALATION OVERRIDE: if the document is court correspondence (a county court claim) or mentions enforcement agents, the stated response deadline takes priority over everything else — name it calmly, note that responding within that timeframe is the most important step, and mention that free, independent help is available from Citizens Advice.
+
+DEADLINE & DISCOUNT CHECK (always perform):
+If the notice states a payment deadline, appeal deadline, or a discounted amount available for a limited period, repeat these in SUMMARY exactly as shown and make noting them the first item in NEXT_STEPS. Timing affects the available options — quote dates and amounts only as shown in the document.
+
 Return the response EXACTLY in this structure.
 Use the exact tags shown.
 No Markdown.
@@ -82,9 +96,10 @@ Short practical title specific to the document.
 Maximum 2 short sentences.
 
 Explain:
-- who appears to have issued the notice;
+- who appears to have issued the notice (council or private operator);
 - what the notice appears to demand;
 - whether anything may be worth checking before payment.
+If the notice states a deadline or discount period: name it here (see DEADLINE & DISCOUNT CHECK).
 
 Use cautious wording only.
 Do not make legal conclusions.
@@ -141,9 +156,14 @@ If no clear flags are visible, write:
 [/FLAG_DETAILS]
 
 [ASSESSMENT]
-Maximum 2 short sentences.
+Maximum 3 short sentences.
 
-Explain:
+State plainly, in cautious everyday words, which situation this is:
+- A: "This appears to be a council notice — the challenge route and deadlines stated on it are the key points."
+- B: "This appears to be a private parking charge — the appeal route stated on the notice is the practical path."
+- C: "Based on the visible information, this notice appears relatively straightforward."
+
+Then explain:
 - what currently appears reasonably clear;
 - what may still require clarification before payment or appeal.
 
@@ -153,10 +173,11 @@ Do not guarantee outcomes.
 [/ASSESSMENT]
 
 [NEXT_STEPS]
-- Check the payment or appeal deadline shown in the notice
-- Keep the original notice and any photos, receipts or parking app records
-- If appealing, submit it through the stated appeal route and keep confirmation
-- Do not ignore court, solicitor or enforcement correspondence
+3-4 steps matched to the classification:
+- A: step 1 is the stated deadline and any discount period — note them. Follow the challenge or representations route stated on the notice, keep the original notice and any photos or receipts, and keep proof of submission.
+- B: step 1 is the stated appeal deadline and any discounted period — note them. Submit the appeal through the route stated on the notice, keep all evidence (photos, receipts, parking app records), and keep confirmation.
+- C: note the stated deadline, keep the notice and your records, and use the letter below only if you would like to see the evidence before deciding.
+- Always: do not ignore court, solicitor or enforcement correspondence — if received, responding within the stated timeframe takes priority, and free help is available from Citizens Advice (citizensadvice.org.uk).
 [/NEXT_STEPS]
 
 [LETTER]
@@ -164,7 +185,10 @@ Begin EXACTLY with:
 
 Please add your own name, address and date before sending.
 
-Then write a short professional appeal letter in formal British English.
+Then write a short professional letter in formal British English, matched to the classification:
+- A (council): a challenge or representations letter following the route stated on the notice — referencing the PCN number and the specific points worth clarifying.
+- B (private): an appeal to the operator — requesting the photographic or ANPR evidence relied upon and clarification of the relevant points.
+- C: a short, polite request for the evidence or a single clarification only.
 
 Requirements:
 - Keep the letter under 200 words.
