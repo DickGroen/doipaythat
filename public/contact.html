@@ -4,55 +4,94 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact | DoIPayThat</title>
+  <meta name="description" content="Before you upload, here's what most people want to know. No obligation, no pressure.">
+  <link rel="canonical" href="https://doipaythat.co.uk/contact.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--ink:#0f1923;--ink-2:#2d3748;--ink-3:#4a5568;--muted:#718096;--line:#e2e8f0;--surface:#f7f9fc;--white:#ffffff;--accent:#1a3a6b;--accent-2:#2d5499;--soft:#eef4ff;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.65;color:var(--ink);background:var(--white);-webkit-font-smoothing:antialiased;}
+    h1,h2{font-family:'Lora',Georgia,serif;line-height:1.2;}
+    a{color:var(--accent);}
+    .container{max-width:860px;margin:0 auto;padding:0 24px;}
+    .header{background:var(--white);border-bottom:1px solid var(--line);padding:16px 0;position:sticky;top:0;z-index:100;}
+    .header__inner{display:flex;align-items:center;justify-content:space-between;}
+    .logo{font-family:'Lora',serif;font-size:1.15rem;font-weight:700;color:var(--accent);}
+    .logo-dot{display:inline-block;width:8px;height:8px;background:var(--accent-2);border-radius:50%;margin-right:6px;vertical-align:middle;}
+    .header-cta{background:var(--accent);color:var(--white);border-radius:10px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;text-decoration:none;display:inline-block;}
+    .page{padding:72px 0 56px;}
+    .page h1{font-size:clamp(1.6rem,4vw,2.2rem);margin-bottom:20px;max-width:580px;}
+    .body-text{font-size:1rem;color:var(--ink-3);max-width:540px;margin-bottom:14px;line-height:1.85;}
+    .fact-list{list-style:none;margin:28px 0 36px;display:grid;gap:13px;max-width:540px;}
+    .fact-list li{display:flex;align-items:flex-start;gap:12px;font-size:.95rem;color:var(--ink-2);line-height:1.65;}
+    .fact-list li::before{content:"—";color:var(--muted);flex-shrink:0;margin-top:2px;}
+    .email-block{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:28px;max-width:540px;margin-bottom:40px;}
+    .email-block__label{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--accent-2);margin-bottom:10px;}
+    .email-link{font-size:1.1rem;font-weight:700;color:var(--accent);text-decoration:none;border-bottom:2px solid var(--soft);display:inline-block;}
+    .email-link:hover{border-bottom-color:var(--accent);}
+    .response-note{margin-top:14px;font-size:.87rem;color:var(--muted);}
+    .who-block{max-width:540px;padding:24px 0 0;border-top:1px solid var(--line);}
+    .who-block p{font-size:.85rem;color:var(--muted);line-height:1.8;}
+    .footer-trust{padding:32px 0 16px;font-size:.85rem;color:var(--ink-3);line-height:1.75;border-top:1px solid var(--line);}
+    .disclaimer{padding:16px 0 20px;font-size:.78rem;color:var(--muted);line-height:1.7;}
+  </style>
 </head>
 <body>
 
-<header class="site-header">
-  <div class="container--wide">
-    <div class="site-header__inner">
-      <a href="/" style="text-decoration:none;color:inherit;"><div class="logo"><span class="logo-dot"></span>DoIPayThat</div></a>
+<header class="header">
+  <div class="container">
+    <div class="header__inner">
+      <div class="logo"><span class="logo-dot"></span>DoIPayThat</div>
+      <a href="/debt/" class="header-cta">Get a first overview</a>
     </div>
   </div>
 </header>
 
-<section style="padding:60px 0 80px;">
-  <div class="container" style="max-width:760px;">
+<section class="page">
+  <div class="container">
 
-    <h1 style="font-family:'DM Serif Display',serif;font-size:2rem;margin-bottom:32px;">Contact</h1>
+    <h1>Before you upload, here's what most people want to know.</h1>
 
-    <p>If you have questions about your document review, your analysis or our service, you can reach us at:</p>
+    <p class="body-text">Before uploading a document, most people want to know exactly what happens next — and whether there is any obligation to pay. There isn't.</p>
 
-    <p style="margin:24px 0;">
-      <strong>Email:</strong><br>
-      <a href="mailto:support@doipaythat.co.uk" style="font-size:1.1rem;">support@doipaythat.co.uk</a>
-    </p>
+    <p class="body-text">Here's what happens when you upload:</p>
 
-    <p style="margin-top:24px;">
-      <strong>Operator:</strong><br>
-      groenvantexel<br>
-      Den Burg, North Holland, Netherlands
-    </p>
+    <ul class="fact-list">
+      <li>Your document is reviewed individually and explained in plain English.</li>
+      <li>You receive a clear overview of what the letter actually means.</li>
+      <li>That overview is free. No card required. No automatic charge.</li>
+      <li>If you want a fuller review or a response draft, that's a separate, optional step.</li>
+      <li>Your document is deleted once your review is complete.</li>
+      <li>Uploading a document does not create any payment obligation.</li>
+    </ul>
 
-    <p>We aim to respond as quickly as possible during normal business hours.</p>
+    <div class="email-block">
+      <div class="email-block__label">Questions about an order or the service?</div>
+      <a href="mailto:support@doipaythat.co.uk" class="email-link">support@doipaythat.co.uk</a>
+      <p class="response-note">We usually reply within one working day, Monday to Friday.</p>
+    </div>
 
-    <p style="margin-top:32px;font-size:.9rem;color:var(--muted,#6b7280);">
-      DoIPayThat is a document review service and does not provide legal advice or legal representation.
-    </p>
+    <div class="who-block">
+      <p>DoIPayThat is operated by groenvantexel, Den Burg, Netherlands (CoC 42072123). Not a law firm. Not legal advice.</p>
+    </div>
 
   </div>
 </section>
 
-<footer style="border-top:1px solid var(--border,#e5e7eb);padding:24px 0;text-align:center;">
+<div class="container">
+  <div class="footer-trust"><strong>DoIPayThat</strong> helps people understand what they are being asked to pay before they decide what to do.</div>
+  <div class="disclaimer">DoIPayThat provides plain-language document overviews and response drafts. Not legal advice. Not legal representation. © 2026 DoIPayThat</div>
+</div>
+
+<footer style="border-top:1px solid var(--line);padding:20px 0;text-align:center;background:var(--white);">
   <div class="container">
-    <p style="font-size:.82rem;color:var(--muted,#6b7280);margin:0;">
-      DoIPayThat is a document review service &mdash; not legal advice. &nbsp;&middot;&nbsp;
-      <a href="/privacy.html" style="color:inherit;margin:0 10px;">Privacy Policy</a>
-      <a href="/terms.html" style="color:inherit;margin:0 10px;">Terms of Service</a>
-      <a href="/contact.html" style="color:inherit;margin:0 10px;">Contact</a>
+    <p style="font-size:.78rem;color:var(--muted);margin:0;">
+      <a href="/privacy.html" style="color:var(--muted);margin:0 10px;">Privacy Policy</a>
+      <a href="/terms.html" style="color:var(--muted);margin:0 10px;">Terms of Service</a>
+      <a href="/contact.html" style="color:var(--muted);margin:0 10px;">Contact</a>
     </p>
   </div>
 </footer>
