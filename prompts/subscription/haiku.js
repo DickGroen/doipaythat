@@ -69,6 +69,18 @@ CHECK FOR:
 - unclear online cancellation route;
 - future recurring charges.
 
+CLASSIFICATION — perform before writing:
+Classify the situation into exactly one of these. The classification shapes ASSESSMENT, NEXT_STEPS and the CANCELLATION_LETTER.
+
+A) WORTH_CLARIFYING — one or more concerns are reasonably visible: unclear renewal terms, an unclear cancellation route, unexplained fees, or — a special case — billing that appears to continue after a cancellation, or a cancellation that appears blocked or rejected. The letter requests clarification of the specific terms; in the special case, it references the earlier cancellation and requests written confirmation (standard case).
+
+B) RENEWAL_DEADLINE — the document states a specific renewal date or cancellation notice deadline. The stated date takes priority: name it calmly and make acting before it the first step. A missed window can mean another full term — say this factually, based only on what the document states. If the stated notice period appears to have already passed, say so factually and note that requesting clarification in writing remains a reasonable step — do not draw legal conclusions about whether the renewal stands.
+
+C) STRAIGHTFORWARD — the document appears to be a clear renewal notice or agreement, with the date, amount and cancellation route explained. Say this honestly. A list of concerns would be out of proportion; the letter becomes a short cancellation or confirmation request, introduced with: "If you would like written confirmation before deciding, you can use the letter below."
+
+DEADLINE CHECK (always perform):
+If the document mentions any renewal date, cancellation deadline, or notice period with a date, repeat it in SUMMARY and make noting it the first item in NEXT_STEPS. Quote dates only as shown in the document.
+
 Return the response EXACTLY in this structure.
 Use the exact tags shown.
 No Markdown.
@@ -85,6 +97,7 @@ Explain:
 - what type of subscription, membership or contract this appears to be;
 - what the document appears to require;
 - whether anything may be worth checking before further payment, renewal or cancellation.
+If the document states a renewal date or cancellation deadline: name it here (see DEADLINE CHECK).
 
 Use cautious wording only.
 Do not make legal conclusions.
@@ -140,9 +153,14 @@ If no clear flags are visible, write:
 [/FLAG_DETAILS]
 
 [ASSESSMENT]
-Maximum 2 short sentences.
+Maximum 3 short sentences.
 
-Explain:
+State plainly, in cautious everyday words, which situation this is:
+- A: "One or more terms in this document may be worth clarifying before deciding."
+- B: "The stated renewal date is the most important point in this document — acting before it takes priority."
+- C: "Based on the visible information, this subscription appears relatively straightforward."
+
+Then explain:
 - what currently appears reasonably clear;
 - what may still require clarification before further payment, renewal or cancellation.
 
@@ -152,10 +170,10 @@ Do not guarantee outcomes.
 [/ASSESSMENT]
 
 [NEXT_STEPS]
-- Check any cancellation deadline, renewal date or notice period shown in the document
-- Keep copies of the contract, invoices, payment records and cancellation messages
-- Request written confirmation of cancellation or account changes where applicable
-- Keep screenshots if cancellation must be completed online
+3-4 steps matched to the classification:
+- A: request written clarification of the specific terms (use the letter below); if billing continued after a cancellation, gather your cancellation evidence (emails, screenshots, confirmation numbers) and reference it. Keep copies of everything.
+- B: step 1 is the stated renewal date or notice deadline — note it and act before it. Send any cancellation in writing, in good time, and keep proof of sending. If cancellation must be done online, take a screenshot confirming it.
+- C: check the renewal date once more against your own plans, keep the document, and use the letter below only if you want to cancel or would like written confirmation.
 [/NEXT_STEPS]
 
 [CANCELLATION_LETTER]
@@ -163,7 +181,10 @@ Begin EXACTLY with:
 
 Please add your own name, address and date before sending.
 
-Then write a short professional cancellation or clarification letter in formal British English.
+Then write a short professional cancellation or clarification letter in formal British English, matched to the classification:
+- A: request written clarification of the specific unclear terms; if the document shows billing after a cancellation or a blocked cancellation, reference the earlier cancellation and request written confirmation that the account is closed and what (if anything) remains owed.
+- B: a cancellation effective before the stated renewal date — referencing the stated date and notice period, and requesting written confirmation of the cancellation and the final amount.
+- C: a short cancellation or written-confirmation request only.
 
 Requirements:
 - Keep the letter under 220 words.
