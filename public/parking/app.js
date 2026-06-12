@@ -44,12 +44,16 @@ window.handleGratisFileSelect = function(input) {
   }
 
   const zone = document.getElementById('gratis-upload-zone');
-
   if (zone) {
-    zone.innerHTML = `
-      <div class="upload-label" style="color:var(--green);">✓ ${esc(gratisFile.name)}</div>
-      <div class="upload-hint">${formatFileSize(gratisFile.size)}</div>
-    `;
+    const label = zone.querySelector('.upload-label');
+    const hint  = zone.querySelector('.upload-hint');
+    if (label) {
+      label.style.color = 'var(--green)';
+      label.innerHTML = '✓ ' + esc(gratisFile.name);
+    }
+    if (hint) {
+      hint.textContent = formatFileSize(gratisFile.size);
+    }
   }
 
   const fields = document.getElementById('gratis-contact-fields');
@@ -81,8 +85,10 @@ function checkGratisReady() {
   }
 }
 
-document.getElementById('gratis-name')?.addEventListener('input', checkGratisReady);
-document.getElementById('gratis-email')?.addEventListener('input', checkGratisReady);
+['input', 'change', 'blur'].forEach((evt) => {
+  document.getElementById('gratis-name')?.addEventListener(evt, checkGratisReady);
+  document.getElementById('gratis-email')?.addEventListener(evt, checkGratisReady);
+});
 
 window.startGratisUpload = async function() {
   const name   = document.getElementById('gratis-name')?.value.trim();
@@ -130,6 +136,10 @@ window.startGratisUpload = async function() {
     if (status) {
       status.className = 'optie-status optie-status--success';
       status.textContent = 'Your first check is ready.';
+    }
+
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'upload_complete');
     }
 
     if (btn) {
