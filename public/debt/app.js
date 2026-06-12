@@ -131,6 +131,9 @@ async function startGratisUpload() {
       status.className = 'optie-status optie-status--success';
       status.textContent = 'Your first check is ready.';
     }
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'upload_complete');
+    }
     if (btn) {
       btn.textContent = 'Done ✓';
     }
