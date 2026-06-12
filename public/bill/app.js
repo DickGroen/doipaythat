@@ -36,7 +36,15 @@ window.handleGratisFileSelect = function(input) {
   }
   const zone = document.getElementById('gratis-upload-zone');
   if (zone) {
-    zone.innerHTML = `<div class="upload-label" style="color:var(--green);">\u2713 ${esc(freeFile.name)}</div><div class="upload-hint">${formatFileSize(freeFile.size)}</div>`;
+    const label = zone.querySelector('.upload-label');
+    const hint  = zone.querySelector('.upload-hint');
+    if (label) {
+      label.style.color = 'var(--green)';
+      label.innerHTML = '✓ ' + esc(freeFile.name);
+    }
+    if (hint) {
+      hint.textContent = formatFileSize(freeFile.size);
+    }
   }
   const fields = document.getElementById('gratis-contact-fields');
   if (fields) fields.style.display = 'flex';
@@ -58,8 +66,10 @@ function checkFreeReady() {
   }
 }
 
-document.getElementById('gratis-name')?.addEventListener('input', checkFreeReady);
-document.getElementById('gratis-email')?.addEventListener('input', checkFreeReady);
+['input', 'change', 'blur'].forEach((evt) => {
+  document.getElementById('gratis-name')?.addEventListener(evt, checkFreeReady);
+  document.getElementById('gratis-email')?.addEventListener(evt, checkFreeReady);
+});
 
 window.startGratisUpload = async function() {
   const name   = document.getElementById('gratis-name')?.value.trim();
@@ -89,6 +99,10 @@ window.startGratisUpload = async function() {
     renderTeaser(triage);
 
     if (status) { status.className = 'optie-status optie-status--success'; status.textContent = 'Your first check is ready.'; }
+
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'upload_complete');
+    }
     if (btn) { btn.textContent = 'Done \u2713'; }
   } catch (err) {
     if (status) { status.className = 'optie-status optie-status--error'; status.textContent = 'Error: ' + err.message; }
