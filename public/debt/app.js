@@ -38,10 +38,15 @@ window.handleGratisFileSelect = function(input) {
   }
   const zone = document.getElementById('gratis-upload-zone');
   if (zone) {
-    zone.innerHTML = `
-      <div class="upload-label" style="color:var(--green);">✓ ${esc(freeFile.name)}</div>
-      <div class="upload-hint">${formatFileSize(freeFile.size)}</div>
-    `;
+    const label = zone.querySelector('.upload-label');
+    const hint  = zone.querySelector('.upload-hint');
+    if (label) {
+      label.style.color = 'var(--green)';
+      label.innerHTML = '✓ ' + esc(freeFile.name);
+    }
+    if (hint) {
+      hint.textContent = formatFileSize(freeFile.size);
+    }
   }
   const fields = document.getElementById('gratis-contact-fields');
   if (fields) fields.style.display = 'flex';
