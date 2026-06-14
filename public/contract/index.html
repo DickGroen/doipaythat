@@ -385,6 +385,7 @@
     }
 
     .upload-zone{
+      position:relative;
       border:2px dashed var(--line);
       border-radius:14px;
       padding:28px;
@@ -718,7 +719,7 @@
         Upload your contract, agreement, renewal notice or cancellation letter. You will receive a plain-language overview of the key terms — and whether anything is worth clarifying before you sign, cancel or respond.
       </p>
 
-      <div id="gratis-upload-zone" class="upload-zone" onclick="this.querySelector('input').click()">
+      <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input">
 
         <div class="upload-label">
           Choose file
@@ -729,12 +730,14 @@
         </div>
 
         <input
+          id="gratis-file-input"
           type="file"
           accept=".pdf,.jpg,.jpeg,.png"
-          style="display:none;"
+          style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;"
           onchange="handleGratisFileSelect(this)"
+          aria-label="Choose file"
         />
-      </div>
+      </label>
 
       <div id="gratis-contact-fields" class="contact-fields">
 
