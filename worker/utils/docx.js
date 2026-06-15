@@ -236,6 +236,9 @@ const LETTER_TAG = {
   debt: 'RESPONSE_LETTER',
   contract: 'LETTER',
   housing: 'LETTER',
+  parking: 'LETTER',
+  quote: 'LETTER',
+  subscription: 'CANCELLATION_LETTER',
 };
 
 export function makeLetterDocx(analysis, name, triage, type) {
@@ -244,6 +247,7 @@ export function makeLetterDocx(analysis, name, triage, type) {
             || extractTaggedSection(analysis, 'LETTER')
             || extractTaggedSection(analysis, 'DISPUTE_LETTER')
             || extractTaggedSection(analysis, 'RESPONSE_LETTER')
+            || extractTaggedSection(analysis, 'CANCELLATION_LETTER')
             || analysis;
   const letterBody = raw.replace(/\[\/?[A-Z_]+\]/g, '').trim();
   const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
