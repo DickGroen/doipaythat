@@ -66,7 +66,7 @@ One short paragraph identifying what this charge is, who issued it, and the amou
 [CASE_REVIEW]
 A plain-language explanation of what you can see in the document — the main cost categories, how management fees are presented, what the reserve fund contribution covers (if stated), and the basis for the charges (estimated or actual). Be specific about what is clearly stated and what is not.
 
-[OPEN POINTS]
+[OPEN_POINTS]
 Any costs that are unclear, missing a description, or that a consumer would reasonably want to understand before paying. For each open point, phrase it as a practical question the consumer could ask — not as a confirmed problem or accusation.
 
 [SUMMARY]
