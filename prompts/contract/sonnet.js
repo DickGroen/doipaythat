@@ -65,7 +65,7 @@ OVERVIEW STRUCTURE
 [INTRO]
 One short paragraph identifying what this agreement is, who issued it, and the consumer's apparent situation (reviewing before signing, considering cancelling, received a renewal notice, etc.).
 
-[KEY TERMS]
+[KEY_TERMS]
 A plain-language explanation of the most important terms:
 - The commitment period or minimum term
 - How cancellation works and what notice is required
@@ -75,7 +75,7 @@ A plain-language explanation of the most important terms:
 
 Be specific. Quote the relevant clause or term if it is clearly stated.
 
-[OPEN POINTS]
+[OPEN_POINTS]
 Any terms that are unclear, missing, difficult to follow, or that a consumer would reasonably want to clarify before signing or acting. Be factual. Do not imply dishonesty. Phrase as practical questions worth asking.
 
 [SUMMARY]
