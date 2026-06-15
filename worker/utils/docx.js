@@ -229,9 +229,21 @@ export function makeAnalysisDocx(analysis, name, email, triage, type) {
   return buildDocx(paras);
 }
 
+// Per-niche output tag used for the suggested letter/response.
+// Add an entry here whenever a niche's sonnet.js uses a non-default tag name.
+const LETTER_TAG = {
+  bill: 'DISPUTE_LETTER',
+  debt: 'RESPONSE_LETTER',
+  contract: 'LETTER',
+  housing: 'LETTER',
+};
+
 export function makeLetterDocx(analysis, name, triage, type) {
-  const raw = extractTaggedSection(analysis, 'LETTER')
+  const preferredTag = LETTER_TAG[type];
+  const raw = (preferredTag && extractTaggedSection(analysis, preferredTag))
+            || extractTaggedSection(analysis, 'LETTER')
             || extractTaggedSection(analysis, 'DISPUTE_LETTER')
+            || extractTaggedSection(analysis, 'RESPONSE_LETTER')
             || analysis;
   const letterBody = raw.replace(/\[\/?[A-Z_]+\]/g, '').trim();
   const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
