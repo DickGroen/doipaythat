@@ -230,7 +230,9 @@ export function makeAnalysisDocx(analysis, name, email, triage, type) {
 }
 
 export function makeLetterDocx(analysis, name, triage, type) {
-  const raw = extractTaggedSection(analysis, 'LETTER') || analysis;
+  const raw = extractTaggedSection(analysis, 'LETTER')
+            || extractTaggedSection(analysis, 'DISPUTE_LETTER')
+            || analysis;
   const letterBody = raw.replace(/\[\/?[A-Z_]+\]/g, '').trim();
   const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
