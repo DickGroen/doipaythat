@@ -285,10 +285,10 @@ Write as a calm human reviewer summarising the key point about this specific doc
 BAD: "There may be several points worth checking before payment."
 BAD: "There may be aspects worth clarifying before renewal."
 
-GOOD (bill, contrast form): "Both meter readings are marked as estimated, and a £45 smart meter installation fee is listed with no explanation."
+GOOD (contrast form): "The membership confirms a 12-month minimum term with automatic renewal, but does not explain how or when to cancel before the renewal date."
 GOOD (subscription): "The renewal notice confirms a £5 monthly price increase but makes no mention of any right to cancel as a result."
-GOOD (quote): "The quote covers labour, materials and tiling as lump sums with no itemised breakdown, and states disposal costs are excluded."
-GOOD (tier3): "The bill sets out usage, unit rate and standing charge clearly, with actual meter readings and a clear due date."
+GOOD (continued billing): "An email confirms the cancellation was received on 3 March, but the latest statement shows a further charge of £14.99 on 1 April."
+GOOD (tier3): "The renewal notice states the new annual price, the renewal date, and explains how to cancel online before that date."
 
 Maximum 2 sentences. Only information visible in the document. No legal conclusions. No guarantees.
 
