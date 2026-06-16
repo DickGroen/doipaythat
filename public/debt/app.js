@@ -8,11 +8,9 @@ import {
   initModal,
   initStickyFooter,
   openModal,
-  closeModal,
   track
 } from '../app.js';
 window.openModal = openModal;
-window.closeModal = closeModal;
 const TYPE     = 'debt';
 const PRICE    = 49;
 const CURRENCY = '£';
