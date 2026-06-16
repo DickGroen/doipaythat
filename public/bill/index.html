@@ -178,7 +178,7 @@
       <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input">
         <div class="upload-label">Choose file</div>
         <div class="upload-hint">PDF, JPG or PNG · max. 8 MB</div>
-        <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;" aria-label="Choose file">
+        <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;" onchange="handleGratisFileSelect(this)" aria-label="Choose file">
       </label>
 
       <div id="gratis-contact-fields" class="contact-fields">
@@ -395,7 +395,7 @@
   }
 </script>
 
-<script type="module" src="./app.js"></script>
+<script type="module" src="/app.js"></script>
 
 <script>
   // Google Ads upload conversion
