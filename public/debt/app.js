@@ -1,4 +1,3 @@
-
 import {
   validateFile,
   formatFileSize,
@@ -83,8 +82,18 @@ function checkFreeReady() {
   }
 }
 
-document.getElementById('gratis-name')?.addEventListener('input', checkFreeReady);
-document.getElementById('gratis-email')?.addEventListener('input', checkFreeReady);
+// ── File input change listener ────────────────────────────────────────────────
+const fileInputEl = document.getElementById('gratis-file-input');
+if (fileInputEl) {
+  fileInputEl.addEventListener('change', function() {
+    if (this.files?.[0]) window.handleGratisFileSelect(this);
+  });
+}
+
+['input', 'change', 'blur'].forEach(evt => {
+  document.getElementById('gratis-name')?.addEventListener(evt, checkFreeReady);
+  document.getElementById('gratis-email')?.addEventListener(evt, checkFreeReady);
+});
 
 window.startGratisUpload = async function() {
   const name   = document.getElementById('gratis-name')?.value.trim();
