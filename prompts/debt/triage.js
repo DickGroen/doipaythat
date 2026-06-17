@@ -149,18 +149,29 @@ BAD (too generic — do not use):
 "There may be aspects worth reviewing."
 
 GOOD (document-specific — this is the target):
-"No breakdown of the added collection fees of £137 is provided in the letter."
-"It is not clearly stated whether the debt has been assigned to the current company or is still being collected on their behalf."
-"The balance appears significantly higher than the original amount, but no explanation is included."
-"No signed agreement or original account reference is attached."
-"The account reference dates from 2018 and no explanation of any limitation period extension is given."
+"The balance claimed is higher than expected, but the letter does not explain how this figure has been reached."
+"It is not clearly shown from the document alone whether the company is entitled to collect this amount on the basis stated."
+"Some aspects of the claim are not fully set out in the letter and may benefit from further clarification."
+
+CRITICAL — BOUNDARY FOR THE TEASER:
+The teaser must NOT reveal the exact missing document, evidence gap, assignment defect, limitation argument, or response strategy.
+Internal flags may remain specific (possible_no_assignment, possible_statute_barred, etc.).
+The teaser may only refer to broader categories:
+- claim, supporting information, fees, balance, authority, documentation, timeline, clarity of the claim.
+
+NOT allowed in the teaser:
+- "no proof of assignment" or "not assigned to this company"
+- "no original credit agreement"
+- "statute barred" or "limitation period"
+- "no breakdown of collection fees"
+- Any wording that gives the user a free response strategy
 
 Rules for the teaser:
 - Maximum 2 sentences.
 - Only use information actually visible in the document.
 - No legal claims or guarantees.
 - No aggressive language. No "you do not have to pay."
-- Cautious, factual wording: "not provided", "not clearly shown", "no explanation is given", "not included".
+- Cautious, factual wording: "not fully set out", "not clearly shown", "not included in the document", "may benefit from clarification".
 - The teaser should feel like a brief human observation — not a legal checklist.
 - The user should feel that their uncertainty about this document is understandable — not that they should panic.
 - If flagCount = 0 and risk = "low": write one short, balanced sentence noting one concrete aspect that may still be worth confirming before payment.
