@@ -116,10 +116,28 @@ DOCUMENT-SPECIFIC — not a generic template text.
 
 Write the teaser as a calm, factual observation about this specific notice.
 
-GOOD: "The notice is from a private operator and does not enclose any photographic evidence or signage photos."
+GOOD: "The notice is from a private operator and some aspects of the basis for the charge are not fully set out in the document."
 GOOD (council): "The Penalty Charge Notice includes the contravention date, location and vehicle registration. No specific errors are visible on the face of the document."
-GOOD (ANPR): "The notice records an entry time of 14:03 and exit of 16:31, with a permitted stay of 2 hours 30 minutes — the alleged overstay of 28 minutes falls within a common grace period range."
+GOOD (ANPR): "The notice records entry and exit times, but some aspects of the basis for the alleged overstay are not fully set out in the document."
 BAD: "There may be aspects worth checking."
+
+CRITICAL — BOUNDARY FOR THE TEASER:
+The teaser must NOT reveal:
+- the exact ANPR issue
+- the exact signage issue
+- the exact keeper liability issue
+- the exact procedural defect
+- the exact limitation argument
+- a suggested appeal strategy
+Internal flags may remain specific.
+The teaser may only refer to broader categories:
+- evidence, signage, timing, documentation, vehicle details, procedural requirements, clarity of the notice.
+
+NOT allowed in the teaser:
+- "no ANPR images" or "no photographic evidence"
+- "signage not evidenced" or "no signage photos"
+- "keeper liability not established"
+- Any wording that gives the user a free appeal strategy
 
 Maximum 2 sentences. Only information visible in the document.
 
