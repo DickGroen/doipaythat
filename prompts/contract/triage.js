@@ -130,18 +130,37 @@ BAD (too generic - do not use):
 "There may be points worth checking in this contract."
 
 GOOD (deadline - this classification takes priority):
-"The letter states that cancellation must be requested in writing at least 30 days before the renewal date of 14 March 2025."
-"This notice gives until 2 May 2025 to cancel before the contract renews for a further 12 months."
+"The letter states a cancellation deadline, and acting before that date may avoid the contract renewing for a further term."
+"This notice includes a date by which action may be needed to prevent the contract from renewing automatically."
 
 GOOD (contrast):
 "The agreement states the contract renews automatically for a further 12 months, but does not explain how or when to opt out."
-"A price increase from £24.99 to £31.99 per month is mentioned, without information about any right to cancel as a result."
+"A price increase is mentioned, but the document does not include information about any right to cancel as a result."
 
 GOOD (neutral):
-"An early exit fee applies for cancelling before the end of the minimum term, but no amount or calculation is given."
+"An early exit fee is mentioned, but the document does not state the amount or how it would be calculated."
 
 GOOD (tier3):
 "The agreement sets out the minimum term, cancellation process and monthly cost clearly, with no automatic renewal beyond the stated term."
+
+CRITICAL — BOUNDARY FOR THE TEASER:
+The teaser must NOT reveal:
+- the exact renewal defect
+- the exact cancellation defect
+- the exact deadline consequence
+- the exact fee issue
+- the exact contractual inconsistency
+- a suggested response strategy
+Internal flags may remain specific.
+The teaser may only refer to broader categories:
+- contract terms, renewal information, cancellation information, pricing, deadlines, fees, agreement details, clarity of the document.
+
+NOT allowed in the teaser:
+- "automatic renewal not clearly disclosed"
+- "cancellation notice period not stated"
+- "exit fee not explained" or specific fee amounts
+- "contract inconsistency" with specific details
+- Any wording that gives the user a free response strategy
 
 Rules for the teaser:
 - Maximum 2 sentences.
