@@ -94,9 +94,29 @@ DOCUMENT-SPECIFIC - not a generic template sentence.
 Write as a calm human reviewer summarising the key point about this specific bill.
 
 BAD: "There may be several points worth checking before payment."
-GOOD (contrast): "Both meter readings are marked as estimated, and a 45 pound installation fee appears with no explanation."
-GOOD (neutral): "The bill includes a direct debit increase from 95 pounds to 127 pounds per month, with no reason given for the change."
+GOOD (contrast): "Some charges on the bill are not fully explained, and individual line items may benefit from further clarification."
+GOOD (neutral): "The bill includes a payment amount change, but no reason for the change is given in the document."
 GOOD (tier3): "The bill sets out usage, unit rate and standing charge clearly, with actual meter readings and a clear due date."
+
+CRITICAL — BOUNDARY FOR THE TEASER:
+The teaser must NOT reveal:
+- the exact duplicate charge
+- the exact tariff issue
+- the exact adjustment
+- the exact renewal issue
+- the exact cancellation issue
+- the exact billing period discrepancy
+- a suggested dispute strategy
+Internal flags may remain specific.
+The teaser may only refer to broader categories:
+- charges, pricing, billing information, service period, account information, supporting details, documentation, clarity of the bill.
+
+NOT allowed in the teaser:
+- "duplicate charge" or "charged twice"
+- "tariff not clearly stated" or "wrong tariff applied"
+- "estimated meter readings" or specific meter details
+- "direct debit increased" with specific amounts
+- Any wording that gives the user a free dispute strategy
 
 Maximum 2 sentences. Only information visible in the document. No legal conclusions. No guarantees.
 
