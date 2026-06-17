@@ -131,18 +131,37 @@ BAD (too generic - do not use):
 "There may be points worth checking in this service charge demand."
 
 GOOD (deadline/escalation - this classification takes priority):
-"The demand states that payment is due by 14 July 2025, and a covering letter refers to possible court action if the balance remains unpaid."
-"This notice gives 28 days to pay before the matter may be referred to solicitors."
+"The demand states a payment deadline, and the accompanying letter refers to possible further action if payment is not made."
+"This notice includes a timeframe, and the matter may be referred further if payment is not received within that period."
 
 GOOD (contrast):
-"The demand totals £1,240 for the service charge year, but no breakdown of how this figure is made up is included."
-"A management fee of £180 is shown without any explanation of how it is calculated."
+"The demand states a total amount, but no breakdown of how this figure is made up is included in the document."
+"A management fee is shown without any explanation of how it is calculated."
 
 GOOD (neutral):
-"The reserve fund contribution of £95 is listed without any description of what it covers."
+"A reserve fund contribution is listed without any description of what it covers."
 
 GOOD (tier3):
 "The demand sets out the service charge period, individual cost categories and the basis for the reserve fund contribution clearly."
+
+CRITICAL — BOUNDARY FOR THE TEASER:
+The teaser must NOT reveal:
+- the exact service charge defect
+- the exact management fee issue
+- the exact accounting discrepancy
+- the exact reserve fund concern
+- the exact escalation strategy
+- a suggested response strategy
+Internal flags may remain specific.
+The teaser may only refer to broader categories:
+- charges, fees, supporting information, deadlines, escalation wording, documentation, cost information, clarity of the demand.
+
+NOT allowed in the teaser:
+- "management fee not explained" or specific fee details
+- "reserve fund contribution not described"
+- "no breakdown of service charges"
+- "accounting discrepancy" with specific details
+- Any wording that gives the user a free response strategy
 
 Rules for the teaser:
 - Maximum 2 sentences.
