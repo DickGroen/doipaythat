@@ -233,10 +233,29 @@ Write as a calm human reviewer summarising the key point about this specific doc
 BAD: "There may be several points worth checking before payment."
 BAD: "There may be aspects worth clarifying before renewal."
 
-GOOD (contrast form): "The quote totals £4,200 for the kitchen refit, but lists 'materials' and 'labour' as two lump sums with no breakdown of what each covers."
-GOOD (hidden costs): "The quote states £850 for the boiler installation, but notes that disposal of the old unit and any additional parts will be charged separately, with no indication of likely cost."
-GOOD (quote): "The quote covers labour, materials and tiling as lump sums with no itemised breakdown, and states disposal costs are excluded."
+GOOD (contrast form): "The quote states a total amount, but individual cost categories are listed as lump sums with no breakdown of what each covers."
+GOOD (hidden costs): "The quote states a total, but notes that some costs will be charged separately with no indication of the likely amount."
+GOOD (quote): "The quote covers several cost categories as lump sums with no itemised breakdown, and notes that some costs are excluded."
 GOOD (tier3): "The quote sets out labour, materials and VAT separately, gives a fixed total, and states a 30-day validity period with an estimated start date."
+
+CRITICAL — BOUNDARY FOR THE TEASER:
+The teaser must NOT reveal:
+- the exact pricing concern
+- the exact breakdown issue
+- the exact hidden cost concern
+- the exact payment term concern
+- the exact scope defect
+- a negotiation strategy
+Internal flags may remain specific.
+The teaser may only refer to broader categories:
+- pricing, scope, costs, payment terms, timing, documentation, agreement details, clarity of the quote.
+
+NOT allowed in the teaser:
+- "no itemised breakdown provided"
+- "hidden costs not stated" or specific excluded items
+- "payment terms not clearly explained"
+- "scope not defined" with specific details
+- Any wording that gives the user a free negotiation strategy
 
 Maximum 2 sentences. Only information visible in the document. No legal conclusions. No guarantees.
 
