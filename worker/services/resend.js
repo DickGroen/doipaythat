@@ -308,7 +308,7 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
         <ul style="padding-left:20px;margin:8px 0 16px 0;list-style:none;">
           <li>✓ Plain English explanation of the main points</li>
           <li>✓ Review of any added charges or unclear figures</li>
-          <li>✓ A response letter you can use if you decide to write to the company</li>
+          <li>✓ A ready-to-send response letter you can use straight away</li>
         </ul>
         ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">${
           type === "debt" ? "Review the claim in full" :
@@ -445,7 +445,7 @@ export async function sendPaidEmail(env, { name, email, type, triage, analysis }
     : "Your analysis is ready — here's what to do next";
 
   const tip = isParking
-    ? "If you decide to contact the operator in writing, the attached response can be adapted as needed. Keep a copy for your records."
+    ? "If you decide to contact the operator in writing, the attached response is ready to send. Keep a copy for your records."
     : "Send the letter by recorded post and keep proof of postage. Send the letter on its own — do not include the analysis document.";
 
   await sendEmail(env, {
@@ -463,7 +463,7 @@ export async function sendPaidEmail(env, { name, email, type, triage, analysis }
       <p style="background:#f0fdf4;border-left:4px solid #22c55e;padding:12px;border-radius:4px;font-size:0.9rem;">
         💡 Tip: ${escapeHtml(tip)}
       </p>
-      ${isParking ? `<p style="font-size:0.9rem;color:#374151;">The assessment also includes some notes on next steps, should you decide to take the matter further.</p>` : ""}
+      ${isParking ? `<p style="font-size:0.9rem;color:#374151;">The assessment also includes some notes on next steps, if you want to take the matter further.</p>` : ""}
       <p>If anything is unclear, you can contact us at <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a>.</p>
       <p>Best regards,<br><strong>DoIPayThat</strong></p>
       <p style="font-size:0.8rem;color:#6b7280;margin-top:24px;">${escapeHtml(DISCLAIMER)}</p>
