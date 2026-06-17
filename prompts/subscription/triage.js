@@ -286,9 +286,28 @@ BAD: "There may be several points worth checking before payment."
 BAD: "There may be aspects worth clarifying before renewal."
 
 GOOD (contrast form): "The membership confirms a 12-month minimum term with automatic renewal, but does not explain how or when to cancel before the renewal date."
-GOOD (subscription): "The renewal notice confirms a £5 monthly price increase but makes no mention of any right to cancel as a result."
-GOOD (continued billing): "An email confirms the cancellation was received on 3 March, but the latest statement shows a further charge of £14.99 on 1 April."
+GOOD (subscription): "The renewal notice confirms a price increase but does not mention any right to cancel as a result."
+GOOD (continued billing): "A cancellation appears to have been submitted, but a further charge has since appeared — the basis for this is not explained in the document."
 GOOD (tier3): "The renewal notice states the new annual price, the renewal date, and explains how to cancel online before that date."
+
+CRITICAL — BOUNDARY FOR THE TEASER:
+The teaser must NOT reveal:
+- the exact renewal defect
+- the exact cancellation defect
+- the exact cooling-off argument
+- the exact fee issue
+- the exact contractual weakness
+- a suggested cancellation strategy
+Internal flags may remain specific.
+The teaser may only refer to broader categories:
+- renewal terms, contract information, cancellation information, pricing, fees, membership details, subscription details, clarity of the agreement.
+
+NOT allowed in the teaser:
+- "no cancellation confirmation provided"
+- "cooling-off period applies" or "14-day right to cancel"
+- "automatic renewal not clearly disclosed"
+- "exit fee not stated" or specific fee amounts
+- Any wording that gives the user a free cancellation strategy
 
 Maximum 2 sentences. Only information visible in the document. No legal conclusions. No guarantees.
 
