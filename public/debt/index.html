@@ -656,21 +656,8 @@
       </div>
 
       <p class="offer-desc">
-        Upload your letter, bill or notice — we'll help you understand it before you pay or respond.
+        Upload your debt letter for a free first overview — before you pay or respond.
       </p>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin:0 0 20px;font-size:.88rem;color:#14532d;">
-        <div>✓ No account required</div>
-        <div>✓ Document deleted after analysis</div>
-        <div>✓ Free first overview</div>
-        <div>✓ No spam, no follow-up emails</div>
-      </div>
-
-      <div style="margin:0 0 18px;padding:14px 16px;background:#f7f9fc;border:1px solid #e2e8f0;border-radius:10px;font-size:.88rem;color:#2d3748;line-height:1.7;">
-        You receive a free first overview before making any decision.<br>
-        A full review is only available if you choose to request one later.<br>
-        Uploading a document does not commit you to anything.
-      </div>
 
       <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input">
         <div class="upload-label">Choose file</div>
@@ -1034,6 +1021,22 @@
 </div>
 
 <script>
+  // Hide sticky footer when upload zone is visible
+  const uploadZone = document.getElementById('gratis-upload-zone');
+  const stickyFooter = document.getElementById('sticky-footer');
+
+  if (uploadZone && stickyFooter) {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          stickyFooter.classList.remove('visible');
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(uploadZone);
+  }
+
   function toggleFaq(el){
     const item = el.closest('.faq-item');
     const open = item.classList.contains('faq-item--open');
