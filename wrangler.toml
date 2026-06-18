@@ -27,7 +27,7 @@ id = "79aa4e89ce7c4699a36c73a6ea8a8af2"
 binding = "DOCS_BUCKET"
 bucket_name = "doipaythat-docs"
 [triggers]
-crons = ["*/5 * * * *"]
+crons = ["0 * * * *"]
 routes = [
   { pattern = "doipaythat.co.uk/api/*", zone_name = "doipaythat.co.uk" }
 ]
