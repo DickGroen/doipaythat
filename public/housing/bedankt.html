@@ -51,6 +51,14 @@
     .success-icon{width:54px;height:54px;border-radius:999px;background:#dcfce7;color:#166534;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.6rem;margin-bottom:14px;}
     @media(max-width:600px){.wrap{padding:32px 16px 100px;margin:0 auto}.card{padding:24px 18px;}}
   </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18193666186"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-18193666186');
+</script>
 </head>
 
 <body>
@@ -168,6 +176,18 @@
   const params    = new URLSearchParams(window.location.search);
   const sessionId = params.get("session_id");
   const type      = params.get("type") || "housing";
+
+  // Google Ads conversion — fires once on successful payment
+  if (sessionId && sessionId.startsWith('cs_')) {
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'conversion', {
+        'send_to': 'AW-18193666186/axNLCNDdgrkcEIqhteND',
+        'value': 29.0,
+        'currency': 'GBP',
+        'transaction_id': sessionId
+      });
+    }
+  }
 
   const fallback  = document.getElementById("thankyou-app");
   const locked    = document.getElementById("locked-screen");
