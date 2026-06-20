@@ -41,16 +41,33 @@ window.handleGratisFileSelect = function(input) {
       status.className = 'optie-status optie-status--error';
       status.textContent = err;
     }
+    freeFile = null;
     return;
   }
 
-  const zone = document.getElementById('gratis-upload-zone');
+  if (status) {
+    status.className = 'optie-status';
+    status.textContent = '';
+  }
 
-  if (zone) {
-    zone.innerHTML = `
-      <div class="upload-label" style="color:var(--green);">✓ ${esc(freeFile.name)}</div>
-      <div class="upload-hint">${formatFileSize(freeFile.size)}</div>
-    `;
+  const label = document.getElementById('gratis-upload-label');
+  const hint  = document.getElementById('gratis-upload-hint');
+
+  if (label) {
+    label.textContent = '✓ ' + freeFile.name;
+    label.style.color = 'var(--green)';
+  }
+  if (hint) {
+    hint.innerHTML = formatFileSize(freeFile.size) + ' &middot; <a href="#" id="gratis-change-file" style="position:relative;z-index:2;color:var(--accent);text-decoration:underline;">Choose a different file</a>';
+  }
+
+  const changeLink = document.getElementById('gratis-change-file');
+  if (changeLink) {
+    changeLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      resetGratisUpload();
+    });
   }
 
   const fields = document.getElementById('gratis-contact-fields');
@@ -58,6 +75,36 @@ window.handleGratisFileSelect = function(input) {
 
   checkFreeReady();
 };
+
+function resetGratisUpload() {
+  freeFile = null;
+
+  const input = document.getElementById('gratis-file-input');
+  if (input) input.value = '';
+
+  const label = document.getElementById('gratis-upload-label');
+  const hint  = document.getElementById('gratis-upload-hint');
+
+  if (label) {
+    label.textContent = 'Choose a file or drag it here';
+    label.style.color = '';
+  }
+  if (hint) {
+    hint.textContent = 'PDF, JPG or PNG · max. 8 MB';
+  }
+
+  const fields = document.getElementById('gratis-contact-fields');
+  if (fields) fields.style.display = 'none';
+
+  const status = document.getElementById('gratis-status');
+  if (status) {
+    status.className = 'optie-status';
+    status.textContent = '';
+  }
+
+  checkFreeReady();
+}
+window.resetGratisUpload = resetGratisUpload;
 
 function checkFreeReady() {
   const name  = document.getElementById('gratis-name')?.value.trim();
@@ -82,13 +129,9 @@ function checkFreeReady() {
   }
 }
 
-// ── File input change listener ────────────────────────────────────────────────
-const fileInputEl = document.getElementById('gratis-file-input');
-if (fileInputEl) {
-  fileInputEl.addEventListener('change', function() {
-    if (this.files?.[0]) window.handleGratisFileSelect(this);
-  });
-}
+// Note: gratis-file-input uses inline onchange="window.handleGratisFileSelect(this)"
+// in the HTML (see index.html) — no addEventListener needed here, that caused
+// a double-fire bug where every upload-start was tracked twice.
 
 ['input', 'change', 'blur'].forEach(evt => {
   document.getElementById('gratis-name')?.addEventListener(evt, checkFreeReady);
