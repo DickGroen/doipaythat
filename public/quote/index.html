@@ -149,7 +149,7 @@
   <div class="container">
     <div class="header__inner">
       <div class="logo"><span class="logo-dot"></span>DoIPayThat</div>
-      <a href="#free-check" class="header-cta">Get a first overview</a>
+      <a href="#free-check" class="header-cta">Get my free overview</a>
     </div>
   </div>
 </header>
@@ -159,14 +159,14 @@
     <h1>Quote received? Understand the terms before you agree.</h1>
     <p class="hero__sub">Upload your quote or estimate and receive a plain-language overview of the key points.</p>
     <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">Quotes don't always make it clear what's included or what could cost extra. Understanding that before you agree is simpler than raising questions once work has started.</p>
-    <a href="#free-check" class="hero-cta">Get a free first overview</a>
-    <div class="hero-sub-note">PDF, JPG or PNG · no commitment · further overview available</div>
 
     <div class="trust-triggers">
       <div class="trust-trigger"><span>●</span><div><strong>What is actually included?</strong>Labour, materials, VAT and call-out fees should each appear separately, not bundled into a single figure.</div></div>
       <div class="trust-trigger"><span>●</span><div><strong>What could cost extra?</strong>Open-ended wording like "additional work as required" can mean costs rise once the job has started.</div></div>
-      <div class="trust-trigger"><span>●</span><div><strong>Before you sign or pay a deposit</strong>Once work starts or money changes hands, asking questions becomes harder. A brief check first is straightforward.</div></div>
+      <div class="trust-trigger"><span>●</span><div><strong>Everything in writing</strong>No sales calls, no phone scripts. You get a written overview you can read, save, and refer back to.</div></div>
     </div>
+    <a href="#free-check" class="hero-cta">Get my free overview</a>
+    <div class="hero-sub-note">PDF, JPG or PNG · no commitment · further overview available</div>
   </div>
 </section>
 
@@ -174,24 +174,26 @@
   <div class="container" style="max-width:620px;">
     <div class="offer-card" id="free-card">
       <div class="offer-badge">Free first overview</div>
-      <div class="offer-title">Free first overview</div>
+      <div class="offer-title">Get your free overview</div>
       <p class="offer-desc">Upload your quote, estimate or proposal and receive a plain-language overview of what looks clear, what is vague, and what might be worth asking about before you agree.</p>
 
       <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input">
-        <div class="upload-label">Choose file</div>
+        <div class="upload-label">Choose a file or drag it here</div>
         <div class="upload-hint">PDF, JPG or PNG · max. 8 MB</div>
         <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;" onchange="handleGratisFileSelect(this)" aria-label="Choose file">
       </label>
+      <div class="upload-hint" style="margin:-8px 0 14px;">A phone photo is fine — just make sure the figures are readable.</div>
 
       <div id="gratis-contact-fields" class="contact-fields">
         <input id="gratis-name" class="input" placeholder="Your name">
         <input id="gratis-email" class="input" placeholder="Your email" type="email" autocomplete="email">
+        <div style="font-size:.8rem;color:var(--muted);margin-top:-6px;margin-bottom:4px;">We'll only use this to send your free overview. No marketing emails.</div>
         <div id="gratis-email-hint" class="input-hint"></div>
-        <button id="gratis-btn" disabled class="offer-cta" onclick="startGratisUpload()">Get a free overview</button>
+        <button id="gratis-btn" disabled class="offer-cta" onclick="startGratisUpload()">Get my free overview</button>
       </div>
 
       <div id="gratis-status" class="optie-status"></div>
-      <div class="offer-security">🔒 Your document is processed securely to prepare your overview — not shared with third parties.</div>
+      <div class="offer-security">🔒 Your document is used only to prepare your overview — not shared with third parties.</div>
     </div>
 
     <div id="teaser" class="teaser">
@@ -238,6 +240,8 @@
       <a href="#free-check" class="offer-cta">Start with a free overview →</a>
       <div class="offer-security">🔒 Secure payment via Stripe — card details are never stored</div>
       <div class="offer-refund">If the overview does not cover what you uploaded, get in touch. We will take another look.</div>
+      <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:14px;text-align:left;">The free overview is enough for some people. If it already answered your question, you don't need to go further.</p>
+      <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:10px;text-align:left;">We review every quote the same careful way and put the result in writing, instead of a phone call you might not remember the details of afterward.</p>
     </div>
   </div>
 </section>
@@ -281,34 +285,17 @@
 
 <section class="section section--alt">
   <div class="container">
-<section class="section">
-  <div class="container">
-    <div class="section-label">Typical feedback</div>
-    <h2>How people experienced the overview</h2>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:8px;">
-      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
-        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"The quote was just a total figure with no breakdown. The review helped me understand what I should have been seeing — and gave me the right questions to ask."</p>
-        <p style="font-size:.78rem;color:var(--muted);margin:0;">Customer from Leeds</p>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
-        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"There was a line about 'additional work as required' that I didn't feel confident about. The review helped me get a clearer answer before I agreed."</p>
-        <p style="font-size:.78rem;color:var(--muted);margin:0;">User from Bristol</p>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
-        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"I was being asked for a large deposit upfront. The review flagged that the cancellation terms weren't clear — which was exactly what I needed to raise."</p>
-        <p style="font-size:.78rem;color:var(--muted);margin:0;">Customer from London</p>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
-        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"I wouldn't have known how to phrase it professionally. The suggested wording made it easy to go back to the contractor without it feeling like a complaint."</p>
-        <p style="font-size:.78rem;color:var(--muted);margin:0;">User from Birmingham</p>
-      </div>
-    </div>
-  </div>
-</section>
-
     <div class="section-label">Frequently asked questions</div>
     <h2>Things people usually ask</h2>
     <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Can I speak to someone by phone? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">We don't offer phone consultations. Everything is delivered in writing by email, which lets us review every document carefully and keep the service affordable. You'll get something you can read, save, and refer back to.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">What happens to my document after I upload it? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">It's used only to prepare your overview. It is not shared with third parties, advertisers, or any other organisation.</div>
+      </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">What should a quote include? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">A clear quote should list labour and materials separately, show VAT where applicable, state what is and is not included, and set out any deposit or payment terms. A single total with no breakdown makes it hard to compare prices or question a specific item.</div>
@@ -326,10 +313,6 @@
         <div class="faq-a">The review focuses on clarity and completeness rather than whether the price is the lowest available. Knowing exactly what you are being charged for is usually the more practical starting point before any negotiation.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Can I speak to someone by phone? <span class="faq-chevron">⌄</span></div>
-        <div class="faq-a">Our service is designed around document review and written assessments delivered by email. By working primarily through email rather than telephone consultations, we are able to keep the service affordable while ensuring every document receives a careful and consistent review.</div>
-      </div>
-      <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">Is this legal advice? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">No. DoIPayThat provides plain-language quote overviews and response guidance. It does not provide legal, financial or trade advice.</div>
       </div>
@@ -341,7 +324,7 @@
   <div class="container">
     <h2>Understand it before you agree.</h2>
     <p>Quote received? A free first overview gives you a plain-language overview before you sign or transfer a deposit.</p>
-    <a href="#free-check" class="final-cta-btn">Get a free first overview</a>
+    <a href="#free-check" class="final-cta-btn">Get my free overview</a>
     <div class="final-cta-note">PDF, JPG or PNG · no commitment · further overview available</div>
   </div>
 </section>
@@ -366,7 +349,7 @@
     <div class="sticky-footer__text" style="font-weight:400;font-size:.86rem;color:rgba(255,255,255,.9);">Quote received? Understand it before you agree.</div>
     <div class="sticky-footer__sub">Free first check · no commitment</div>
   </div>
-  <a href="#free-check" class="sticky-cta">Get a free first overview</a>
+  <a href="#free-check" class="sticky-cta">Get my free overview</a>
 </div>
 
 <div class="modal-overlay" id="modal">
