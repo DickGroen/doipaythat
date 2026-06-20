@@ -660,9 +660,9 @@
       </p>
 
       <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input">
-        <div class="upload-label">Choose a file or drag it here</div>
-        <div class="upload-hint">PDF, JPG or PNG · max. 8 MB</div>
-        <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="window.handleGratisFileSelect(this)" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;" aria-label="Choose file">
+        <div id="gratis-upload-label" class="upload-label">Choose a file or drag it here</div>
+        <div id="gratis-upload-hint" class="upload-hint">PDF, JPG or PNG · max. 8 MB</div>
+        <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="window.handleGratisFileSelect(this)" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:1;" aria-label="Choose file">
       </label>
 
       <div class="upload-hint" style="margin:-8px 0 14px;">A phone photo is fine — just make sure the numbers and the sender's name are readable.</div>
