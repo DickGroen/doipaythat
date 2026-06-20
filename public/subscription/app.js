@@ -57,6 +57,8 @@ window.handleGratisFileSelect = function(input) {
     }
   }
 
+  input.value = '';
+
   const fields = document.getElementById('gratis-contact-fields');
   if (fields) fields.style.display = 'flex';
 
