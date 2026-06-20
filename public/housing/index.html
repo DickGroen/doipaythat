@@ -147,7 +147,7 @@
   <div class="container">
     <div class="header__inner">
       <div class="logo"><span class="logo-dot"></span>DoIPayThat</div>
-      <a href="#free-check" class="header-cta">Get a first overview</a>
+      <a href="#free-check" class="header-cta">Get my free overview</a>
     </div>
   </div>
 </header>
@@ -157,14 +157,14 @@
     <h1>Housing or service charge received? Understand it before you pay.</h1>
     <p class="hero__sub">Upload your service charge demand, management fee notice or maintenance invoice and get a free first review. If there are points worth clarifying before you pay, a fuller overview with written response guidance is available.</p>
     <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">Service charges and management fees are not always clearly broken down. Most people pay without asking — and only wonder later whether some items were worth querying first.</p>
-    <a href="#free-check" class="hero-cta">Get a free first overview</a>
-    <div class="hero-sub-note">PDF, JPG or PNG · no commitment · further overview available
-    </div>
 
     <div class="trust-triggers">
       <div class="trust-trigger"><span>●</span><div><strong>What the charge covers</strong>Service charge demands are not always clear about what each item relates to.</div></div>
       <div class="trust-trigger"><span>●</span><div><strong>Management fees and maintenance</strong>How management fees are calculated and what maintenance costs cover is not always stated clearly.</div></div>
-      <div class="trust-trigger"><span>●</span><div><strong>Before you pay or respond</strong>A clearer picture of the charge gives you a better basis for any next step.</div></div>
+      <div class="trust-trigger"><span>●</span><div><strong>Everything in writing</strong>No sales calls, no phone scripts. You get a written overview you can read, save, and refer back to.</div></div>
+    </div>
+    <a href="#free-check" class="hero-cta">Get my free overview</a>
+    <div class="hero-sub-note">PDF, JPG or PNG · no commitment · further overview available
     </div>
   </div>
 </section>
@@ -173,24 +173,26 @@
   <div class="container" style="max-width:620px;">
     <div class="offer-card" id="free-card">
       <div class="offer-badge">Free first overview</div>
-      <div class="offer-title">Free first overview</div>
+      <div class="offer-title">Get your free overview</div>
       <p class="offer-desc">Upload your service charge demand, management fee notice or maintenance invoice. You will receive a plain-language overview of what each item covers and whether anything is worth clarifying before you pay.</p>
 
       <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input">
-        <div class="upload-label">Choose file</div>
+        <div class="upload-label">Choose a file or drag it here</div>
         <div class="upload-hint">PDF, JPG or PNG · max. 8 MB</div>
         <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;" onchange="handleGratisFileSelect(this)" aria-label="Choose file">
       </label>
+      <div class="upload-hint" style="margin:-8px 0 14px;">A phone photo is fine — just make sure the figures are readable.</div>
 
       <div id="gratis-contact-fields" class="contact-fields">
         <input id="gratis-name" class="input" placeholder="Your name">
         <input id="gratis-email" class="input" placeholder="Your email" type="email" autocomplete="email">
+        <div style="font-size:.8rem;color:var(--muted);margin-top:-6px;margin-bottom:4px;">We'll only use this to send your free overview. No marketing emails.</div>
         <div id="gratis-email-hint" class="input-hint"></div>
-        <button id="gratis-btn" disabled class="offer-cta" onclick="startGratisUpload()">Get a free first overview</button>
+        <button id="gratis-btn" disabled class="offer-cta" onclick="startGratisUpload()">Get my free overview</button>
       </div>
 
       <div id="gratis-status" class="optie-status"></div>
-      <div class="offer-security">🔒 Processed securely to prepare your overview — not shared with third parties.</div>
+      <div class="offer-security">🔒 Used only to prepare your overview — not shared with third parties.</div>
     </div>
 
     <div id="teaser" class="teaser">
@@ -237,6 +239,8 @@
       <a href="#free-check" class="offer-cta">Start with a free first overview</a>
       <div class="offer-security">🔒 Secure payment via Stripe — card details are never stored</div>
       <div class="offer-refund">If the overview does not cover what you uploaded, get in touch. We will take another look.</div>
+      <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:14px;text-align:left;">The free overview is enough for some people. If it already answered your question, you don't need to go further.</p>
+      <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:10px;text-align:left;">We review every charge the same careful way and put the result in writing, instead of a phone call you might not remember the details of afterward.</p>
     </div>
   </div>
 </section>
@@ -260,7 +264,7 @@
     <div class="trust-grid">
       <div class="trust-item"><div class="trust-item__label">Management fees</div><div class="trust-item__text">What a management fee covers and how it is calculated should be clear from the demand. A total without a breakdown can be difficult to follow.</div></div>
       <div class="trust-item"><div class="trust-item__label">Maintenance and repair costs</div><div class="trust-item__text">Shared maintenance charges should explain what work was carried out and how the cost has been divided. Items without an explanation are worth asking about before paying.</div></div>
-      <div class="trust-item"><div class="trust-item__label">Shared building costs</div><div class="trust-item__text">How building expenses are allocated between residents should be clear from the demand. The basis of calculation is not always stated.</div></div></div>
+      <div class="trust-item"><div class="trust-item__label">Shared building costs</div><div class="trust-item__text">How building expenses are allocated between residents should be clear from the demand. The basis of calculation is not always stated.</div></div>
     </div>
   </div>
 </section>
@@ -280,34 +284,17 @@
 
 <section class="section section--alt">
   <div class="container">
-    <div class="section-label">Typical feedback</div>
-    <h2>How people experienced the overview</h2>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:8px;">
-      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
-        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"The management fee wasn't broken down at all. Having it explained in plain language helped me understand what I was actually paying for."</p>
-        <p style="font-size:.78rem;color:var(--muted);margin:0;">Customer from Bristol</p>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
-        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"The charge was higher than the previous year with no explanation. Having it explained clearly meant I knew exactly what to ask."</p>
-        <p style="font-size:.78rem;color:var(--muted);margin:0;">User from Leeds</p>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
-        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"I wasn't sure whether I was entitled to ask questions or whether I just had to pay. The overview made it clear that asking was a reasonable and normal step."</p>
-        <p style="font-size:.78rem;color:var(--muted);margin:0;">Customer from Manchester</p>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
-        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"The suggested wording was professional and measured. I wouldn't have known how to phrase it without it sounding like a complaint."</p>
-        <p style="font-size:.78rem;color:var(--muted);margin:0;">User from Birmingham</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section section--alt">
-  <div class="container">
     <div class="section-label">Frequently asked questions</div>
     <h2>Things people usually ask</h2>
     <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Can I speak to someone by phone? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">We don't offer phone consultations. Everything is delivered in writing by email, which lets us review every document carefully and keep the service affordable. You'll get something you can read, save, and refer back to.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">What happens to my document after I upload it? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">It's used only to prepare your overview. It is not shared with third parties, advertisers, or any other organisation.</div>
+      </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">What types of housing charge can I upload? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">You can upload service charge demands, management fee notices, maintenance invoices, leasehold cost summaries and similar housing-related charges where you want to understand what you are being asked to pay before deciding what to do.</div>
@@ -325,16 +312,8 @@
         <div class="faq-a">In many cases, yes. You can ask written questions about specific charges before the payment deadline. Having a clear, professional question to send makes that easier to do.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Can I speak to someone by phone? <span class="faq-chevron">⌄</span></div>
-        <div class="faq-a">Our service is designed around document review and written assessments delivered by email. By working primarily through email rather than telephone consultations, we are able to keep the service affordable while ensuring every document receives a careful and consistent review.</div>
-      </div>
-      <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">Is this legal advice? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">No. DoIPayThat provides plain-language charge reviews and suggested response wording. It does not provide legal advice or legal representation. For complex leasehold matters, specialist advice may be worth seeking.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What happens to my document? <span class="faq-chevron">⌄</span></div>
-        <div class="faq-a">Your document is processed securely for the purpose of the review only. It is not shared with third parties for any other purpose.</div>
       </div>
     </div>
   </div>
@@ -344,7 +323,7 @@
   <div class="container">
     <h2>Housing charge received? Get a clearer picture first.</h2>
     <p>Service charge or management fee received? A free first overview gives you a clearer picture before you pay or respond.</p>
-    <a href="#free-check" class="final-cta-btn">Get a free first overview</a>
+    <a href="#free-check" class="final-cta-btn">Get my free overview</a>
     <div class="final-cta-note">PDF, JPG or PNG · no commitment · further overview available
     </div>
   </div>
@@ -370,7 +349,7 @@
     <div class="sticky-footer__text" style="font-weight:400;font-size:.86rem;color:rgba(255,255,255,.9);">Housing charge received? Get a clearer picture first.</div>
     <div class="sticky-footer__sub">Free first overview · no commitment</div>
   </div>
-  <a href="#free-check" class="sticky-cta">Get a first overview</a>
+  <a href="#free-check" class="sticky-cta">Get my free overview</a>
 </div>
 
 <div class="modal-overlay" id="modal">
