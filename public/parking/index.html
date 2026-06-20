@@ -150,7 +150,7 @@
   <div class="container">
     <div class="header__inner">
       <div class="logo"><span class="logo-dot"></span>DoIPayThat</div>
-      <a href="#free-check" class="header-cta">Get a first overview</a>
+      <a href="#free-check" class="header-cta">Get my free overview</a>
     </div>
   </div>
 </header>
@@ -160,14 +160,14 @@
     <h1>Parking notice received? Understand it before you decide.</h1>
     <p class="hero__sub">Upload your parking notice, PCN or Notice to Keeper and receive a plain-language overview of the main points. If there is anything worth understanding before you pay or respond, a fuller overview with a response draft is available.</p>
     <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">Parking notices have deadlines. But paying quickly is not always the only option — a brief first overview can help you understand what you are dealing with.</p>
-    <a href="#free-check" class="hero-cta">Get a free first overview</a>
-    <div class="hero-sub-note">PDF, JPG or PNG · no commitment · fuller overview optional</div>
 
     <div class="trust-triggers">
       <div class="trust-trigger"><span>●</span><div><strong>Private or council notice?</strong>The two follow very different rules and options — and it is not always obvious from the notice which one you have received.</div></div>
       <div class="trust-trigger"><span>●</span><div><strong>Evidence and signage</strong>Photographs, timestamps, location evidence and signage clarity may all be relevant to the notice.</div></div>
-      <div class="trust-trigger"><span>●</span><div><strong>Before the deadline passes</strong>Parking notices typically offer a reduced rate for early payment — but that window also closes the option to appeal. Understanding the notice first gives you a clearer choice.</div></div>
+      <div class="trust-trigger"><span>●</span><div><strong>Everything in writing</strong>No sales calls, no phone scripts. You get a written overview you can read, save, and refer back to.</div></div>
     </div>
+    <a href="#free-check" class="hero-cta">Get my free overview</a>
+    <div class="hero-sub-note">PDF, JPG or PNG · no commitment · fuller overview optional</div>
   </div>
 </section>
 
@@ -175,24 +175,26 @@
   <div class="container" style="max-width:620px;">
     <div class="offer-card" id="free-card">
       <div class="offer-badge">Start free</div>
-      <div class="offer-title">Free first overview</div>
-      <p class="offer-desc">Upload your parking notice, PCN or Notice to Keeper. You will receive a plain-language overview of the key points — before you decide whether to pay, appeal or respond.</p>
+      <div class="offer-title">Get your free overview</div>
+      <p class="offer-desc">Upload your parking notice, PCN or Notice to Keeper. You will receive a plain-language overview of the key points — usually by the next working day.</p>
 
       <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input">
-        <div class="upload-label">Choose file</div>
+        <div class="upload-label">Choose a file or drag it here</div>
         <div class="upload-hint">PDF, JPG or PNG · max. 8 MB</div>
         <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;" onchange="handleGratisFileSelect(this)" aria-label="Choose file">
       </label>
+      <div class="upload-hint" style="margin:-8px 0 14px;">A phone photo is fine — just make sure the details are readable.</div>
 
       <div id="gratis-contact-fields" class="contact-fields">
         <input id="gratis-name" class="input" placeholder="Your name">
         <input id="gratis-email" class="input" placeholder="Your email" type="email" autocomplete="email">
+        <div style="font-size:.8rem;color:var(--muted);margin-top:-6px;margin-bottom:4px;">We'll only use this to send your free overview. No marketing emails.</div>
         <div id="gratis-email-hint" class="input-hint"></div>
-        <button id="gratis-btn" disabled class="offer-cta" onclick="startGratisUpload()">Get a free first overview</button>
+        <button id="gratis-btn" disabled class="offer-cta" onclick="startGratisUpload()">Get my free overview</button>
       </div>
 
       <div id="gratis-status" class="optie-status"></div>
-      <div class="offer-security" id="upload-security-note">🔒 Your document is processed securely and is not shared with third parties.</div>
+      <div class="offer-security" id="upload-security-note">🔒 Your document is used only to prepare your overview. It is not shared with third parties.</div>
     </div>
 
     <div id="teaser" class="teaser">
@@ -239,6 +241,8 @@
       <a href="#free-check" class="offer-cta">Start with a free overview →</a>
       <div class="offer-security">🔒 Secure payment via Stripe — card details are never stored</div>
       <div class="offer-refund">If the review does not cover what you uploaded, get in touch. We will take another look.</div>
+      <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:14px;text-align:left;">The free overview is enough for some people. If it already answered your question, you don't need to go further.</p>
+      <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:10px;text-align:left;">We review every notice the same careful way and put the result in writing, instead of a phone call you might not remember the details of afterward.</p>
     </div>
   </div>
 </section>
@@ -282,34 +286,17 @@
 
 <section class="section section--alt">
   <div class="container">
-<section class="section">
-  <div class="container">
-    <div class="section-label">Typical feedback</div>
-    <h2>How people experienced the overview</h2>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:8px;">
-      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
-        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"I didn't know whether it was a private company or the council. Once that was clear, the rest made a lot more sense."</p>
-        <p style="font-size:.78rem;color:var(--muted);margin:0;">Customer from London</p>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
-        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"The notice looked official and I wasn't sure whether ignoring it would make things worse. The review helped me see that I had time to think."</p>
-        <p style="font-size:.78rem;color:var(--muted);margin:0;">User from Bristol</p>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
-        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"The draft letter was calm and factual. I felt confident sending it without worrying I'd said something I shouldn't."</p>
-        <p style="font-size:.78rem;color:var(--muted);margin:0;">Customer from Birmingham</p>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 24px;">
-        <p style="font-size:.93rem;color:var(--ink-2);line-height:1.7;margin:0 0 14px;">"I nearly just paid to avoid the hassle. I'm glad I checked first — there were a couple of things in the notice I wouldn't have thought to question."</p>
-        <p style="font-size:.78rem;color:var(--muted);margin:0;">User from Manchester</p>
-      </div>
-    </div>
-  </div>
-</section>
-
     <div class="section-label">Frequently asked questions</div>
     <h2>Things people usually ask</h2>
     <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Can I speak to someone by phone? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">We don't offer phone consultations. Everything is delivered in writing by email, which lets us review every document carefully and keep the service affordable. You'll get something you can read, save, and refer back to.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">What happens to my document after I upload it? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-a">It's used only to prepare your overview. It is not shared with third parties, advertisers, or any other organisation.</div>
+      </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">What is the difference between a private parking charge and a council PCN? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">A council PCN is issued by a local authority and is a form of civil enforcement. A private parking charge is a contractual claim from a private company. They follow different rules and different appeal routes — which is one of the first things an overview will clarify.</div>
@@ -327,10 +314,6 @@
         <div class="faq-a">No. An overview helps you understand what the notice contains and whether there are points worth considering. What you decide to do next is entirely your choice.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Can I speak to someone by phone? <span class="faq-chevron">⌄</span></div>
-        <div class="faq-a">Our service is designed around document review and written assessments delivered by email. By working primarily through email rather than telephone consultations, we are able to keep the service affordable while ensuring every document receives a careful and consistent review.</div>
-      </div>
-      <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">Is this legal advice? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">No. DoIPayThat provides plain-language parking notice overviews and response drafts. It does not provide legal advice or legal representation.</div>
       </div>
@@ -342,7 +325,7 @@
   <div class="container">
     <h2>Understand the notice before you pay or respond.</h2>
     <p>Parking notice received? A free first overview gives you a clearer picture before you pay, appeal or respond.</p>
-    <a href="#free-check" class="final-cta-btn">Get a free first overview</a>
+    <a href="#free-check" class="final-cta-btn">Get my free overview</a>
     <div class="final-cta-note">PDF, JPG or PNG · no commitment · fuller overview optional</div>
   </div>
 </section>
@@ -367,7 +350,7 @@
     <div class="sticky-footer__text" style="font-weight:400;font-size:.86rem;color:rgba(255,255,255,.9);">Parking notice received? Get a clearer picture first.</div>
     <div class="sticky-footer__sub">Free first check · no commitment</div>
   </div>
-  <a href="#free-check" class="sticky-cta">Get a free first overview</a>
+  <a href="#free-check" class="sticky-cta">Get my free overview</a>
 </div>
 
 <div class="modal-overlay" id="modal">
