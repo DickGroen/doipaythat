@@ -298,31 +298,31 @@
     <h2>Things people usually ask</h2>
     <div class="faq-list">
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Can I speak to someone by phone? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Can I speak to someone by phone? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">We don't offer phone consultations. Everything is delivered in writing by email, which lets us review every document carefully and keep the service affordable. You'll get something you can read, save, and refer back to.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What happens to my document after I upload it? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >What happens to my document after I upload it? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">It's used only to prepare your overview. It is not shared with third parties, advertisers, or any other organisation.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What types of bill can I upload? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >What types of bill can I upload? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">You can upload energy bills, water bills, broadband or phone bills, service charges, repair invoices and most other billing documents where you want a clearer picture of the charges before deciding what to do.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Can a company bill me based on an estimated reading? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Can a company bill me based on an estimated reading? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">Yes — providers sometimes bill on estimates when meter access is unavailable. If the estimate seems higher than your actual usage, you are generally entitled to submit an actual reading and have the bill recalculated.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What happens after I upload? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >What happens after I upload? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">You receive a free first check by email — typically by the next working day before 4pm. This gives you an overview of the bill and flags any areas worth looking at. A further overview with suggested response wording is available for £29 if you want more detail.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Do I have to pay before I can ask about a charge? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Do I have to pay before I can ask about a charge? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">For most service bills, you can ask a written question before the payment deadline. Understanding which charges you want to ask about — and having clear, professional wording to use — makes that easier.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Is this legal advice? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Is this legal advice? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">No. DoIPayThat provides plain-language bill overviews and response guidance. It does not provide legal advice or legal representation.</div>
       </div>
     </div>
@@ -380,14 +380,7 @@
   </div>
 </div>
 
-<script>
-  function toggleFaq(el){
-    const item = el.closest('.faq-item');
-    const isOpen = item.classList.contains('faq-item--open');
-    document.querySelectorAll('.faq-item--open').forEach(i => i.classList.remove('faq-item--open'));
-    if(!isOpen) item.classList.add('faq-item--open');
-  }
-</script>
+<script></script>
 
 <script type="module" src="/bill/app.js"></script>
 
