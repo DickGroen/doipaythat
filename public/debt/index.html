@@ -146,7 +146,7 @@
       margin-right:auto;
     }
 
-    .hero__sub{
+    .eyebrow{display:inline-block;background:var(--soft);color:var(--accent);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:5px 14px;border-radius:100px;margin-bottom:22px;}
       font-size:1.05rem;
       color:var(--ink-3);
       max-width:640px;
@@ -599,38 +599,45 @@
 <section class="hero">
   <div class="container">
 
+    <a href="#free-check" class="eyebrow" style="text-decoration:none;cursor:pointer;">UK Debt Letter Review</a>
+
     <h1>
-      Received a debt letter? Understand what it's claiming before you pay.
+      Received a debt letter? Understand what it's actually claiming before you pay.
     </h1>
 
     <p class="hero__sub">
-      Upload it and we'll give you a free, plain-English overview — before you decide what to do.
+      Upload it and we'll give you a free, plain-English overview — before you decide anything.
     </p>
 
-    <p class="hero__secondary">
-      Collection letters often include fees and charges that aren't always clearly explained. It's worth understanding what you're actually being asked to pay — before you pay it.
-    </p>
+    <ul style="list-style:none;display:inline-flex;flex-direction:column;gap:8px;text-align:left;margin:0 auto 24px;font-size:.95rem;color:var(--ink-3);">
+      <li><span style="color:var(--green);font-weight:700;margin-right:8px;">&#10003;</span>The amount claimed isn't fully broken down</li>
+      <li><span style="color:var(--green);font-weight:700;margin-right:8px;">&#10003;</span>Added fees or interest you weren't expecting</li>
+      <li><span style="color:var(--green);font-weight:700;margin-right:8px;">&#10003;</span>You're not sure if the debt is actually valid</li>
+      <li><span style="color:var(--green);font-weight:700;margin-right:8px;">&#10003;</span>The letter feels urgent but the situation isn't clear</li>
+    </ul>
+
+    <p style="font-size:.88rem;color:var(--muted);max-width:560px;margin:0 auto 18px;line-height:1.6;">&#9888; Many people pay or ignore a debt letter before fully understanding what it's claiming. Once paid, it becomes much harder to question the amount or dispute the charges.</p>
 
     <div class="trust-triggers">
 
       <div class="trust-trigger">
-        <span>●</span>
+        <span>&#10003;</span>
         <div>
-          <strong>Is the amount clearly explained?</strong>
-          Added fees and interest are not always fully broken down. It is worth checking what makes up the total before deciding what to do.
+          <strong>Free first overview</strong>
+          Upload your letter and get a plain-English explanation of what it's claiming — before you pay anything or decide what to do.
         </div>
       </div>
 
       <div class="trust-trigger">
-        <span>●</span>
+        <span>&#10003;</span>
         <div>
-          <strong>Who is actually collecting?</strong>
-          Debt often passes between companies. Understanding whether you are dealing with the original creditor or a collection agency can be relevant.
+          <strong>Nothing ongoing</strong>
+          One document, one review, one price if you choose to go further — £49, one time. No subscription, nothing recurring.
         </div>
       </div>
 
       <div class="trust-trigger">
-        <span>●</span>
+        <span>&#10003;</span>
         <div>
           <strong>Everything in writing</strong>
           No sales calls, no phone scripts. You get a written overview you can read, save, and refer back to.
@@ -640,11 +647,11 @@
     </div>
 
     <a href="#free-check" class="hero-cta">
-      Get my free overview &middot; usually by next working day
+      Get my free overview &rarr; usually by next working day
     </a>
 
     <div class="hero-sub-note">
-      PDF, JPG or PNG · no commitment · fuller overview available
+      PDF, JPG or PNG &middot; no commitment &middot; fuller overview available
     </div>
 
   </div>
@@ -1036,7 +1043,7 @@
       { threshold: 0.2 }
     );
     observer.observe(uploadZone);
-  }  }
+  }
 </script>
 
 <script type="module" src="/debt/app.js"></script>
