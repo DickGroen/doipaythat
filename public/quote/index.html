@@ -300,31 +300,31 @@
     <h2>Things people usually ask</h2>
     <div class="faq-list">
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Can I speak to someone by phone? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Can I speak to someone by phone? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">We don't offer phone consultations. Everything is delivered in writing by email, which lets us review every document carefully and keep the service affordable. You'll get something you can read, save, and refer back to.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What happens to my document after I upload it? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >What happens to my document after I upload it? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">It's used only to prepare your overview. It is not shared with third parties, advertisers, or any other organisation.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What should a quote include? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >What should a quote include? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">A clear quote should list labour and materials separately, show VAT where applicable, state what is and is not included, and set out any deposit or payment terms. A single total with no breakdown makes it hard to compare prices or question a specific item.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Can extra costs be added once work has started? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Can extra costs be added once work has started? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">It depends on the original agreement. Open-ended wording like "additional work as required" may allow extra charges once work has started. Clarifying scope beforehand is generally far simpler than raising it afterwards.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What happens after I upload? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >What happens after I upload? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">You receive a plain-language overview by email — typically by the next working day before 4pm. This gives you a plain-language overview of the quote and flags anything worth clarifying. A further overview with suggested response wording is available for £29 if you want more.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Will this tell me whether the price is fair? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Will this tell me whether the price is fair? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">The review focuses on clarity and completeness rather than whether the price is the lowest available. Knowing exactly what you are being charged for is usually the more practical starting point before any negotiation.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Is this legal advice? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Is this legal advice? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">No. DoIPayThat provides plain-language quote overviews and response guidance. It does not provide legal, financial or trade advice.</div>
       </div>
     </div>
@@ -382,14 +382,7 @@
   </div>
 </div>
 
-<script>
-  function toggleFaq(el){
-    const item = el.closest('.faq-item');
-    const isOpen = item.classList.contains('faq-item--open');
-    document.querySelectorAll('.faq-item--open').forEach(i => i.classList.remove('faq-item--open'));
-    if(!isOpen) item.classList.add('faq-item--open');
-  }
-</script>
+<script></script>
 
 <script type="module" src="/quote/app.js"></script>
 
