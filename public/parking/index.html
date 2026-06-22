@@ -301,31 +301,31 @@
     <h2>Things people usually ask</h2>
     <div class="faq-list">
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Can I speak to someone by phone? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Can I speak to someone by phone? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">We don't offer phone consultations. Everything is delivered in writing by email, which lets us review every document carefully and keep the service affordable. You'll get something you can read, save, and refer back to.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What happens to my document after I upload it? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >What happens to my document after I upload it? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">It's used only to prepare your overview. It is not shared with third parties, advertisers, or any other organisation.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What is the difference between a private parking charge and a council PCN? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >What is the difference between a private parking charge and a council PCN? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">A council PCN is issued by a local authority and is a form of civil enforcement. A private parking charge is a contractual claim from a private company. They follow different rules and different appeal routes — which is one of the first things an overview will clarify.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Do I have to pay before the deadline or can I check first? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Do I have to pay before the deadline or can I check first? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">Private notices often offer a lower amount for early payment — but paying early also closes off the appeal option. Council PCNs typically allow a formal challenge within 28 days. A brief overview first can help you decide what makes sense before that window closes.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What happens after I upload? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >What happens after I upload? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">You receive a free first check by email — typically by the next working day before 4pm. This gives you an overview of the notice and flags any points worth considering. If you want more detail, a fuller overview with a draft response is available for £19.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Can you guarantee the charge will be cancelled? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Can you guarantee the charge will be cancelled? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">No. An overview helps you understand what the notice contains and whether there are points worth considering. What you decide to do next is entirely your choice.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Is this legal advice? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Is this legal advice? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">No. DoIPayThat provides plain-language parking notice overviews and response drafts. It does not provide legal advice or legal representation.</div>
       </div>
     </div>
@@ -383,14 +383,7 @@
   </div>
 </div>
 
-<script>
-  function toggleFaq(el){
-    const item = el.closest('.faq-item');
-    const isOpen = item.classList.contains('faq-item--open');
-    document.querySelectorAll('.faq-item--open').forEach(i => i.classList.remove('faq-item--open'));
-    if(!isOpen) item.classList.add('faq-item--open');
-  }
-</script>
+<script></script>
 
 <script type="module" src="/parking/app.js"></script>
 
