@@ -299,31 +299,31 @@
     <h2>Things people usually ask</h2>
     <div class="faq-list">
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Can I speak to someone by phone? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Can I speak to someone by phone? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">We don't offer phone consultations. Everything is delivered in writing by email, which lets us review every document carefully and keep the service affordable. You'll get something you can read, save, and refer back to.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What happens to my document after I upload it? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >What happens to my document after I upload it? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">It's used only to prepare your overview. It is not shared with third parties, advertisers, or any other organisation.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What types of housing charge can I upload? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >What types of housing charge can I upload? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">You can upload service charge demands, management fee notices, maintenance invoices, leasehold cost summaries and similar housing-related charges where you want to understand what you are being asked to pay before deciding what to do.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Am I entitled to a breakdown of a service charge? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Am I entitled to a breakdown of a service charge? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">In many cases, yes. Leaseholders and tenants receiving service charges are often entitled to request a summary of costs or supporting information. Whether that applies in your situation depends on your agreement. An overview can help clarify what questions are reasonable to raise.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What happens after I upload? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >What happens after I upload? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">You receive a plain-language overview by email — typically by the next working day before 4pm. This gives you an overview of the bill and flags any areas worth looking at. A fuller overview with suggested response wording is available for £29 if you want more detail.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Do I have to pay a service charge before I can ask questions? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Do I have to pay a service charge before I can ask questions? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">In many cases, yes. You can ask written questions about specific charges before the payment deadline. Having a clear, professional question to send makes that easier to do.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Is this legal advice? <span class="faq-chevron">⌄</span></div>
+        <div class="faq-q" >Is this legal advice? <span class="faq-chevron">⌄</span></div>
         <div class="faq-a">No. DoIPayThat provides plain-language charge reviews and suggested response wording. It does not provide legal advice or legal representation. For complex leasehold matters, specialist advice may be worth seeking.</div>
       </div>
     </div>
@@ -382,14 +382,7 @@
   </div>
 </div>
 
-<script>
-  function toggleFaq(el){
-    const item = el.closest('.faq-item');
-    const isOpen = item.classList.contains('faq-item--open');
-    document.querySelectorAll('.faq-item--open').forEach(i => i.classList.remove('faq-item--open'));
-    if(!isOpen) item.classList.add('faq-item--open');
-  }
-</script>
+<script></script>
 
 <script type="module" src="/housing/app.js"></script>
 
