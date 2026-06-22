@@ -650,17 +650,17 @@
       Get my free overview &rarr; usually by next working day
     </a>
 
-    <div class="hero-sub-note">
+    <div class="hero-sub-note" style="line-height:1.3;">
       PDF, JPG or PNG &middot; no commitment &middot; fuller overview available
     </div>
 
   </div>
 </section>
 
-<section class="section" id="free-check">
+<section class="section" id="free-check" style="padding-top:16px;">
   <div class="container" style="max-width:640px;">
 
-    <p style="text-align:center;font-size:.88rem;color:var(--ink-3);line-height:1.7;margin-bottom:18px;">Getting a debt or collection letter is unsettling — that's a completely normal reaction. DoIPayThat is run by Dick Groen, who built this service to give you a calm, straightforward first read before you decide anything.</p>
+    <p style="text-align:center;font-size:.88rem;color:var(--ink-3);line-height:1.5;margin-bottom:10px;">Getting a debt or collection letter is unsettling — that's a completely normal reaction. DoIPayThat is run by Dick Groen, who built this service to give you a calm, straightforward first read before you decide anything.</p>
 
     <div class="offer-card">
 
@@ -680,7 +680,7 @@
         <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="window.handleGratisFileSelect(this)" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:1;" aria-label="Choose file">
       </label>
 
-      <div class="upload-hint" style="margin:-8px 0 4px;">A phone photo is fine — just make sure the numbers and the sender's name are readable.</div>
+      <div class="upload-hint" style="margin:-8px 0 4px;">A phone photo is fine — just make sure the numbers are readable.</div>
       <div class="upload-hint" style="margin:0 0 14px;">Most people receive their free overview by the next working day.</div>
 
       <div id="gratis-contact-fields" class="contact-fields">
@@ -849,8 +849,6 @@
 
 <section class="section">
   <div class="container">
-
-    <div class="section-label">Use this if</div>
 
     <h2>
       This may help if
@@ -1047,6 +1045,16 @@
 </script>
 
 <script type="module" src="/debt/app.js"></script>
+<script>
+  document.querySelectorAll('.faq-q').forEach(function(q){
+    q.addEventListener('click', function(){
+      var item = q.closest('.faq-item');
+      var isOpen = item.classList.contains('faq-item--open');
+      document.querySelectorAll('.faq-item--open').forEach(function(x){ x.classList.remove('faq-item--open'); });
+      if(!isOpen) item.classList.add('faq-item--open');
+    });
+  });
+</script>
 
 
 
