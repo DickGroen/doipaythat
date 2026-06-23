@@ -1,524 +1,1090 @@
-import {
-  validateFile,
-  formatFileSize,
-  submitFree,
-  submitPaid,
-  initFaq,
-  initModal,
-  initStickyFooter,
-  openModal,
-  closeModal,
-  track
-} from '../app.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debt letter received? Understand it before you respond | DoIPayThat</title>
+  <meta name="description" content="Received a debt collection letter? Upload it for a free first check before you pay or respond.">
+  <link rel="canonical" href="https://doipaythat.co.uk/debt/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-window.openModal = openModal;
-window.closeModal = closeModal;
 
-const TYPE     = 'debt';
-const PRICE    = 49;
-const CURRENCY = '£';
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18193666186"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-let freeFile   = null;
-let selectedFile = null;
-let stripeLink = null;
+  gtag('config', 'AW-18193666186');
+</script>
 
-track('page_view', { type: TYPE });
 
-// ── Free triage flow ─────────────────────────────────────────────────────────
-
-window.handleGratisFileSelect = function(input) {
-  if (!input.files?.[0]) return;
-
-  freeFile = input.files[0];
-
-  track('free_upload_started', { type: TYPE });
-
-  const err    = validateFile(freeFile);
-  const status = document.getElementById('gratis-status');
-
-  if (err) {
-    if (status) {
-      status.className = 'optie-status optie-status--error';
-      status.textContent = err;
+  <style>
+    :root{
+      --ink:#0f1923;
+      --ink-2:#2d3748;
+      --ink-3:#4a5568;
+      --muted:#718096;
+      --line:#e2e8f0;
+      --surface:#f7f9fc;
+      --white:#ffffff;
+      --accent:#1a3a6b;
+      --accent-2:#2d5499;
+      --green:#166534;
+      --green-soft:#dcfce7;
+      --soft:#eef4ff;
     }
-    freeFile = null;
-    return;
-  }
 
-  if (status) {
-    status.className = 'optie-status';
-    status.textContent = '';
-  }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
 
-  const label = document.getElementById('gratis-upload-label');
-  const hint  = document.getElementById('gratis-upload-hint');
-
-  if (label) {
-    label.textContent = '✓ ' + freeFile.name;
-    label.style.color = 'var(--green)';
-  }
-  if (hint) {
-    hint.innerHTML = formatFileSize(freeFile.size) + ' &middot; <a href="#" id="gratis-change-file" style="position:relative;z-index:2;color:var(--accent);text-decoration:underline;">Choose a different file</a>';
-  }
-
-  const changeLink = document.getElementById('gratis-change-file');
-  if (changeLink) {
-    changeLink.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      resetGratisUpload();
-    });
-  }
-
-  const fields = document.getElementById('gratis-contact-fields');
-  if (fields) fields.style.display = 'flex';
-
-  checkFreeReady();
-};
-
-function resetGratisUpload() {
-  freeFile = null;
-
-  const input = document.getElementById('gratis-file-input');
-  if (input) input.value = '';
-
-  const label = document.getElementById('gratis-upload-label');
-  const hint  = document.getElementById('gratis-upload-hint');
-
-  if (label) {
-    label.textContent = 'Choose a file or drag it here';
-    label.style.color = '';
-  }
-  if (hint) {
-    hint.textContent = 'PDF, JPG or PNG · max. 8 MB';
-  }
-
-  const fields = document.getElementById('gratis-contact-fields');
-  if (fields) fields.style.display = 'none';
-
-  const status = document.getElementById('gratis-status');
-  if (status) {
-    status.className = 'optie-status';
-    status.textContent = '';
-  }
-
-  checkFreeReady();
-}
-window.resetGratisUpload = resetGratisUpload;
-
-function checkFreeReady() {
-  const name  = document.getElementById('gratis-name')?.value.trim();
-  const email = document.getElementById('gratis-email')?.value.trim();
-  const btn   = document.getElementById('gratis-btn');
-  const hint  = document.getElementById('gratis-email-hint');
-
-  if (!btn) return;
-
-  const emailOk = email.includes('@') && email.includes('.');
-  const ready   = !!(freeFile && name && emailOk);
-
-  btn.disabled = !ready;
-
-  if (hint) {
-    if (email.length > 3 && !emailOk) {
-      hint.textContent = 'Please enter a valid email address.';
-      hint.style.display = 'block';
-    } else {
-      hint.style.display = 'none';
+    body{
+      font-family:'DM Sans',sans-serif;
+      font-size:16px;
+      line-height:1.65;
+      color:var(--ink);
+      background:var(--white);
+      -webkit-font-smoothing:antialiased;
     }
-  }
-}
 
-// Note: gratis-file-input uses inline onchange="window.handleGratisFileSelect(this)"
-// in the HTML (see index.html) — no addEventListener needed here, that caused
-// a double-fire bug where every upload-start was tracked twice.
-
-['input', 'change', 'blur'].forEach(evt => {
-  document.getElementById('gratis-name')?.addEventListener(evt, checkFreeReady);
-  document.getElementById('gratis-email')?.addEventListener(evt, checkFreeReady);
-});
-
-window.startGratisUpload = async function() {
-  const name   = document.getElementById('gratis-name')?.value.trim();
-  const email  = document.getElementById('gratis-email')?.value.trim();
-  const btn    = document.getElementById('gratis-btn');
-  const status = document.getElementById('gratis-status');
-
-  const emailOk = email && email.includes('@') && email.includes('.');
-
-  if (!freeFile || !name || !emailOk) {
-    if (status) {
-      status.className = 'optie-status optie-status--error';
-      status.textContent = 'Please enter your name, a valid email address and select a file.';
+    h1,h2,h3{
+      font-family:'Lora',Georgia,serif;
+      line-height:1.2;
     }
-    return;
-  }
 
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Checking your document…';
-  }
+    a{color:var(--accent);}
 
-  try {
-    const data = await submitFree({
-      file: freeFile,
-      name,
-      email,
-      type: TYPE,
-      onStatus: (kind, msg) => {
-        if (!status) return;
-        status.className = `optie-status optie-status--${kind}`;
-        status.textContent = msg;
+    .container{
+      max-width:860px;
+      margin:0 auto;
+      padding:0 24px;
+    }
+
+    .warning-banner{
+      background:#fff7ed;
+      border-bottom:1px solid #fed7aa;
+      padding:10px 0;
+      text-align:center;
+      font-size:.84rem;
+      font-weight:600;
+      color:#92400e;
+    }
+
+    .header{
+      background:var(--white);
+      border-bottom:1px solid var(--line);
+      padding:16px 0;
+      position:sticky;
+      top:0;
+      z-index:100;
+    }
+
+    #free-check{
+      scroll-margin-top:80px;
+    }
+
+    .header__inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .logo{
+      font-family:'Lora',serif;
+      font-size:1.15rem;
+      font-weight:700;
+      color:var(--accent);
+    }
+
+    .logo-dot{
+      display:inline-block;
+      width:8px;
+      height:8px;
+      background:var(--accent-2);
+      border-radius:50%;
+      margin-right:6px;
+      vertical-align:middle;
+    }
+
+    .header-cta,
+    .hero-cta,
+    .primary-btn,
+    .offer-cta,
+    .final-cta-btn,
+    .sticky-cta{
+      background:var(--accent);
+      color:var(--white);
+      border:none;
+      border-radius:10px;
+      padding:16px 30px;
+      font-family:'DM Sans',sans-serif;
+      font-size:1rem;
+      font-weight:700;
+      text-decoration:none;
+      display:inline-block;
+      cursor:pointer;
+    }
+
+    .header-cta{
+      padding:10px 20px;
+      font-size:.88rem;
+    }
+
+    .hero{
+      padding:72px 0 52px;
+      text-align:center;
+    }
+
+    .hero h1{
+      font-size:clamp(2rem,5vw,3rem);
+      margin-bottom:22px;
+      max-width:760px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .eyebrow{display:inline-block;background:var(--soft);color:var(--accent);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:5px 14px;border-radius:100px;margin-bottom:22px;}
+      font-size:1.05rem;
+      color:var(--ink-3);
+      max-width:640px;
+      margin:0 auto 22px;
+      line-height:1.75;
+    }
+
+    .hero__secondary{
+      max-width:580px;
+      margin:0 auto 28px;
+      color:var(--muted);
+      font-size:.96rem;
+    }
+
+    .hero-sub-note{
+      font-size:.82rem;
+      color:var(--muted);
+      margin-top:12px;
+    }
+
+    .trust-triggers{
+      background:var(--green-soft);
+      border:1px solid #bbf7d0;
+      border-radius:14px;
+      padding:22px 24px;
+      margin:42px auto 0;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+      max-width:760px;
+      text-align:left;
+    }
+
+    @media(max-width:700px){
+      .trust-triggers{grid-template-columns:1fr;}
+    }
+
+    .trust-trigger{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      color:var(--green);
+      font-size:.88rem;
+    }
+
+    .trust-trigger strong{
+      display:block;
+      color:#14532d;
+      margin-bottom:4px;
+    }
+
+    .section{
+      padding:72px 0;
+    }
+
+    .section--alt{
+      background:var(--surface);
+    }
+
+    .section-label{
+      font-size:.74rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      color:var(--accent-2);
+      margin-bottom:10px;
+    }
+
+    .section h2{
+      font-size:clamp(1.55rem,3vw,2.1rem);
+      margin-bottom:24px;
+    }
+
+    .offer-card{
+      background:var(--white);
+      border:2px solid var(--accent);
+      border-radius:16px;
+      padding:36px 32px;
+      max-width:620px;
+      margin:0 auto;
+      box-shadow:0 12px 40px rgba(26,58,107,.08);
+    }
+
+    @media(max-width:600px){
+      .offer-card{padding:24px 20px;}
+    }
+
+    .offer-badge{
+      display:inline-block;
+      background:var(--accent);
+      color:var(--white);
+      font-size:.72rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      padding:5px 12px;
+      border-radius:999px;
+      margin-bottom:16px;
+    }
+
+    .offer-title{
+      font-family:'Lora',serif;
+      font-size:1.5rem;
+      margin-bottom:10px;
+    }
+
+    .offer-desc{
+      color:var(--ink-3);
+      margin-bottom:22px;
+      line-height:1.75;
+    }
+
+    .upload-zone{
+      display:block;
+      position:relative;
+      border:2px dashed var(--line);
+      border-radius:14px;
+      padding:30px;
+      text-align:center;
+      cursor:pointer;
+      background:var(--surface);
+      transition:.2s;
+    }
+
+    .upload-zone:hover{
+      border-color:var(--accent);
+      background:var(--soft);
+    }
+
+    .upload-label{
+      font-weight:700;
+      color:var(--accent);
+      position:relative;
+      z-index:2;
+      pointer-events:none;
+    }
+
+    .upload-hint{
+      font-size:.84rem;
+      color:var(--muted);
+      margin-top:6px;
+      position:relative;
+      z-index:2;
+      pointer-events:none;
+    }
+
+    .contact-fields{
+      display:none;
+      flex-direction:column;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .input{
+      width:100%;
+      padding:13px 14px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      font-family:'DM Sans',sans-serif;
+      font-size:1rem;
+    }
+
+    .offer-security{
+      text-align:center;
+      font-size:.8rem;
+      color:var(--muted);
+      margin-top:12px;
+    }
+
+    .value-strip{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      margin-bottom:36px;
+    }
+
+    .value-item{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      background:var(--white);
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:9px 16px;
+      font-size:.86rem;
+      color:var(--ink-2);
+    }
+
+    .vi-check{
+      color:var(--green);
+      font-weight:700;
+    }
+
+    .offer-list{
+      list-style:none;
+      margin:24px 0;
+      display:grid;
+      gap:10px;
+    }
+
+    .offer-list li{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      color:var(--ink-2);
+      line-height:1.6;
+    }
+
+    .offer-list li::before{
+      content:"✓";
+      color:var(--green);
+      font-weight:700;
+      flex-shrink:0;
+    }
+
+    .offer-price{
+      font-size:2rem;
+      font-family:'Lora',serif;
+      color:var(--accent);
+      font-weight:700;
+    }
+
+    .offer-price span{
+      font-size:.95rem;
+      color:var(--muted);
+      font-family:'DM Sans',sans-serif;
+      font-weight:400;
+    }
+
+    .offer-refund{
+      text-align:center;
+      font-size:.76rem;
+      color:var(--muted);
+      margin-top:8px;
+    }
+
+    .steps{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:28px;
+    }
+
+    @media(max-width:700px){
+      .steps{grid-template-columns:1fr;}
+    }
+
+    .step__num{
+      font-family:'Lora',serif;
+      font-size:2.2rem;
+      color:var(--line);
+      margin-bottom:10px;
+    }
+
+    .step__title{
+      font-weight:700;
+      margin-bottom:8px;
+    }
+
+    .step__desc{
+      color:var(--ink-3);
+      font-size:.9rem;
+      line-height:1.7;
+    }
+
+    .trust-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+    }
+
+    @media(max-width:700px){
+      .trust-grid{grid-template-columns:1fr;}
+    }
+
+    .trust-item{
+      background:var(--white);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:22px;
+    }
+
+    .trust-item__label{
+      font-size:.76rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:700;
+      color:var(--accent);
+      margin-bottom:8px;
+    }
+
+    .trust-item__text{
+      font-size:.9rem;
+      color:var(--ink-3);
+      line-height:1.7;
+    }
+
+    .fit-rows{
+      display:grid;
+      gap:12px;
+      max-width:600px;
+    }
+
+    .fit-row{
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      background:var(--green-soft);
+      border:1px solid #bbf7d0;
+      border-radius:10px;
+      padding:14px 18px;
+      color:#14532d;
+    }
+
+    .faq-list{
+      display:grid;
+      gap:6px;
+    }
+
+    .faq-item{
+      border:1px solid var(--line);
+      border-radius:10px;
+      overflow:hidden;
+      background:var(--white);
+    }
+
+    .faq-q{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:18px 20px;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    .faq-a{
+      max-height:0;
+      overflow:hidden;
+      transition:max-height .3s ease;
+      color:var(--ink-3);
+      line-height:1.75;
+      padding:0 20px;
+    }
+
+    .faq-item--open .faq-a{
+      max-height:500px;
+      padding:0 20px 18px;
+    }
+
+    .final-cta{
+      background:var(--accent);
+      color:var(--white);
+      text-align:center;
+      padding:76px 0;
+    }
+
+    .final-cta h2{
+      color:var(--white);
+      margin-bottom:14px;
+      font-size:clamp(1.7rem,4vw,2.2rem);
+    }
+
+    .final-cta p{
+      color:rgba(255,255,255,.76);
+      margin-bottom:30px;
+    }
+
+    .final-cta-btn{
+      background:var(--white);
+      color:var(--accent);
+    }
+
+    .final-cta-note{
+      color:rgba(255,255,255,.65);
+      margin-top:12px;
+      font-size:.82rem;
+    }
+
+    .footer-trust{
+      padding:34px 0 18px;
+      border-top:1px solid var(--line);
+      font-size:.86rem;
+      color:var(--ink-3);
+      line-height:1.8;
+    }
+
+    .disclaimer{
+      padding:16px 0 24px;
+      font-size:.78rem;
+      color:var(--muted);
+      line-height:1.7;
+    }
+
+    .sticky-footer{
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      background:var(--ink);
+      color:var(--white);
+      padding:14px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      transform:translateY(100%);
+      transition:transform .3s ease;
+      z-index:200;
+    }
+
+    .sticky-footer.visible{
+      transform:translateY(0);
+    }
+
+    @media(max-width:500px){
+      .sticky-footer{
+        flex-direction:column;
+        text-align:center;
       }
-    });
 
-    const triage = normalizeTriage(data.triage || {});
-    stripeLink =
-      data.stripeLink ||
-      data.teaser?.stripeLink ||
-      triage.stripeLink ||
-      stripeLink;
-
-    track('free_triage_completed', { type: TYPE });
-
-    renderTeaser(triage);
-
-    if (status) {
-      status.className = 'optie-status optie-status--success';
-      status.textContent = 'Your first check is ready.';
+      .sticky-cta{
+        width:100%;
+      }
     }
+  </style>
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "x4suo54csa");
+</script>
+</head>
 
-    if (btn) {
-      btn.textContent = 'Done ✓';
-    }
-  } catch (err) {
-    if (status) {
-      status.className = 'optie-status optie-status--error';
-      status.textContent = 'Error: ' + err.message;
-    }
+<body>
 
-    if (btn) {
-      btn.disabled = false;
-      btn.textContent = 'Start free check';
-    }
-  }
-};
+<div class="warning-banner">
+  Debt letter received? Many people prefer to understand it clearly before paying or responding.
+</div>
 
-function normalizeTriage(triage) {
-  const risk = ['low', 'medium', 'high'].includes(triage.risk)
-    ? triage.risk
-    : 'medium';
-
-  return {
-    ...triage,
-    risk,
-    teaser: triage.teaser || getFallbackTeaser(risk)
-  };
-}
-
-function getFallbackTeaser(risk) {
-  if (risk === 'high') {
-    return 'There are strong signs this claim may not be fully correct. If you don\'t act, the situation could become significantly more expensive.';
-  }
-
-  if (risk === 'medium') {
-    return 'There may be aspects in this claim worth checking. Without action, you could end up paying more than necessary.';
-  }
-
-  return 'Some details in this claim may not be fully clear. Without review, you could still risk unnecessary costs.';
-}
-
-function renderTeaser(triage) {
-  const teaser = document.getElementById('teaser');
-  if (!teaser) return;
-
-  const risk   = triage.risk || 'medium';
-  const amount = triage.amount_claimed || null;
-
-  teaser.style.display = 'block';
-
-  setTimeout(() => {
-    teaser.classList.add('teaser--visible');
-  }, 10);
-
-  track('teaser_shown', {
-    type: TYPE,
-    risk,
-    amount
-  });
-
-  teaser.innerHTML = `
-    <div class="offer-card teaser-card" style="border-color:var(--green);background:#f0fdf4;max-width:620px;margin:0 auto;">
-      <div style="font-size:1.1rem;font-weight:700;color:#14532d;margin-bottom:12px;">
-        ✓ We've received your document.
-      </div>
-      <p style="color:#166534;margin-bottom:12px;line-height:1.7;">
-        We'll review it carefully and send your first check by email by the next working day before 4pm.
-      </p>
-      <div style="background:#fff;border:1px solid #bbf7d0;border-radius:8px;padding:14px;margin-bottom:14px;">
-        <strong style="color:#14532d;">Why this matters:</strong>
-        <p style="color:#166534;margin-top:6px;margin-bottom:0;line-height:1.65;">
-          Our review helps you understand what to check before paying. Many people only realise they could have questioned the claim after they've already paid.
-        </p>
-      </div>
-      <p style="font-size:.85rem;color:#166534;">
-        → Please also check your spam folder if you don't hear from us.
-      </p>
-      <p style="font-size:.85rem;color:#166534;margin-top:8px;">Thank you for trusting us with this.</p>
+<header class="header">
+  <div class="container">
+    <div class="header__inner">
+      <div class="logo"><span class="logo-dot"></span>DoIPayThat</div>
+      <a href="#free-check" class="header-cta">Get my free overview</a>
     </div>
-  `;
+  </div>
+</header>
 
-  const modalLink = document.querySelector('.js-stripe-link, .modal__cta');
-  if (modalLink && stripeLink) {
-    modalLink.href = stripeLink;
+<section class="hero">
+  <div class="container">
+
+    <a href="#free-check" class="eyebrow" style="text-decoration:none;cursor:pointer;">UK Debt Letter Review</a>
+
+    <h1>
+      Received a debt letter? Understand what it's actually claiming before you pay.
+    </h1>
+
+    <p class="hero__sub">
+      Upload it and we'll give you a free, plain-English overview — before you decide anything.
+    </p>
+
+    <ul style="list-style:none;display:inline-flex;flex-direction:column;gap:8px;text-align:left;margin:0 auto 24px;font-size:.95rem;color:var(--ink-3);">
+      <li><span style="color:var(--green);font-weight:700;margin-right:8px;">&#10003;</span>The amount claimed isn't fully broken down</li>
+      <li><span style="color:var(--green);font-weight:700;margin-right:8px;">&#10003;</span>Added fees or interest you weren't expecting</li>
+      <li><span style="color:var(--green);font-weight:700;margin-right:8px;">&#10003;</span>You're not sure if the debt is actually valid</li>
+      <li><span style="color:var(--green);font-weight:700;margin-right:8px;">&#10003;</span>The letter feels urgent but the situation isn't clear</li>
+    </ul>
+
+    <p style="font-size:.88rem;color:var(--muted);max-width:560px;margin:0 auto 18px;line-height:1.6;">&#9888; Many people pay or ignore a debt letter before fully understanding what it's claiming. Once paid, it becomes much harder to question the amount or dispute the charges.</p>
+
+    <div class="trust-triggers">
+
+      <div class="trust-trigger">
+        <span>&#10003;</span>
+        <div>
+          <strong>Free first overview</strong>
+          Upload your letter and get a plain-English explanation of what it's claiming — before you pay anything or decide what to do.
+        </div>
+      </div>
+
+      <div class="trust-trigger">
+        <span>&#10003;</span>
+        <div>
+          <strong>Nothing ongoing</strong>
+          One document, one review, one price if you choose to go further — £49, one time. No subscription, nothing recurring.
+        </div>
+      </div>
+
+      <div class="trust-trigger">
+        <span>&#10003;</span>
+        <div>
+          <strong>Everything in writing</strong>
+          No sales calls, no phone scripts. You get a written overview you can read, save, and refer back to.
+        </div>
+      </div>
+
+    </div>
+
+    <a href="#free-check" class="hero-cta">
+      Get my free overview &rarr; usually by next working day
+    </a>
+
+    <div class="hero-sub-note" style="line-height:1.3;">
+      PDF, JPG or PNG &middot; no commitment &middot; fuller overview available
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="free-check" style="padding-top:16px;">
+  <div class="container" style="max-width:640px;">
+
+    <p style="text-align:center;font-size:.88rem;color:var(--ink-3);line-height:1.5;margin-bottom:10px;">Getting a debt or collection letter is unsettling — that's a completely normal reaction. DoIPayThat is run by Dick Groen, who built this service to give you a calm, straightforward first read before you decide anything.</p>
+
+    <div class="offer-card">
+
+      <div class="offer-badge">Free overview</div>
+
+      <div class="offer-title">
+        Get your free overview
+      </div>
+
+      <p class="offer-desc">
+        Upload your debt letter, collection notice, or payment demand. We'll send you a plain-English overview of what it claims — usually by the next working day.
+      </p>
+
+      <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input">
+        <div id="gratis-upload-label" class="upload-label">Choose a file or drag it here</div>
+        <div id="gratis-upload-hint" class="upload-hint">PDF, JPG or PNG · max. 8 MB</div>
+        <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="window.handleGratisFileSelect(this)" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:1;" aria-label="Choose file">
+      </label>
+
+      <div class="upload-hint" style="margin:-8px 0 4px;">A phone photo is fine — just make sure the numbers are readable.</div>
+      <div class="upload-hint" style="margin:0 0 14px;">Most people receive their free overview by the next working day.</div>
+
+      <div id="gratis-contact-fields" class="contact-fields">
+        <input id="gratis-name" class="input" placeholder="Your name">
+        <input id="gratis-email" class="input" placeholder="Your email" type="email">
+
+        <div style="font-size:.8rem;color:var(--muted);margin-top:-6px;margin-bottom:4px;">We'll only use this to send your free overview. No marketing emails, no mailing list.</div>
+        <div id="gratis-email-hint" class="input-hint" style="display:none;color:#991b1b;font-size:.82rem;margin-top:-6px;margin-bottom:6px;"></div>
+        <button id="gratis-btn" class="offer-cta" disabled onclick="window.startGratisUpload()">Get my free overview</button>
+      </div>
+      <div id="gratis-status" class="optie-status" style="margin-top:10px;"></div>
+
+      <div class="offer-security">
+        🔒 Your document is used only to prepare your overview. It is not shared with third parties, advertisers, or the company chasing the debt.
+      </div>
+
+    </div>
+
+    <div style="background:var(--soft);border:1px solid var(--accent);border-radius:14px;padding:20px 22px;margin-top:24px;max-width:600px;margin-left:auto;margin-right:auto;">
+      <p style="font-weight:700;color:var(--accent);font-size:.95rem;margin-bottom:12px;">Is your situation more specific?</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">
+        <a href="/bill/" style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;display:block;"><span style="font-size:.92rem;color:var(--ink);font-weight:600;">Unpaid bill, not a debt letter? &rarr;</span></a>
+        <a href="/subscription/" style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;display:block;"><span style="font-size:.92rem;color:var(--ink);font-weight:600;">Unpaid subscription? &rarr;</span></a>
+        <a href="/parking/" style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;display:block;"><span style="font-size:.92rem;color:var(--ink);font-weight:600;">Parking notice instead? &rarr;</span></a>
+      </div>
+    </div>
+
+  </div>
+
+      <div id="teaser" class="teaser" style="display:none;margin-top:24px;"></div>
+    </section>
+
+<section class="section section--alt">
+  <div class="container">
+
+    <div class="value-strip">
+      <span class="value-item"><span class="vi-check">✓</span> Proof and documents</span>
+      <span class="value-item"><span class="vi-check">✓</span> Added charges</span>
+      <span class="value-item"><span class="vi-check">✓</span> Creditor clarity</span>
+      <span class="value-item"><span class="vi-check">✓</span> Response draft</span>
+      <span class="value-item"><span class="vi-check">✓</span> Full review optional</span>
+    </div>
+
+    <div class="offer-card">
+
+      <div class="offer-badge">After first check</div>
+
+      <div class="offer-title">
+        Fuller overview + response draft
+      </div>
+
+      <p class="offer-desc">
+        We go through the letter in plain language — the amount claimed, any added fees, and who is contacting you. We explain what may still need clarifying and prepare a response draft. You decide what to do next.
+      </p>
+
+      <ul class="offer-list">
+        <li>Amount claimed and added charges explained</li>
+        <li>Documents, proof and creditor details clarified</li>
+        <li>Points worth understanding before payment identified</li>
+        <li>Clear next steps in plain English</li>
+        <li>Response draft you can adapt</li>
+        <li>Result by email — before 4pm the next working day</li>
+      </ul>
+
+      <div class="offer-price">
+        £49 <span>one-off · no subscription</span>
+      </div>
+
+      <a href="#free-check" class="offer-cta">
+        Start with the free overview
+      </a>
+
+      <div class="offer-security">
+        🔒 Secure payment via Stripe — card details are never stored
+      </div>
+
+      <div class="offer-refund">
+        If the review does not meet expectations, get in touch. We will take another look.
+      </div>
+
+      <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:14px;text-align:left;">The free overview is enough for some people. If it already answered your question, you don't need to go further. The fuller overview is for anyone who still has something specific they want checked or put in writing.</p>
+
+      <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:10px;text-align:left;">We go through every letter the same careful way and put the result in writing, instead of a phone call you might not remember the details of afterward. That also keeps the cost low enough to be worth it for a single letter.</p>
+
+    </div>
+
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div class="section-label">How it works</div>
+
+    <h2>
+      How it works
+    </h2>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step__num">01</div>
+        <div class="step__title">Upload your letter</div>
+        <div class="step__desc">
+          Upload your debt letter, collection notice or payment demand. PDF, JPG or PNG.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step__num">02</div>
+        <div class="step__title">Receive a free first overview</div>
+        <div class="step__desc">
+          You receive a plain-language overview of what the letter contains — who is writing, what is being claimed, and whether there are points worth clarifying.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step__num">03</div>
+        <div class="step__title">Optional: fuller overview + response draft</div>
+        <div class="step__desc">
+          If you want more detail, a fuller overview with a response draft is available for £49.
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+
+    <div class="section-label">Things people often want clarified</div>
+
+    <h2>
+      Things people often want to understand first
+    </h2>
+
+    <div class="trust-grid">
+
+      <div class="trust-item">
+        <div class="trust-item__label">Proof and documentation</div>
+        <div class="trust-item__text">
+          Does the letter explain what the original debt is based on and whether the claim has been properly passed on?
+        </div>
+      </div>
+
+      <div class="trust-item">
+        <div class="trust-item__label">Added fees and charges</div>
+        <div class="trust-item__text">
+          Added fees and interest are not always clearly explained. It is worth understanding what they cover before deciding what to do.
+        </div>
+      </div>
+
+      <div class="trust-item">
+        <div class="trust-item__label">Who is contacting you?</div>
+        <div class="trust-item__text">
+          Letters may come from the original creditor, a debt purchaser or a collection agency. Understanding who is writing can be relevant before you respond.
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <h2>
+      This may help if
+    </h2>
+
+    <div class="fit-rows">
+
+      <div class="fit-row">
+        <span>✓</span>
+        <span>You received a debt letter, collection notice or payment demand and are not sure what to do</span>
+      </div>
+
+      <div class="fit-row">
+        <span>✓</span>
+        <span>The letter includes added fees, interest or collection charges that are not clearly explained</span>
+      </div>
+
+      <div class="fit-row">
+        <span>✓</span>
+        <span>You are not sure whether the claim is from the original creditor or a collection agency</span>
+      </div>
+
+      <div class="fit-row">
+        <span>✓</span>
+        <span>You want to understand the situation before paying, responding or ignoring the letter</span>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-label">Frequently asked questions</div>
+
+    <h2>
+      Things people usually ask
+    </h2>
+
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <div class="faq-q" >
+          Can I speak to someone by phone?
+          <span>⌄</span>
+        </div>
+        <div class="faq-a">
+          We don't offer phone consultations. Everything is delivered in writing by email, which lets us review every letter carefully and keep the service affordable. You'll get something you can read, save, and refer back to.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" >
+          What happens to my document after I upload it?
+          <span>⌄</span>
+        </div>
+        <div class="faq-a">
+          It's used only to prepare your overview. It is not shared with third parties, advertisers, or the company chasing the debt.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" >
+          Do I have to pay immediately when I receive a collection letter?
+          <span>⌄</span>
+        </div>
+        <div class="faq-a">
+          Not necessarily. Collection letters typically include a payment deadline, but in most cases you are entitled to request further information or clarification before paying. Understanding what you are actually being asked to pay — and by whom — is a reasonable step before responding.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" >
+          What are collection fees and do I have to pay them?
+          <span>⌄</span>
+        </div>
+        <div class="faq-a">
+          Collection letters often include fees added by a collection agency on top of the original amount owed. Whether these are valid depends on the original contract and how the debt was passed on. This is one of the things an overview can help clarify.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" >
+          What if the letter is from a company I don't recognise?
+          <span>⌄</span>
+        </div>
+        <div class="faq-a">
+          Debt is commonly sold on to third-party collection companies. If you do not recognise the name of the company contacting you, it is reasonable to ask for confirmation that the debt has been properly assigned before making any payment.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" >
+          Is this legal advice?
+          <span>⌄</span>
+        </div>
+        <div class="faq-a">
+          No. DoIPayThat provides plain-language document overviews and response drafts. It is not a legal service and does not provide legal representation. For complex disputes, you may wish to consult a legal professional.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" >
+          What happens after I upload?
+          <span>⌄</span>
+        </div>
+        <div class="faq-a">
+          You receive a plain-language overview by email — typically by the next working day before 4pm. This gives you a clearer picture of the letter. If you would like more detail, a fuller overview with a response draft is available for £49.
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="container">
+
+    <h2>
+      Understand it before you pay or respond.
+    </h2>
+
+    <p>
+      Debt collection letter received? A free first overview gives you a plain-language picture of the situation before you decide what to do.
+    </p>
+
+    <a href="#free-check" class="final-cta-btn">
+      Get my free overview
+    </a>
+
+    <div class="final-cta-note">
+      PDF, JPG or PNG · no commitment · fuller overview available
+    </div>
+
+  </div>
+</section>
+
+<div class="container">
+
+  <div class="footer-trust">
+    <strong>DoIPayThat</strong> helps people understand what they are being asked to pay before they decide what to do. Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a>
+  </div>
+
+  <div class="disclaimer">
+    DoIPayThat provides plain-language document overviews and response drafts. Not legal advice. Not legal representation. © 2026 DoIPayThat
+  </div>
+
+</div>
+
+<footer style="border-top:1px solid var(--line);padding:20px 0;text-align:center;background:var(--white);">
+  <div class="container">
+    <p style="font-size:.78rem;color:var(--muted);margin:0;">
+      <a href="/privacy.html" style="color:var(--muted);margin:0 10px;">Privacy Policy</a>
+      <a href="/terms.html" style="color:var(--muted);margin:0 10px;">Terms of Service</a>
+      <a href="/contact.html" style="color:var(--muted);margin:0 10px;">Contact</a>
+    </p>
+  </div>
+</footer>
+
+<div class="sticky-footer" id="sticky-footer">
+  <div>
+    <div style="font-size:.86rem;font-weight:400;color:rgba(255,255,255,.9);">
+      Got a debt letter?
+    </div>
+    <div style="font-size:.76rem;color:rgba(255,255,255,.55);margin-top:2px;">
+      Free overview · understand it before you pay
+    </div>
+  </div>
+
+  <a href="#free-check" class="sticky-cta">
+    Get my free overview
+  </a>
+</div>
+
+<script>
+  // Hide sticky footer when upload zone is visible
+  const uploadZone = document.getElementById('gratis-upload-zone');
+  const stickyFooter = document.getElementById('sticky-footer');
+
+  if (uploadZone && stickyFooter) {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          stickyFooter.classList.remove('visible');
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(uploadZone);
   }
+</script>
 
-  teaser.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-function ctaText(risk) {
-  if (risk === 'high') return `Check now and avoid unnecessary costs — ${CURRENCY}${PRICE} →`;
-  if (risk === 'low')  return `Get clarity with a full analysis — ${CURRENCY}${PRICE} →`;
-  return `Get full analysis + response draft — ${CURRENCY}${PRICE} →`;
-}
-
-window.goToStripe = async function() {
-  track('stripe_clicked', {
-    type:  TYPE,
-    price: PRICE
-  });
-
-  const name  = document.getElementById('gratis-name')?.value.trim()  || '';
-  const email = document.getElementById('gratis-email')?.value.trim() || '';
-
-  if (!name || !email) {
-    openModal('modal');
-    return;
-  }
-
-  const btn = document.querySelector('.offer-cta[onclick="goToStripe()"]');
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Redirecting to checkout…';
-  }
-
-  try {
-    const res = await fetch('/api/create-checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type:          TYPE,
-        name,
-        email,
-        freeSessionId: stripeLink || '',
-      }),
+<script type="module" src="/debt/app.js"></script>
+<script>
+  function initFaq(){
+    document.querySelectorAll('.faq-item').forEach(function(item){
+      var q = item.querySelector('.faq-q');
+      if(q){ q.setAttribute('tabindex','0'); }
+      function toggle(e){
+        e.stopPropagation();
+        var isOpen = item.classList.contains('faq-item--open');
+        document.querySelectorAll('.faq-item--open').forEach(function(x){ x.classList.remove('faq-item--open'); });
+        if(!isOpen) item.classList.add('faq-item--open');
+      }
+      item.addEventListener('touchend', function(e){ e.preventDefault(); toggle(e); }, { passive: false });
+      item.addEventListener('click', toggle);
     });
-
-    const data = await res.json();
-
-    if (data.ok && data.url) {
-      window.location.href = data.url;
-    } else {
-      throw new Error(data.error || 'Checkout failed');
-    }
-  } catch (err) {
-    if (btn) {
-      btn.disabled = false;
-      btn.textContent = ctaText(TYPE);
-    }
-    console.error('Checkout error:', err.message);
-    // Fallback to static link if available
-    if (stripeLink) window.location.href = stripeLink;
   }
-};
-
-// ── Paid upload fallback flow for thankyou.html ──────────────────────────────
-
-if (document.getElementById('submit-btn')) {
-  const fileInput = document.getElementById('real-file-input');
-
-  fileInput?.addEventListener('change', () => {
-    if (fileInput.files?.[0]) updateSelectedFile(fileInput.files[0]);
-  });
-
-  const uploadPanel = document.getElementById('upload-panel');
-
-  uploadPanel?.addEventListener('dragover', e => {
-    e.preventDefault();
-    uploadPanel.classList.add('drag-over');
-  });
-
-  uploadPanel?.addEventListener('dragleave', () => {
-    uploadPanel.classList.remove('drag-over');
-  });
-
-  uploadPanel?.addEventListener('drop', e => {
-    e.preventDefault();
-    uploadPanel.classList.remove('drag-over');
-
-    if (e.dataTransfer.files?.[0]) {
-      fileInput.files = e.dataTransfer.files;
-      updateSelectedFile(e.dataTransfer.files[0]);
-    }
-  });
-
-  document.getElementById('remove-file')?.addEventListener('click', e => {
-    e.preventDefault();
-    clearFile();
-  });
-
-  document.getElementById('submit-btn')?.addEventListener('click', doSubmit);
-
-  validateSession();
-}
-
-function validateSession() {
-  const params    = new URLSearchParams(window.location.search);
-  const sessionId = params.get('session_id');
-  const autoCard  = document.getElementById('auto-card');
-
-  // Hybrid B-flow: thankyou.html manages auto/fallback state.
-  // app.js must not show thankyou-app itself to avoid race condition.
-  if (autoCard) return;
-
-  if (sessionId?.startsWith('cs_')) {
-    const app = document.getElementById('thankyou-app');
-    if (app) app.style.display = 'block';
-
-    const emailEl = document.getElementById('customer-email');
-    if (emailEl && params.get('email')) {
-      emailEl.value = params.get('email');
-    }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initFaq);
   } else {
-    const locked = document.getElementById('locked-screen');
-    if (locked) locked.style.display = 'block';
+    initFaq();
   }
-}
+</script>
 
-function updateSelectedFile(file) {
-  const err = validateFile(file);
 
-  if (err) {
-    showStatus(err, 'error');
-    return;
-  }
 
-  selectedFile = file;
-
-  document.getElementById('selected-file')?.classList.add('show');
-
-  const name = document.getElementById('selected-file-name');
-  if (name) name.textContent = file.name;
-
-  const meta = document.getElementById('selected-file-meta');
-  if (meta) meta.textContent = formatFileSize(file.size) + ' · ready';
-
-  const btn = document.getElementById('submit-btn');
-  if (btn) {
-    btn.disabled = false;
-    btn.textContent = 'Upload and start analysis';
-  }
-}
-
-function clearFile() {
-  selectedFile = null;
-
-  const input = document.getElementById('real-file-input');
-  if (input) input.value = '';
-
-  document.getElementById('selected-file')?.classList.remove('show');
-
-  const btn = document.getElementById('submit-btn');
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Choose a file first';
-  }
-}
-
-function showStatus(msg, type) {
-  const box = document.getElementById('status-box');
-  if (!box) return;
-
-  box.classList.remove('hidden');
-  box.className = 'status-box ' + type;
-  box.innerHTML = esc(msg);
-}
-
-async function doSubmit() {
-  const name   = document.getElementById('customer-name')?.value.trim();
-  const email  = document.getElementById('customer-email')?.value.trim();
-  const params = new URLSearchParams(window.location.search);
-  const file   = document.getElementById('real-file-input')?.files?.[0] || selectedFile;
-
-  const emailOk =
-    email &&
-    email.includes('@') &&
-    email.includes('.') &&
-    email.length > 5;
-
-  if (!name || !emailOk || !file) {
-    showStatus('Please fill in all fields correctly and select a file.', 'error');
-    return;
-  }
-
-  const btn = document.getElementById('submit-btn');
-
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Uploading…';
-  }
-
-  try {
-    await submitPaid({
-      file,
-      name,
-      email,
-      type: TYPE,
-      sessionId: params.get('session_id'),
-      onStatus:  showStatus
-    });
-
-    const fallback = document.getElementById('thankyou-app');
-    if (fallback) fallback.classList.add('hidden');
-
-    const success = document.getElementById('success-screen');
-    if (success) {
-      success.classList.remove('hidden');
-      return;
-    }
-
-    const card = document.querySelector('.thankyou-card');
-    if (card) {
-      card.innerHTML = `
-        <div class="success-screen">
-          <div class="success-screen__icon">✓</div>
-          <h2>Upload successful</h2>
-          <p>We will analyse your letter and send you the full review and response draft by email to <strong>${esc(email)}</strong>.</p>
-          <p style="font-size:.82rem;color:var(--muted);">Please also check your spam folder.</p>
-        </div>`;
-    }
-  } catch (err) {
-    showStatus('Upload failed: ' + err.message, 'error');
-
-    if (btn) {
-      btn.disabled = false;
-      btn.textContent = 'Upload and start analysis';
-    }
-  }
-}
-
-// ── Helpers ─────────────────────────────────────────────────────────────────
-
-function esc(str) {
-  return String(str || '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
-}
-
-// ── Init ────────────────────────────────────────────────────────────────────
-
-// initFaq() — handled inline in HTML
-initModal();
-initStickyFooter();
+<script>
+  // Google Ads upload conversion
+  document.addEventListener('DOMContentLoaded', function(){
+    var el = document.getElementById('gratis-status');
+    if(!el) return;
+    var fired = false;
+    new MutationObserver(function(){
+      if(fired) return;
+      if(el.classList.contains('optie-status--success')){
+        fired = true;
+        if(typeof gtag !== 'undefined'){
+          gtag('event', 'conversion', {'send_to': 'AW-18193666186/hTTyCMbF67gcEIqhteND'});
+        }
+      }
+    }).observe(el, {attributes: true, attributeFilter: ['class']});
+  });
+</script>
+</body>
+</html>
