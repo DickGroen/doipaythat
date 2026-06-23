@@ -118,6 +118,25 @@ function parkingGrounds(triage) {
   return grounds;
 }
 
+// Flag-based concrete insight for Tier2 stage-1 emails (debt/bill/subscription/quote).
+// Returns one specific observation from the triage flags, or null.
+// Formulated as observation, not legal conclusion.
+function getFlagInsight(triage = {}) {
+  if (triage.possible_no_proof)
+    return "The letter does not appear to include clear evidence of the original debt.";
+  if (triage.possible_no_assignment_proof)
+    return "Whether the debt has been lawfully transferred to this company is not clear from the letter.";
+  if (triage.possible_excessive_fees)
+    return "The additional fees included in the total cannot be fully verified from the letter alone.";
+  if (triage.possible_statute_barred)
+    return "Whether this debt is still legally enforceable cannot be confirmed from the letter alone.";
+  if (triage.possible_wrong_recipient)
+    return "Whether this letter has been sent to the correct person is not clear from the document.";
+  if (triage.possible_not_registered)
+    return "Whether this company is authorised to collect this type of debt is not stated in the letter.";
+  return null;
+}
+
 // ── Confirmation email ────────────────────────────────────────────────────────
 
 export async function sendConfirmationEmail(env, { name, email, type }) {
@@ -320,11 +339,13 @@ export async function sendFreeEmail(env, { name, email, type, triage, stripeLink
         <p style="font-size:0.9rem;color:#374151;">Most people prefer to understand what they're being asked to pay — before they pay it.</p>`;
 
     } else if (emailType === "soft") {
+      const flagInsight = !isParking ? getFlagInsight(triage) : null;
       bodyHtml = `
         <p>Hi ${escapeHtml(name)},</p>
         <p>We've taken a first look at your ${escapeHtml(labels.title)}${senderPart}${amountStr ? ` for ${amountStr}` : ""}.</p>
         <p>There may be aspects worth checking before you proceed with payment.</p>
         <p>${escapeHtml(triage?.teaser || "There may be aspects of this claim worth checking before you pay.")}</p>
+        ${flagInsight ? `<p style="color:#374151;font-size:.95rem;">${escapeHtml(flagInsight)}</p>` : ""}
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
         <p>If you'd like a clearer picture, you can get a full analysis and a ready-to-send ${escapeHtml(labels.letter)}:</p>
         ${stripeLink ? `<p style="margin:20px 0;"><a href="${escapeHtml(stripeLink)}" style="display:inline-block;background:#1d3a6e;color:#fff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">${
