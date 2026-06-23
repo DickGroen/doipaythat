@@ -247,6 +247,6 @@ function esc(str) {
   return String(str || '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 }
 
-initFaq();
+// initFaq() — handled inline in HTML
 initModal();
 initStickyFooter();
