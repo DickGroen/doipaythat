@@ -338,11 +338,3 @@ export function initStickyFooter() {
     },
     { passive: true }
   );
-}      keepalive: true,
-    }).catch(() => {});
-  } catch (_) {}
-}
-
-export const trackEvent = track;
-
-// ── File helpers ──────────────────────────────────────────────────────────────
