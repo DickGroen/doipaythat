@@ -484,6 +484,6 @@ function esc(str) {
 
 // ── Init ────────────────────────────────────────────────────────────────────
 
-initFaq();
+// initFaq() — handled inline in HTML
 initModal();
 initStickyFooter();
