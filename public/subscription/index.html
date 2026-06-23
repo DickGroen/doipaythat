@@ -1125,6 +1125,29 @@
   </div>
 </footer>
 
+<script>
+  (function(){
+    function initFaq(){
+      document.querySelectorAll('.faq-item').forEach(function(item){
+        var q = item.querySelector('.faq-q');
+        if(q){ q.setAttribute('tabindex','0'); }
+        function toggle(e){
+          e.stopPropagation();
+          var isOpen = item.classList.contains('faq-item--open');
+          document.querySelectorAll('.faq-item--open').forEach(function(x){ x.classList.remove('faq-item--open'); });
+          if(!isOpen) item.classList.add('faq-item--open');
+        }
+        item.addEventListener('touchend', function(e){ e.preventDefault(); toggle(e); }, { passive: false });
+        item.addEventListener('click', toggle);
+      });
+    }
+    if(document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', initFaq);
+    } else {
+      initFaq();
+    }
+  })();
+</script>
 <script type="module" src="/subscription/app.js"></script>
 
 
