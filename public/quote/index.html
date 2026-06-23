@@ -1,1172 +1,487 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+import {
+  validateFile,
+  formatFileSize,
+  submitFree,
+  submitPaid,
+  initFaq,
+  initModal,
+  initStickyFooter,
+  openModal,
+  closeModal,
+  track
+} from '../app.js';
 
-  <title>Contract or cancellation question? Get clarity first | DoIPayThat</title>
+window.openModal = openModal;
+window.closeModal = closeModal;
 
-  <meta
-    name="description"
-    content="Received a contract or facing a cancellation question? Upload it for a free first review before you sign, commit or respond."
-  />
+const TYPE     = 'quote';
+const PRICE    = 29;
+const CURRENCY = '£';
 
-  <link rel="canonical" href="https://doipaythat.co.uk/contract/" />
+let freeFile   = null;
+let selectedFile = null;
+let stripeLink = null;
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+track('page_view', { type: TYPE });
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
+// ── Free triage flow ─────────────────────────────────────────────────────────
 
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18193666186"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'AW-18193666186');
-</script>
-  <style>
-    :root{
-      --ink:#0f1923;
-      --ink-2:#2d3748;
-      --ink-3:#4a5568;
-      --muted:#718096;
-      --line:#e2e8f0;
-      --surface:#f7f9fc;
-      --white:#ffffff;
-      --accent:#1a3a6b;
-      --accent-2:#2d5499;
-      --green:#166534;
-      --green-soft:#dcfce7;
-      --warn:#eab308;
-      --warn-soft:#fef9c3;
-    }
-
-    *,
-    *::before,
-    *::after{
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
-    }
-
-    html{
-      scroll-behavior:smooth;
-    }
-
-    body{
-      font-family:'DM Sans',sans-serif;
-      font-size:16px;
-      line-height:1.65;
-      color:var(--ink);
-      background:var(--white);
-      -webkit-font-smoothing:antialiased;
-    }
-
-    h1,h2,h3{
-      font-family:'Lora',Georgia,serif;
-      line-height:1.2;
-    }
-
-    a{
-      color:var(--accent);
-    }
-
-    .container{
-      max-width:860px;
-      margin:0 auto;
-      padding:0 24px;
-    }
-
-    .warning-banner{
-      background:#fff7ed;
-      border-bottom:2px solid #fdba74;
-      padding:10px 0;
-      text-align:center;
-      font-size:.84rem;
-      font-weight:600;
-      color:#92400e;
-    }
-
-    .header{
-      background:var(--white);
-      border-bottom:1px solid var(--line);
-      padding:16px 0;
-      position:sticky;
-      top:0;
-      z-index:100;
-    }
-
-    .header__inner{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-    }
-
-    .logo{
-      font-family:'Lora',serif;
-      font-size:1.15rem;
-      font-weight:700;
-      color:var(--accent);
-    }
-
-    .logo-dot{
-      display:inline-block;
-      width:8px;
-      height:8px;
-      background:var(--accent-2);
-      border-radius:50%;
-      margin-right:6px;
-      vertical-align:middle;
-    }
-
-    .header-cta{
-      background:var(--accent);
-      color:var(--white);
-      border:none;
-      border-radius:8px;
-      padding:10px 20px;
-      font-family:'DM Sans',sans-serif;
-      font-size:.88rem;
-      font-weight:700;
-      cursor:pointer;
-      text-decoration:none;
-    }
-
-    .hero{
-      padding:64px 0 48px;
-      text-align:center;
-    }
-
-    .hero h1{
-      font-size:clamp(1.9rem,5vw,2.9rem);
-      margin-bottom:20px;
-      max-width:760px;
-      margin-left:auto;
-      margin-right:auto;
-    }
-
-    .hero__sub{
-      font-size:1.05rem;
-      color:var(--ink-3);
-      max-width:620px;
-      margin:0 auto 30px;
-      line-height:1.7;
-    }
-
-    .hero-cta,
-    .primary-btn{
-      display:inline-block;
-      background:var(--accent);
-      color:var(--white);
-      text-decoration:none;
-      padding:17px 34px;
-      border-radius:10px;
-      font-size:1.05rem;
-      font-weight:700;
-      border:none;
-      cursor:pointer;
-      font-family:'DM Sans',sans-serif;
-    }
-
-    .hero-cta:hover,
-    .primary-btn:hover,
-    .offer-cta:hover{
-      background:var(--accent-2);
-    }
-
-    .hero-sub-note{
-      font-size:.82rem;
-      color:var(--muted);
-      margin-top:10px;
-    }
-
-    .trust-triggers{
-      background:var(--green-soft);
-      border:1px solid #bbf7d0;
-      border-radius:12px;
-      padding:20px 24px;
-      margin:40px auto 0;
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:16px;
-      max-width:700px;
-    }
-
-    @media(max-width:600px){
-      .trust-triggers{
-        grid-template-columns:1fr;
-      }
-    }
-
-    .trust-trigger{
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-      font-size:.87rem;
-      color:var(--green);
-      line-height:1.55;
-    }
-
-    .trust-trigger strong{
-      display:block;
-      font-weight:700;
-      color:#14532d;
-      margin-bottom:2px;
-    }
-
-    .section{
-      padding:72px 0;
-    }
-
-    .section--alt{
-      background:var(--surface);
-    }
-
-    .section-label{
-      font-size:.72rem;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.1em;
-      color:var(--accent-2);
-      margin-bottom:10px;
-    }
-
-    .section h2{
-      font-size:clamp(1.5rem,3vw,2rem);
-      margin-bottom:32px;
-    }
-
-    .value-strip{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin:0 0 36px;
-      justify-content:center;
-    }
-
-    .value-item{
-      display:flex;
-      align-items:center;
-      gap:7px;
-      background:var(--surface);
-      border:1px solid var(--line);
-      border-radius:100px;
-      padding:8px 16px;
-      font-size:.86rem;
-      color:var(--ink-2);
-      font-weight:500;
-    }
-
-    .vi-check{
-      color:var(--green);
-      font-weight:700;
-    }
-
-    .offer-card{
-      background:var(--white);
-      border:2px solid var(--accent);
-      border-radius:16px;
-      padding:36px 32px;
-      max-width:580px;
-      margin:0 auto;
-      box-shadow:0 12px 40px rgba(26,58,107,.1);
-    }
-
-    @media(max-width:600px){
-      .offer-card{
-        padding:24px 20px;
-      }
-    }
-
-    .offer-badge{
-      display:inline-block;
-      background:var(--accent);
-      color:var(--white);
-      font-size:.72rem;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      padding:4px 12px;
-      border-radius:100px;
-      margin-bottom:16px;
-    }
-
-    .offer-title{
-      font-family:'Lora',serif;
-      font-size:1.45rem;
-      margin-bottom:8px;
-    }
-
-    .offer-desc{
-      color:var(--ink-3);
-      font-size:.93rem;
-      margin-bottom:20px;
-      line-height:1.65;
-    }
-
-    .offer-list{
-      list-style:none;
-      margin-bottom:24px;
-      display:grid;
-      gap:8px;
-    }
-
-    .offer-list li{
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-      font-size:.93rem;
-      color:var(--ink-2);
-      line-height:1.55;
-    }
-
-    .offer-list li::before{
-      content:"✓";
-      color:var(--green);
-      font-weight:700;
-      flex-shrink:0;
-      margin-top:1px;
-    }
-
-    hr.offer-divider{
-      border:none;
-      border-top:1px solid var(--line);
-      margin:20px 0;
-    }
-
-    .offer-price{
-      font-size:2rem;
-      font-weight:700;
-      color:var(--accent);
-      font-family:'Lora',serif;
-    }
-
-    .offer-price span{
-      font-size:.95rem;
-      color:var(--muted);
-      font-weight:400;
-      font-family:'DM Sans',sans-serif;
-    }
-
-    .offer-cta{
-      display:block;
-      background:var(--accent);
-      color:var(--white);
-      text-decoration:none;
-      text-align:center;
-      padding:17px;
-      border-radius:10px;
-      font-size:1.05rem;
-      font-weight:700;
-      margin-top:20px;
-      border:none;
-      width:100%;
-      cursor:pointer;
-      font-family:'DM Sans',sans-serif;
-    }
-
-    .offer-security{
-      text-align:center;
-      font-size:.78rem;
-      color:var(--muted);
-      margin-top:10px;
-    }
-
-    .offer-refund{
-      text-align:center;
-      font-size:.76rem;
-      color:var(--muted);
-      margin-top:6px;
-    }
-
-    .upload-zone{
-      display:block;
-      position:relative;
-      border:2px dashed var(--line);
-      border-radius:14px;
-      padding:28px;
-      text-align:center;
-      cursor:pointer;
-      background:var(--surface);
-      transition:.2s;
-    }
-
-    .upload-zone:hover{
-      border-color:var(--accent);
-      background:#eef4ff;
-    }
-
-    .upload-label{
-      font-weight:700;
-      color:var(--accent);
-      position:relative;
-      z-index:2;
-      pointer-events:none;
-    }
-
-    .upload-hint{
-      font-size:.84rem;
-      color:var(--muted);
-      margin-top:6px;
-      position:relative;
-      z-index:2;
-      pointer-events:none;
-    }
-
-    .contact-fields{
-      display:none;
-      flex-direction:column;
-      gap:10px;
-      margin-top:18px;
-    }
-
-    .input{
-      width:100%;
-      padding:13px 14px;
-      border:1px solid var(--line);
-      border-radius:10px;
-      font-family:'DM Sans',sans-serif;
-      font-size:1rem;
-    }
-
-    .input:focus{
-      outline:none;
-      border-color:var(--accent);
-    }
-
-    .input-hint{
-      display:none;
-      font-size:.78rem;
-      color:#b91c1c;
-      margin-top:-6px;
-      margin-bottom:4px;
-    }
-
-    .optie-status{
-      font-size:.9rem;
-      margin-top:12px;
-    }
-
-    .teaser{
-      display:none;
-      margin-top:30px;
-      opacity:0;
-      transform:translateY(10px);
-      transition:.25s ease;
-    }
-
-    .teaser--visible{
-      opacity:1;
-      transform:translateY(0);
-    }
-
-    .teaser-card{
-      border-color:var(--warn);
-      background:#fffdf2;
-    }
-
-    .steps{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:28px;
-    }
-
-    @media(max-width:640px){
-      .steps{
-        grid-template-columns:1fr;
-      }
-    }
-
-    .step__num{
-      font-family:'Lora',serif;
-      font-size:2.2rem;
-      font-weight:700;
-      color:var(--line);
-      margin-bottom:10px;
-      line-height:1;
-    }
-
-    .step__title{
-      font-weight:700;
-      margin-bottom:6px;
-      font-size:.98rem;
-    }
-
-    .step__desc{
-      font-size:.87rem;
-      color:var(--ink-3);
-      line-height:1.65;
-    }
-
-    .trust-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:16px;
-    }
-
-    @media(max-width:680px){
-      .trust-grid{
-        grid-template-columns:1fr;
-      }
-    }
-
-    .trust-item{
-      background:var(--white);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:20px;
-    }
+window.handleGratisFileSelect = function(input) {
+  if (!input.files?.[0]) return;
 
-    .trust-item__label{
-      font-size:.72rem;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.07em;
-      color:var(--accent);
-      margin-bottom:8px;
-    }
-
-    .trust-item__text{
-      font-size:.87rem;
-      color:var(--ink-3);
-      line-height:1.65;
-    }
-
-    .fit-rows{
-      display:grid;
-      gap:10px;
-      max-width:560px;
-    }
-
-    .fit-row{
-      display:flex;
-      align-items:flex-start;
-      gap:12px;
-      padding:14px 18px;
-      background:var(--green-soft);
-      border:1px solid #bbf7d0;
-      border-radius:10px;
-      font-size:.93rem;
-      color:#14532d;
-    }
-
-    .fit-row span:first-child{
-      font-weight:700;
-      flex-shrink:0;
-    }
-
-    .faq{
-      display:grid;
-      gap:16px;
-      max-width:760px;
-    }
-
-    .faq-item{
-      background:var(--white);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:20px;
-    }
-
-    .faq-item h3{
-      font-size:1rem;
-      margin-bottom:8px;
-    }
+  freeFile = input.files[0];
 
-    .faq-item p{
-      font-size:.92rem;
-      color:var(--ink-3);
-      line-height:1.7;
-    }
-
-    .final-cta{
-      background:var(--accent);
-      color:var(--white);
-      padding:72px 0;
-      text-align:center;
-    }
-
-    .final-cta h2{
-      color:var(--white);
-      font-size:clamp(1.6rem,3.5vw,2.1rem);
-      margin-bottom:12px;
-    }
-
-    .final-cta p{
-      color:rgba(255,255,255,.75);
-      margin-bottom:32px;
-    }
+  track('free_upload_started', { type: TYPE });
 
-    .final-cta-btn{
-      display:inline-block;
-      background:var(--white);
-      color:var(--accent);
-      text-decoration:none;
-      padding:17px 40px;
-      border-radius:10px;
-      font-size:1.05rem;
-      font-weight:700;
-    }
+  const err    = validateFile(freeFile);
+  const status = document.getElementById('gratis-status');
 
-    .final-cta-note{
-      color:rgba(255,255,255,.6);
-      font-size:.8rem;
-      margin-top:12px;
+  if (err) {
+    if (status) {
+      status.className = 'optie-status optie-status--error';
+      status.textContent = err;
     }
+    return;
+  }
 
-    .footer-trust{
-      padding:32px 0 16px;
-      font-size:.85rem;
-      color:var(--ink-3);
-      line-height:1.75;
-      border-top:1px solid var(--line);
+  const zone = document.getElementById('gratis-upload-zone');
+  if (zone) {
+    const label = zone.querySelector('.upload-label');
+    const hint  = zone.querySelector('.upload-hint');
+    if (label) {
+      label.style.color = 'var(--green)';
+      label.innerHTML = '✓ ' + esc(freeFile.name);
     }
-
-    .disclaimer{
-      padding:16px 0 20px;
-      font-size:.78rem;
-      color:var(--muted);
-      line-height:1.7;
+    if (hint) {
+      hint.textContent = formatFileSize(freeFile.size);
     }
-  </style>
-</head>
-
-<body>
-
-<div class="warning-banner">
-  Contract or cancellation question? It helps to understand the terms before you commit or respond.
-</div>
-
-<header class="header">
-  <div class="container">
-    <div class="header__inner">
-      <div class="logo">
-        <span class="logo-dot"></span>DoIPayThat
-      </div>
-
-      <a href="#free-check" class="header-cta">
-        Get my free overview
-      </a>
-    </div>
-  </div>
-</header>
-
-<section class="hero">
-  <div class="container">
-
-    <h1>
-      Contract or cancellation question? Understand it before you commit.
-    </h1>
-
-    <p class="hero__sub">
-      Upload your contract, agreement or notice and receive a plain-language overview of the key terms. If there are points worth clarifying before you sign or act, a further overview is available.
-    </p>
-
-    <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">
-      Contracts are not always straightforward. Whether you are about to sign, trying to cancel, or unsure about your obligations — understanding the terms first makes any next step clearer.
-    </p>
-
-    <div class="trust-triggers">
-
-      <div class="trust-trigger">
-        <span>●</span>
-        <div>
-          <strong>Notice periods and minimum terms</strong>
-          How much notice is required to cancel is not always immediately clear from the contract wording.
-        </div>
-      </div>
-
-      <div class="trust-trigger">
-        <span>●</span>
-        <div>
-          <strong>Automatic renewal</strong>
-          Many agreements renew automatically if not cancelled in time. Whether that applies to yours is worth understanding before the renewal date.
-        </div>
-      </div>
-
-      <div class="trust-trigger">
-        <span>●</span>
-        <div>
-          <strong>Everything in writing</strong>
-          No sales calls, no phone scripts. You get a written overview you can read, save, and refer back to.
-        </div>
-      </div>
-
-    </div>
-    <a href="#free-check" class="hero-cta">
-      Get my free overview
-    </a>
-
-    <div class="hero-sub-note">
-      PDF, JPG or PNG · no commitment · fuller overview optional
-    </div>
-  </div>
-</section>
-
-<section class="section" id="free-check" style="padding-top:16px;">
-  <div class="container" style="max-width:620px;">
-
-    <p style="text-align:center;font-size:.88rem;color:var(--ink-3);line-height:1.7;margin-bottom:18px;">
-      A confusing contract is stressful enough on its own — that's a normal reaction. DoIPayThat is run by Dick Groen, who built this service to give you a calm, plain-English read before you sign or respond.
-    </p>
-
-    <div class="offer-card" id="free-card">
-
-      <div class="offer-badge">
-        Free first overview
-      </div>
-
-      <div class="offer-title">
-        Get your free overview
-      </div>
-
-      <p class="offer-desc">
-        Upload your contract, agreement, renewal notice or cancellation letter. You will receive a plain-language overview of the key terms — and whether anything is worth clarifying before you sign, cancel or respond.
-      </p>
-
-      <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input">
-
-        <div class="upload-label">
-          Choose a file or drag it here
-        </div>
-
-        <div class="upload-hint">
-          PDF, JPG or PNG · max. 8 MB
-        </div>
-
-        <input
-          id="gratis-file-input"
-          type="file"
-          accept=".pdf,.jpg,.jpeg,.png"
-          style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:1;"
-          onchange="handleGratisFileSelect(this)"
-          aria-label="Choose file"
-        />
-      </label>
-      <div class="upload-hint" style="margin:-8px 0 4px;">A phone photo is fine — just make sure the text is readable.</div>
-      <div class="upload-hint" style="margin:0 0 14px;">Most people receive their free overview by the next working day.</div>
-
-      <div id="gratis-contact-fields" class="contact-fields">
-
-        <input
-          id="gratis-name"
-          class="input"
-          placeholder="Your name"
-        />
-
-        <input
-          id="gratis-email"
-          class="input"
-          placeholder="Your email"
-          type="email"
-          autocomplete="email"
-        />
-        <div style="font-size:.8rem;color:var(--muted);margin-top:-6px;margin-bottom:4px;">We'll only use this to send your free overview. No marketing emails.</div>
-
-        <div id="gratis-email-hint" class="input-hint"></div>
-
-        <button
-          id="gratis-btn"
-          disabled
-          class="offer-cta"
-          onclick="startGratisUpload()"
-        >
-          Get my free overview
-        </button>
-
-      </div>
-
-      <div id="gratis-status" class="optie-status"></div>
-
-      <div class="offer-security">
-        🔒 Your document is used only to prepare your overview and is never shared with third parties.
-      </div>
-
-    </div>
-
-    <div style="background:var(--soft);border:1px solid var(--accent);border-radius:14px;padding:20px 22px;margin-top:20px;max-width:600px;margin-left:auto;margin-right:auto;">
-      <p style="font-weight:700;color:var(--accent);font-size:.95rem;margin-bottom:12px;">
-        Is your situation more specific?
-      </p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">
-        <a href="/subscription/" style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;display:block;">
-          <span style="font-size:.92rem;color:var(--ink);font-weight:600;">Subscription or membership? &rarr;</span>
-        </a>
-        <a href="/quote/" style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;display:block;">
-          <span style="font-size:.92rem;color:var(--ink);font-weight:600;">Still just a quote? &rarr;</span>
-        </a>
-        <a href="/housing/" style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;display:block;">
-          <span style="font-size:.92rem;color:var(--ink);font-weight:600;">Housing or tenancy terms? &rarr;</span>
-        </a>
-      </div>
-    </div>
-
-    <div id="teaser" class="teaser">
-      <div class="offer-card teaser-card">
-
-        <div id="teaser-company" class="teaser-heading"></div>
-        <div id="teaser-sub" class="teaser-sub"></div>
-        <div id="modal-dynamic-copy" class="teaser-ai"></div>
-        <div id="teaser-financial" class="teaser-financial"></div>
-        <div id="teaser-cta" class="teaser-cta"></div>
-
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<section class="section section--alt">
-  <div class="container">
+  }
 
-    <div class="value-strip">
-      <span class="value-item"><span class="vi-check">✓</span> Notice period review</span>
-      <span class="value-item"><span class="vi-check">✓</span> Auto-renewal terms</span>
-      <span class="value-item"><span class="vi-check">✓</span> Early exit and fees</span>
-      <span class="value-item"><span class="vi-check">✓</span> Suggested response wording</span>
-      <span class="value-item"><span class="vi-check">✓</span> Fuller overview optional</span>
-    </div>
+  const fields = document.getElementById('gratis-contact-fields');
+  if (fields) fields.style.display = 'flex';
 
-    <div class="offer-card">
+  checkFreeReady();
+};
 
-      <div class="offer-badge">
-        If you want more detail
-      </div>
+function checkFreeReady() {
+  const name  = document.getElementById('gratis-name')?.value.trim();
+  const email = document.getElementById('gratis-email')?.value.trim();
+  const btn   = document.getElementById('gratis-btn');
+  const hint  = document.getElementById('gratis-email-hint');
 
-      <div class="offer-title">
-        Further overview + suggested wording
-      </div>
+  if (!btn) return;
 
-      <p class="offer-desc">
-        We go through the contract in plain language — notice periods, minimum terms, renewal conditions and any wording that is difficult to follow. We prepare suggested response wording you can adapt. You decide what to do next.
-      </p>
+  const emailOk = email.includes('@') && email.includes('.');
+  const ready   = !!(freeFile && name && emailOk);
 
-      <ul class="offer-list">
-        <li>Notice periods and minimum terms in plain language</li>
-        <li>Automatic renewal conditions explained</li>
-        <li>Early exit fees and cancellation conditions clarified</li>
-        <li>Difficult wording identified and explained</li>
-        <li>Response or cancellation draft you can adapt</li>
-        <li>Result by email — before 4pm the next working day</li>
-      </ul>
+  btn.disabled = !ready;
 
-      <hr class="offer-divider">
-
-      <div class="offer-price">
-        £29
-        <span>one-off · no commitment</span>
-      </div>
-
-      <a href="#free-check" class="offer-cta">
-        Start with a free first review
-      </a>
-
-      <div class="offer-security">
-        🔒 Secure payment via Stripe — card details are never stored
-      </div>
-
-      <div class="offer-refund">
-        If the review does not cover what you uploaded, get in touch. We will take another look.
-      </div>
-
-      <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:14px;text-align:left;">The free overview is enough for some people. If it already answered your question, you don't need to go further.</p>
-      <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:10px;text-align:left;">We review every contract the same careful way and put the result in writing, instead of a phone call you might not remember the details of afterward.</p>
-
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="container">
-
-    <div class="section-label">
-      How it works
-    </div>
-
-    <h2>
-      How it works
-    </h2>
-
-    <div class="steps">
-
-      <div class="step">
-        <div class="step__num">01</div>
-        <div class="step__title">Upload your document</div>
-        <div class="step__desc">
-          Upload your contract, agreement, renewal notice or cancellation correspondence. PDF, JPG or PNG.
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step__num">02</div>
-        <div class="step__title">Receive a free first overview</div>
-        <div class="step__desc">
-          You receive a plain-language overview of the key terms — notice periods, renewal conditions, exit terms — and whether anything is worth clarifying before you act.
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step__num">03</div>
-        <div class="step__title">Optional: fuller overview</div>
-        <div class="step__desc">
-          A further overview with suggested response wording is available for £29 if you want more.
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<section class="section section--alt">
-  <div class="container">
-
-    <div class="section-label">
-      What contracts often leave unclear
-    </div>
-
-    <h2>
-      What contracts often leave unclear
-    </h2>
-
-    <div class="trust-grid">
-
-      <div class="trust-item">
-        <div class="trust-item__label">
-          Notice periods and minimum terms
-        </div>
-
-        <div class="trust-item__text">
-          How much notice is required to cancel, and whether a minimum period applies, is not always immediately obvious from the wording.
-        </div>
-      </div>
-
-      <div class="trust-item">
-        <div class="trust-item__label">
-          Automatic renewal
-        </div>
-
-        <div class="trust-item__text">
-          Many contracts renew automatically if not cancelled in time. Whether that applies to yours, and how, is worth understanding before the renewal date.
-        </div>
-      </div>
-
-      <div class="trust-item">
-        <div class="trust-item__label">
-          Exit fees and unclear clauses
-        </div>
-
-        <div class="trust-item__text">
-          Early exit fees, unclear wording and difficult clauses can affect your options. Understanding them before you act is generally easier than after.
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="container">
-
-    <div class="section-label">
-      Is this for you?
-    </div>
-
-    <h2>
-      Use this if
-    </h2>
-
-    <div class="fit-rows">
-
-      <div class="fit-row">
-        <span>✓</span>
-        <span>You have received a contract or agreement and want to understand the terms before signing or committing</span>
-      </div>
-
-      <div class="fit-row">
-        <span>✓</span>
-        <span>You are trying to cancel an agreement and are not sure what the notice period or conditions require</span>
-      </div>
-
-      <div class="fit-row">
-        <span>✓</span>
-        <span>A contract has renewed automatically and you are not sure whether it was clearly disclosed</span>
-      </div>
-
-      <div class="fit-row">
-        <span>✓</span>
-        <span>You would like calm, professional wording before you contact the company</span>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<section class="section section--alt">
-  <div class="container">
-    <div class="section-label">
-      FAQ
-    </div>
-
-    <h2>
-      Frequently asked questions
-    </h2>
-
-    <div class="faq">
-
-      <div class="faq-item">
-        <h3>Can I speak to someone by phone?</h3>
-        <p>We don't offer phone consultations. Everything is delivered in writing by email, which lets us review every document carefully and keep the service affordable. You'll get something you can read, save, and refer back to.</p>
-      </div>
-
-      <div class="faq-item">
-        <h3>What happens to my document after I upload it?</h3>
-        <p>It's used only to prepare your overview. It is not shared with third parties, advertisers, or any other organisation.</p>
-      </div>
-
-      <div class="faq-item">
-        <h3>What types of contracts can I upload?</h3>
-        <p>Service agreements, gym memberships, broadband and telecoms contracts, software or platform agreements, coaching contracts, rental agreements, trade service contracts and other agreements where the cancellation terms, notice periods or obligations are unclear.</p>
-      </div>
-
-      <div class="faq-item">
-        <h3>How much notice do I need to give to cancel?</h3>
-        <p>It depends on what the contract says. Many service agreements require 30 days' notice, some require more, and some only allow cancellation at the end of a fixed term. A review can identify the relevant clauses and explain what they mean in plain language.</p>
-      </div>
-
-      <div class="faq-item">
-        <h3>Can a contract renew automatically without me agreeing again?</h3>
-        <p>Yes, if the original agreement included an auto-renewal clause. These are valid in the UK if clearly disclosed. Whether yours was clearly set out — and what your options are — can be clarified from the document.</p>
-      </div>
-
-      <div class="faq-item">
-        <h3>What happens after I upload?</h3>
-        <p>You receive a free first overview by email — typically by the next working day before 4pm. This gives you a plain-language summary of the key terms and flags anything worth clarifying before you act. A further overview with suggested response wording is available for £29 if you want more.</p>
-      </div>
-
-      <div class="faq-item">
-        <h3>Is this legal advice?</h3>
-        <p>No. DoIPayThat provides plain-language contract overviews and response guidance. It is not legal advice and does not provide legal representation.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<section class="final-cta">
-  <div class="container">
-
-    <h2>
-      Understand it before you commit or cancel.
-    </h2>
-
-    <p>
-      Contract question? A free first review gives you a plain-language overview of the key terms before you sign, cancel or respond.
-    </p>
-
-    <a href="#free-check" class="final-cta-btn">
-      Get my free overview
-    </a>
-
-    <div class="final-cta-note">
-      PDF, JPG or PNG · no commitment · fuller overview optional
-    </div>
-
-  </div>
-</section>
-
-<div class="container">
-
-  <div class="footer-trust">
-    <strong>DoIPayThat</strong> helps people better understand contracts and agreements before signing, cancelling or responding.
-    <br />
-    Questions?
-    <a href="mailto:support@doipaythat.co.uk">
-      support@doipaythat.co.uk
-    </a>
-  </div>
-
-  <div class="disclaimer">
-    DoIPayThat provides plain-language contract overviews and response guidance. It is not legal advice and does not provide legal representation. © 2026 DoIPayThat
-  </div>
-
-</div>
-
-<footer style="border-top:1px solid var(--line);padding:20px 0;text-align:center;background:var(--white);">
-  <div class="container">
-
-    <p style="font-size:.78rem;color:var(--muted);margin:0;">
-
-      <a href="/privacy.html" style="color:var(--muted);margin:0 10px;">
-        Privacy Policy
-      </a>
-
-      <a href="/terms.html" style="color:var(--muted);margin:0 10px;">
-        Terms of Service
-      </a>
-
-      <a href="/contact.html" style="color:var(--muted);margin:0 10px;">
-        Contact
-      </a>
-
-    </p>
-  </div>
-</footer>
-
-<div class="sticky-footer" id="sticky-footer">
-  <div>
-    <div style="font-weight:400;font-size:.86rem;color:rgba(255,255,255,.9);">Contract question? Get a clearer picture first.</div>
-    <div style="font-size:.76rem;color:rgba(255,255,255,.55);margin-top:2px;">No commitment · fuller overview optional</div>
-  </div>
-  <a href="#free-check" style="background:var(--white);color:var(--accent);border:none;border-radius:8px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;text-decoration:none;">Get my free overview</a>
-</div>
-
-<script>
-  (function(){
-    function initFaq(){
-      document.querySelectorAll('.faq-item').forEach(function(item){
-        var q = item.querySelector('.faq-q');
-        if(q){ q.setAttribute('tabindex','0'); }
-        function toggle(e){
-          e.stopPropagation();
-          var isOpen = item.classList.contains('faq-item--open');
-          document.querySelectorAll('.faq-item--open').forEach(function(x){ x.classList.remove('faq-item--open'); });
-          if(!isOpen) item.classList.add('faq-item--open');
-        }
-        item.addEventListener('touchend', function(e){ e.preventDefault(); toggle(e); }, { passive: false });
-        item.addEventListener('click', toggle);
-      });
-    }
-    if(document.readyState === 'loading'){
-      document.addEventListener('DOMContentLoaded', initFaq);
+  if (hint) {
+    if (email.length > 3 && !emailOk) {
+      hint.textContent = 'Please enter a valid email address.';
+      hint.style.display = 'block';
     } else {
-      initFaq();
+      hint.style.display = 'none';
     }
-  })();
-</script>
-<script type="module" src="/contract/app.js"></script>
+  }
+}
 
+['input', 'change', 'blur'].forEach((evt) => {
+  document.getElementById('gratis-name')?.addEventListener(evt, checkFreeReady);
+  document.getElementById('gratis-email')?.addEventListener(evt, checkFreeReady);
+});
 
-<script>
-  // Google Ads upload conversion
-  document.addEventListener('DOMContentLoaded', function(){
-    var el = document.getElementById('gratis-status');
-    if(!el) return;
-    var fired = false;
-    new MutationObserver(function(){
-      if(fired) return;
-      if(el.classList.contains('optie-status--success')){
-        fired = true;
-        if(typeof gtag !== 'undefined'){
-          gtag('event', 'conversion', {'send_to': 'AW-18193666186/hTTyCMbF67gcEIqhteND'});
-        }
+window.startGratisUpload = async function() {
+  const name   = document.getElementById('gratis-name')?.value.trim();
+  const email  = document.getElementById('gratis-email')?.value.trim();
+  const btn    = document.getElementById('gratis-btn');
+  const status = document.getElementById('gratis-status');
+
+  const emailOk = email && email.includes('@') && email.includes('.');
+
+  if (!freeFile || !name || !emailOk) {
+    if (status) {
+      status.className = 'optie-status optie-status--error';
+      status.textContent = 'Please enter your name, a valid email address and select a file.';
+    }
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Checking your document…';
+  }
+
+  try {
+    const data = await submitFree({
+      file: freeFile,
+      name,
+      email,
+      type: TYPE,
+      onStatus: (kind, msg) => {
+        if (!status) return;
+        status.className = `optie-status optie-status--${kind}`;
+        status.textContent = msg;
       }
-    }).observe(el, {attributes: true, attributeFilter: ['class']});
+    });
+
+    const triage = normalizeTriage(data.triage || {});
+    stripeLink =
+      data.stripeLink ||
+      data.teaser?.stripeLink ||
+      triage.stripeLink ||
+      stripeLink;
+
+    track('free_triage_completed', { type: TYPE });
+
+    const freeCard = document.getElementById('free-card');
+    if (freeCard) freeCard.style.display = 'none';
+
+    const gratisStatus = document.getElementById('gratis-status');
+    if (gratisStatus) gratisStatus.style.display = 'none';
+
+    renderTeaser(triage);
+
+    if (status) {
+      status.className = 'optie-status optie-status--success';
+      status.textContent = 'Your first check is ready.';
+    }
+
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'upload_complete');
+    }
+
+    if (btn) {
+      btn.textContent = 'Done ✓';
+    }
+  } catch (err) {
+    if (status) {
+      status.className = 'optie-status optie-status--error';
+      status.textContent = 'Error: ' + err.message;
+    }
+
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Start free check';
+    }
+  }
+};
+
+function normalizeTriage(triage) {
+  const risk = ['low', 'medium', 'high'].includes(triage.risk)
+    ? triage.risk
+    : 'medium';
+
+  return {
+    ...triage,
+    risk,
+    teaser: triage.teaser || getFallbackTeaser(risk)
+  };
+}
+
+function getFallbackTeaser(risk) {
+  if (risk === 'high') {
+    return 'There are strong signs this claim may not be fully correct. If you don\'t act, the situation could become significantly more expensive.';
+  }
+
+  if (risk === 'medium') {
+    return 'There may be aspects in this claim worth checking. Without action, you could end up paying more than necessary.';
+  }
+
+  return 'Some details in this claim may not be fully clear. Without review, you could still risk unnecessary costs.';
+}
+
+function renderTeaser(triage) {
+  const teaser = document.getElementById('teaser');
+  if (!teaser) return;
+
+  const risk   = triage.risk || 'medium';
+  const amount = triage.amount_claimed || null;
+
+  teaser.style.display = 'block';
+
+  setTimeout(() => {
+    teaser.classList.add('teaser--visible');
+  }, 10);
+
+  track('teaser_shown', {
+    type: TYPE,
+    risk,
+    amount
   });
-</script>
-</body>
-</html>
+
+  teaser.innerHTML = `
+    <div class="offer-card teaser-card" style="border-color:var(--green);background:#f0fdf4;max-width:620px;margin:0 auto;">
+      <div style="font-size:1.1rem;font-weight:700;color:#14532d;margin-bottom:12px;">
+        ✓ We've received your document.
+      </div>
+      <p style="color:#166534;margin-bottom:12px;line-height:1.7;">
+        You'll receive your first review by email shortly — by the next working day before 4pm at the latest.
+      </p>
+      <div style="background:#fff;border:1px solid #bbf7d0;border-radius:8px;padding:14px;margin-bottom:14px;">
+        <strong style="color:#14532d;">What happens next?</strong>
+        <p style="color:#166534;margin-top:6px;margin-bottom:0;line-height:1.65;">
+          We'll go through the document and let you know if there are any details worth looking at before you decide what to do.
+        </p>
+      </div>
+      <p style="font-size:.85rem;color:#166534;">
+        → Please also check your spam folder if you don't hear from us.
+      </p>
+      <p style="font-size:.85rem;color:#166534;margin-top:8px;">Thank you for trusting us with this.</p>
+    </div>
+  `;
+
+  const modalLink = document.querySelector('.js-stripe-link, .modal__cta');
+  if (modalLink && stripeLink) {
+    modalLink.href = stripeLink;
+  }
+
+  teaser.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function ctaText(risk) {
+  if (risk === 'high') return `Check now and avoid unnecessary costs — ${CURRENCY}${PRICE} →`;
+  if (risk === 'low')  return `Get clarity with a full analysis — ${CURRENCY}${PRICE} →`;
+  return `Get full analysis + response draft — ${CURRENCY}${PRICE} →`;
+}
+
+window.goToStripe = async function() {
+  track('stripe_clicked', {
+    type:  TYPE,
+    price: PRICE
+  });
+
+  const name  = document.getElementById('gratis-name')?.value.trim()  || '';
+  const email = document.getElementById('gratis-email')?.value.trim() || '';
+
+  if (!name || !email) {
+    openModal('modal');
+    return;
+  }
+
+  const btn = document.querySelector('.offer-cta[onclick="goToStripe()"]');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Redirecting to checkout…';
+  }
+
+  try {
+    const res = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type:          TYPE,
+        name,
+        email,
+        freeSessionId: stripeLink || '',
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.ok && data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'Checkout failed');
+    }
+  } catch (err) {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = ctaText(TYPE);
+    }
+    console.error('Checkout error:', err.message);
+    // Fallback to static link if available
+    if (stripeLink) window.location.href = stripeLink;
+  }
+};
+
+// ── Paid upload fallback flow for thankyou.html ──────────────────────────────
+
+if (document.getElementById('submit-btn')) {
+  const fileInput = document.getElementById('real-file-input');
+
+  fileInput?.addEventListener('change', () => {
+    if (fileInput.files?.[0]) updateSelectedFile(fileInput.files[0]);
+  });
+
+  const uploadPanel = document.getElementById('upload-panel');
+
+  uploadPanel?.addEventListener('dragover', e => {
+    e.preventDefault();
+    uploadPanel.classList.add('drag-over');
+  });
+
+  uploadPanel?.addEventListener('dragleave', () => {
+    uploadPanel.classList.remove('drag-over');
+  });
+
+  uploadPanel?.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadPanel.classList.remove('drag-over');
+
+    if (e.dataTransfer.files?.[0]) {
+      fileInput.files = e.dataTransfer.files;
+      updateSelectedFile(e.dataTransfer.files[0]);
+    }
+  });
+
+  document.getElementById('remove-file')?.addEventListener('click', e => {
+    e.preventDefault();
+    clearFile();
+  });
+
+  document.getElementById('submit-btn')?.addEventListener('click', doSubmit);
+
+  validateSession();
+}
+
+function validateSession() {
+  const params    = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id');
+  const autoCard  = document.getElementById('auto-card');
+
+  // Hybrid B-flow: thankyou.html manages auto/fallback state.
+  // app.js must not show thankyou-app itself to avoid race condition.
+  if (autoCard) return;
+
+  if (sessionId?.startsWith('cs_')) {
+    const app = document.getElementById('thankyou-app');
+    if (app) app.style.display = 'block';
+
+    const emailEl = document.getElementById('customer-email');
+    if (emailEl && params.get('email')) {
+      emailEl.value = params.get('email');
+    }
+  } else {
+    const locked = document.getElementById('locked-screen');
+    if (locked) locked.style.display = 'block';
+  }
+}
+
+function updateSelectedFile(file) {
+  const err = validateFile(file);
+
+  if (err) {
+    showStatus(err, 'error');
+    return;
+  }
+
+  selectedFile = file;
+
+  document.getElementById('selected-file')?.classList.add('show');
+
+  const name = document.getElementById('selected-file-name');
+  if (name) name.textContent = file.name;
+
+  const meta = document.getElementById('selected-file-meta');
+  if (meta) meta.textContent = formatFileSize(file.size) + ' · ready';
+
+  const btn = document.getElementById('submit-btn');
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = 'Upload and start analysis';
+  }
+}
+
+function clearFile() {
+  selectedFile = null;
+
+  const input = document.getElementById('real-file-input');
+  if (input) input.value = '';
+
+  document.getElementById('selected-file')?.classList.remove('show');
+
+  const btn = document.getElementById('submit-btn');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Choose a file first';
+  }
+}
+
+function showStatus(msg, type) {
+  const box = document.getElementById('status-box');
+  if (!box) return;
+
+  box.classList.remove('hidden');
+  box.className = 'status-box ' + type;
+  box.innerHTML = esc(msg);
+}
+
+async function doSubmit() {
+  const name   = document.getElementById('customer-name')?.value.trim();
+  const email  = document.getElementById('customer-email')?.value.trim();
+  const params = new URLSearchParams(window.location.search);
+  const file   = document.getElementById('real-file-input')?.files?.[0] || selectedFile;
+
+  const emailOk =
+    email &&
+    email.includes('@') &&
+    email.includes('.') &&
+    email.length > 5;
+
+  if (!name || !emailOk || !file) {
+    showStatus('Please fill in all fields correctly and select a file.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Uploading…';
+  }
+
+  try {
+    await submitPaid({
+      file,
+      name,
+      email,
+      type: TYPE,
+      sessionId: params.get('session_id'),
+      onStatus:  showStatus
+    });
+
+    const fallback = document.getElementById('thankyou-app');
+    if (fallback) fallback.classList.add('hidden');
+
+    const success = document.getElementById('success-screen');
+    if (success) {
+      success.classList.remove('hidden');
+      return;
+    }
+
+    const card = document.querySelector('.thankyou-card');
+    if (card) {
+      card.innerHTML = `
+        <div class="success-screen">
+          <div class="success-screen__icon">✓</div>
+          <h2>Upload successful</h2>
+          <p>We will analyse your letter and send you the full review and response draft by email to <strong>${esc(email)}</strong>.</p>
+          <p style="font-size:.82rem;color:var(--muted);">Please also check your spam folder.</p>
+        </div>`;
+    }
+  } catch (err) {
+    showStatus('Upload failed: ' + err.message, 'error');
+
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Upload and start analysis';
+    }
+  }
+}
+
+// ── Helpers ─────────────────────────────────────────────────────────────────
+
+function esc(str) {
+  return String(str || '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;');
+}
+
+// ── Init ────────────────────────────────────────────────────────────────────
+
+// initFaq() — handled inline in HTML
+initModal();
+initStickyFooter();
