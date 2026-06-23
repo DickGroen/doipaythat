@@ -338,3 +338,5 @@ export function initStickyFooter() {
     },
     { passive: true }
   );
+}
+}
