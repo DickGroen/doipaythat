@@ -178,9 +178,9 @@
       <p class="offer-desc">Upload your service charge demand, management fee notice or maintenance invoice. You will receive a plain-language overview of what each item covers and whether anything is worth clarifying before you pay.</p>
 
       <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input">
-        <div class="upload-label">Choose a file or drag it here</div>
-        <div class="upload-hint">PDF, JPG or PNG · max. 8 MB</div>
-        <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:1;" onchange="handleGratisFileSelect(this)" aria-label="Choose file">
+        <div class="upload-label" style="pointer-events:none;position:relative;z-index:0;">Choose a file or drag it here</div>
+        <div class="upload-hint" style="pointer-events:none;position:relative;z-index:0;">PDF, JPG or PNG · max. 8 MB</div>
+        <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:10;" onchange="window.handleGratisFileSelect && window.handleGratisFileSelect(this)" aria-label="Choose file">
       </label>
       <div class="upload-hint" style="margin:-8px 0 4px;">A phone photo is fine — just make sure the figures are readable.</div>
       <div class="upload-hint" style="margin:0 0 14px;">Most people receive their free overview by the next working day.</div>
@@ -407,7 +407,89 @@
     }
   })();
 </script>
-<script type="module" src="/housing/app.js"></script>
+<script src="/housing/app.js"></script>
+<script>
+(function() {
+  var _pendingFile = null;
+
+  window._gratisFileSafety = function(input) {
+    console.log('[upload:housing] _gratisFileSafety called, files:', input && input.files ? input.files.length : 0);
+    if (window.handleGratisFileSelect) {
+      window.handleGratisFileSelect(input);
+    } else {
+      _pendingFile = input;
+      console.log('[upload:housing] handleGratisFileSelect not yet available, queued');
+      var attempts = 0;
+      var poll = setInterval(function() {
+        attempts++;
+        if (window.handleGratisFileSelect) {
+          clearInterval(poll);
+          console.log('[upload:housing] handleGratisFileSelect now available, replaying');
+          window.handleGratisFileSelect(_pendingFile);
+          _pendingFile = null;
+        }
+        if (attempts > 50) { clearInterval(poll); console.warn('[upload:housing] gave up waiting'); }
+      }, 100);
+    }
+  };
+
+  function installUploadFix() {
+    var zone  = document.getElementById('gratis-upload-zone');
+    var input = document.getElementById('gratis-file-input');
+    if (!zone || !input) { console.warn('[upload:housing] zone or input not found'); return; }
+
+    input.onchange = null;
+    input.addEventListener('change', function() {
+      console.log('[upload:housing] change event fired, files:', input.files ? input.files.length : 0);
+      if (input.files && input.files.length > 0) {
+        window._gratisFileSafety(input);
+      }
+    });
+
+    var pickerTimeout = null;
+
+    function openPicker(e) {
+      if (e.target === input) { return; }
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('[upload:housing] upload_area_tapped');
+      var found = document.getElementById('gratis-file-input');
+      console.log('[upload:housing] file_input_found:', !!found);
+      if (!found) { console.error('[upload:housing] file input missing'); return; }
+      try {
+        console.log('[upload:housing] file_input_click_attempted');
+        found.click();
+        console.log('[upload:housing] input.click() executed');
+      } catch(err) {
+        console.error('[upload:housing] input.click() failed:', err);
+      }
+      if (pickerTimeout) clearTimeout(pickerTimeout);
+      pickerTimeout = setTimeout(function() {
+        console.log('[upload:housing] file_picker_no_selection_after_10s');
+        if (window.track) window.track('file_picker_abandoned', { type: 'housing' });
+      }, 10000);
+    }
+
+    input.addEventListener('change', function() {
+      if (pickerTimeout) { clearTimeout(pickerTimeout); pickerTimeout = null; }
+      if (window.track) window.track('file_selected', { type: 'housing' });
+    });
+
+    zone.addEventListener('touchstart', openPicker, { passive: false });
+    zone.addEventListener('click', openPicker);
+
+    console.log('[upload:housing] mobile upload fix installed');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', installUploadFix);
+  } else {
+    installUploadFix();
+  }
+})();
+</script>
+
+
 
 <script>
   // Google Ads upload conversion
