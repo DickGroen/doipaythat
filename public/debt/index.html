@@ -675,9 +675,9 @@
       </p>
 
       <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input">
-        <div id="gratis-upload-label" class="upload-label">Choose a file or drag it here</div>
-        <div id="gratis-upload-hint" class="upload-hint">PDF, JPG or PNG · max. 8 MB</div>
-        <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="window.handleGratisFileSelect(this)" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:1;" aria-label="Choose file">
+        <div id="gratis-upload-label" class="upload-label" style="pointer-events:none;position:relative;z-index:0;">Choose a file or drag it here</div>
+        <div id="gratis-upload-hint" class="upload-hint" style="pointer-events:none;position:relative;z-index:0;">PDF, JPG or PNG · max. 8 MB</div>
+        <input id="gratis-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="window.handleGratisFileSelect && window.handleGratisFileSelect(this)" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:10;" aria-label="Choose file">
       </label>
 
       <div class="upload-hint" style="margin:-8px 0 4px;">A phone photo is fine — just make sure the numbers are readable.</div>
@@ -1044,7 +1044,120 @@
   }
 </script>
 
-<script type="module" src="/debt/app.js"></script>
+<script src="/debt/app.js"></script>
+<script>
+(function() {
+  // Upload area mobile fix — Android Chrome + iPhone Safari
+  // Handles two known failure modes:
+  // 1. z-index: native input covered by sibling elements
+  // 2. type="module" race: onchange fires before window.handleGratisFileSelect is defined
+  // Strategy: touchstart + click fallback on zone, plus deferred onchange safety net
+
+  var _pendingFile = null;
+
+  // Deferred file handler: called immediately if fn exists, else queued
+  window._gratisFileSafety = function(input) {
+    console.log('[upload] _gratisFileSafety called, files:', input && input.files ? input.files.length : 0);
+    if (window.handleGratisFileSelect) {
+      window.handleGratisFileSelect(input);
+    } else {
+      // Module not yet loaded — store and retry
+      _pendingFile = input;
+      console.log('[upload] handleGratisFileSelect not yet available, queued');
+      var attempts = 0;
+      var poll = setInterval(function() {
+        attempts++;
+        if (window.handleGratisFileSelect) {
+          clearInterval(poll);
+          console.log('[upload] handleGratisFileSelect now available, replaying');
+          window.handleGratisFileSelect(_pendingFile);
+          _pendingFile = null;
+        }
+        if (attempts > 50) { clearInterval(poll); console.warn('[upload] gave up waiting for handleGratisFileSelect'); }
+      }, 100);
+    }
+  };
+
+  function installUploadFix() {
+    var zone  = document.getElementById('gratis-upload-zone');
+    var input = document.getElementById('gratis-file-input');
+    if (!zone || !input) {
+      console.warn('[upload] zone or input not found');
+      return;
+    }
+
+    // Patch onchange to use safety wrapper
+    input.onchange = null;
+    input.addEventListener('change', function() {
+      console.log('[upload] change event fired, files:', input.files ? input.files.length : 0);
+      if (input.files && input.files.length > 0) {
+        window._gratisFileSafety(input);
+      }
+    });
+
+    var pickerOpened = false;
+    var pickerTimeout = null;
+
+    function openPicker(e) {
+      if (e.target === input) {
+        console.log('[upload] native input tap detected');
+        return; // label-for already handled it
+      }
+      e.preventDefault();
+      e.stopPropagation();
+
+      console.log('[upload] upload_area_tapped');
+
+      var found = document.getElementById('gratis-file-input');
+      console.log('[upload] file_input_found:', !!found);
+
+      if (!found) {
+        console.error('[upload] file input missing from DOM');
+        return;
+      }
+
+      try {
+        console.log('[upload] file_input_click_attempted');
+        found.click();
+        console.log('[upload] input.click() executed');
+      } catch(err) {
+        console.error('[upload] input.click() failed:', err);
+      }
+
+      // 10s no-selection tracker
+      pickerOpened = true;
+      if (pickerTimeout) clearTimeout(pickerTimeout);
+      pickerTimeout = setTimeout(function() {
+        if (pickerOpened) {
+          console.log('[upload] file_picker_no_selection_after_10s');
+          if (window.track) window.track('file_picker_abandoned', { type: 'debt' });
+          pickerOpened = false;
+        }
+      }, 10000);
+    }
+
+    // Listen for file selection to clear the 10s timer
+    input.addEventListener('change', function() {
+      pickerOpened = false;
+      if (pickerTimeout) { clearTimeout(pickerTimeout); pickerTimeout = null; }
+      if (window.track) window.track('file_selected', { type: 'debt' });
+    });
+
+    zone.addEventListener('touchstart', openPicker, { passive: false });
+    zone.addEventListener('click', openPicker);
+
+    console.log('[upload] mobile upload fix installed on /debt/');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', installUploadFix);
+  } else {
+    installUploadFix();
+  }
+})();
+</script>
+
+
 <script>
   function initFaq(){
     document.querySelectorAll('.faq-item').forEach(function(item){
