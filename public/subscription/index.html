@@ -1148,7 +1148,89 @@
     }
   })();
 </script>
-<script type="module" src="/subscription/app.js"></script>
+<script src="/subscription/app.js"></script>
+<script>
+(function() {
+  var _pendingFile = null;
+
+  window._gratisFileSafety = function(input) {
+    console.log('[upload:subscription] _gratisFileSafety called, files:', input && input.files ? input.files.length : 0);
+    if (window.handleGratisFileSelect) {
+      window.handleGratisFileSelect(input);
+    } else {
+      _pendingFile = input;
+      console.log('[upload:subscription] handleGratisFileSelect not yet available, queued');
+      var attempts = 0;
+      var poll = setInterval(function() {
+        attempts++;
+        if (window.handleGratisFileSelect) {
+          clearInterval(poll);
+          console.log('[upload:subscription] handleGratisFileSelect now available, replaying');
+          window.handleGratisFileSelect(_pendingFile);
+          _pendingFile = null;
+        }
+        if (attempts > 50) { clearInterval(poll); console.warn('[upload:subscription] gave up waiting'); }
+      }, 100);
+    }
+  };
+
+  function installUploadFix() {
+    var zone  = document.getElementById('gratis-upload-zone');
+    var input = document.getElementById('gratis-file-input');
+    if (!zone || !input) { console.warn('[upload:subscription] zone or input not found'); return; }
+
+    input.onchange = null;
+    input.addEventListener('change', function() {
+      console.log('[upload:subscription] change event fired, files:', input.files ? input.files.length : 0);
+      if (input.files && input.files.length > 0) {
+        window._gratisFileSafety(input);
+      }
+    });
+
+    var pickerTimeout = null;
+
+    function openPicker(e) {
+      if (e.target === input) { return; }
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('[upload:subscription] upload_area_tapped');
+      var found = document.getElementById('gratis-file-input');
+      console.log('[upload:subscription] file_input_found:', !!found);
+      if (!found) { console.error('[upload:subscription] file input missing'); return; }
+      try {
+        console.log('[upload:subscription] file_input_click_attempted');
+        found.click();
+        console.log('[upload:subscription] input.click() executed');
+      } catch(err) {
+        console.error('[upload:subscription] input.click() failed:', err);
+      }
+      if (pickerTimeout) clearTimeout(pickerTimeout);
+      pickerTimeout = setTimeout(function() {
+        console.log('[upload:subscription] file_picker_no_selection_after_10s');
+        if (window.track) window.track('file_picker_abandoned', { type: 'subscription' });
+      }, 10000);
+    }
+
+    input.addEventListener('change', function() {
+      if (pickerTimeout) { clearTimeout(pickerTimeout); pickerTimeout = null; }
+      if (window.track) window.track('file_selected', { type: 'subscription' });
+    });
+
+    zone.addEventListener('touchstart', openPicker, { passive: false });
+    zone.addEventListener('click', openPicker);
+
+    console.log('[upload:subscription] mobile upload fix installed');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', installUploadFix);
+  } else {
+    installUploadFix();
+  }
+})();
+</script>
+
+
 
 
 <script>
