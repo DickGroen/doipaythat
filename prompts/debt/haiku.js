@@ -81,7 +81,8 @@ Stronger indicators:
 - unclear proof of the debt;
 - court escalation wording;
 - solicitor escalation wording;
-- inconsistent debtor details.
+- inconsistent debtor details;
+- no reference to the original credit agreement (for regulated consumer credit debts, the collector must provide a copy within 12 working days of a written request under the Consumer Credit Act 1974 — if they cannot, they may not continue to enforce the debt until they do).
 
 Moderate indicators:
 - unclear collection authority;
@@ -216,6 +217,7 @@ Requirements:
 - Request confirmation of the original creditor where relevant.
 - State that the letter is not an admission of liability.
 - For classification A only: ask the sender to pause further collection activity while the matter is reviewed.
+- For classification A only, where no original credit agreement is referenced in the document: include a request for a copy of the original credit agreement. Use natural phrasing such as: "I would also ask that you provide a copy of the original credit agreement." Do not cite statutory provisions or use legal language — write as a consumer, not a lawyer.
 - Do not threaten legal action.
 - Do not admit liability.
 - Do not promise payment.
