@@ -729,25 +729,20 @@
         Upload your contract, agreement, renewal notice or cancellation letter. You will receive a plain-language overview of the key terms — and whether anything is worth clarifying before you sign, cancel or respond.
       </p>
 
-      <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input">
-
-        <div class="upload-label">
-          Choose a file or drag it here
+      <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input" style="touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,0);">
+        <div id="gratis-upload-label" class="upload-label" style="pointer-events:none;position:relative;z-index:2;">
+          <span>Choose a file or drag it here</span>
         </div>
-
-        <div class="upload-hint">
-          PDF, JPG or PNG · max. 8 MB
-        </div>
-
-        <input
-          id="gratis-file-input"
-          type="file"
-          accept=".pdf,.jpg,.jpeg,.png"
-          style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:1;"
-          onchange="handleGratisFileSelect(this)"
-          aria-label="Choose file"
-        />
+        <div id="gratis-upload-hint" class="upload-hint" style="pointer-events:none;position:relative;z-index:2;">PDF, JPG or PNG · max. 8 MB</div>
       </label>
+      <input
+        id="gratis-file-input"
+        type="file"
+        accept=".pdf,.jpg,.jpeg,.png"
+        onchange="window._gratisFileSafety && window._gratisFileSafety(this)"
+        aria-label="Choose file"
+        style="position:fixed;top:-9999px;left:-9999px;opacity:0;"
+      />
       <div class="upload-hint" style="margin:-8px 0 4px;">A phone photo is fine — just make sure the text is readable.</div>
       <div class="upload-hint" style="margin:0 0 14px;">Most people receive their free overview by the next working day.</div>
 
@@ -1147,6 +1142,89 @@
       initFaq();
     }
   })();
+</script>
+<script>
+(function() {
+  // ── gratis file safety wrapper ────────────────────────────────────────────
+  window._gratisFileSafety = window._gratisFileSafety || function(input) {
+    if (!input || !input.files || !input.files.length) return;
+    var poll = setInterval(function() {
+      if (typeof window.handleGratisFileSelect === 'function') {
+        clearInterval(poll);
+        window.handleGratisFileSelect(input);
+      }
+    }, 100);
+    setTimeout(function() { clearInterval(poll); }, 5000);
+  };
+
+  function installUploadFix() {
+    var zone  = document.getElementById('gratis-upload-zone');
+    var input = document.getElementById('gratis-file-input');
+    if (!zone || !input) return;
+
+    // Single consolidated change listener
+    var pickerOpened = false;
+    var pickerTimeout = null;
+
+    input.addEventListener('change', function() {
+      pickerOpened = false;
+      if (pickerTimeout) { clearTimeout(pickerTimeout); pickerTimeout = null; }
+      if (input.files && input.files.length > 0) {
+        window._gratisFileSafety(input);
+        if (window.track) window.track('file_selected', { type: 'quote' });
+      }
+    });
+
+    // openPicker — no preventDefault/stopPropagation on touchstart
+    // double-trigger guard via 50ms flag instead
+    var lastOpen = 0;
+    function openPicker(e) {
+      // If the native input itself was tapped, label[for] handles it
+      if (e.target === input) return;
+      var now = Date.now();
+      if (now - lastOpen < 50) return;
+      lastOpen = now;
+
+      pickerOpened = true;
+      if (pickerTimeout) clearTimeout(pickerTimeout);
+      pickerTimeout = setTimeout(function() {
+        if (pickerOpened) {
+          if (window.track) window.track('file_picker_abandoned', { type: 'quote' });
+          pickerOpened = false;
+        }
+      }, 10000);
+
+      input.click();
+    }
+
+    zone.addEventListener('click', openPicker);
+    // passive touchend for diagnostics only — no preventDefault
+    zone.addEventListener('touchend', function(e) {
+      console.log('[upload] touchend on zone');
+    }, { passive: true });
+
+    // Drag and drop
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', function() { zone.classList.remove('drag-over'); });
+    zone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      if (e.dataTransfer && e.dataTransfer.files.length) {
+        input.files; // reference
+        Object.defineProperty(input, 'files', { value: e.dataTransfer.files, configurable: true });
+        input.dispatchEvent(new Event('change'));
+      }
+    });
+
+    console.log('[upload] fix installed on /quote/');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', installUploadFix);
+  } else {
+    installUploadFix();
+  }
+})();
 </script>
 <script type="module" src="/contract/app.js"></script>
 
