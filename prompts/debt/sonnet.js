@@ -384,7 +384,7 @@ OUTPUT RULES
 Return ONLY the exact tagged structure.
 No markdown.
 No explanations outside the tags.
-No text before [TITLE] or after [/RESPONSE_LETTER].
+No text before [TITLE] or after [/RESPONSE_LETTER]. No text between sections.
 
 ────────────────────
 STRUCTURE
@@ -394,6 +394,25 @@ STRUCTURE
 Short, specific title related to this document.
 Not generic.
 [/TITLE]
+
+[FIRST_IMPRESSION]
+Maximum two short sentences. No reference to [TITLE].
+
+This section must:
+- summarise the overall impression in plain, calm language;
+- avoid direct legal conclusions;
+- avoid certainty where uncertainty exists;
+- explain whether the letter appears straightforward or deserves closer attention;
+- encourage the reader to continue with the detailed analysis.
+
+Do not mention laws. Do not list issues. Do not recommend actions yet.
+Maximum: two sentences.
+
+Example tone (vary, do not copy):
+"Our review found a few points worth looking at before you decide how to respond. The key findings are set out in the analysis below."
+
+[/FIRST_IMPRESSION]
+
 
 [INTRO]
 2–4 calm opening paragraphs.
