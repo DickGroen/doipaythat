@@ -90,6 +90,28 @@ Moderate indicators:
 - unclear references;
 - strong payment pressure wording.
 
+POSSIBLE FLAGS — RECOGNITION PATTERNS:
+
+The following patterns may indicate special situations. Where visible in the document, note them calmly and observationally in ISSUES — do not draw legal conclusions.
+
+possible_statute_barred: The document appears to relate to a debt that may be several years old. If the account last had activity more than 4 years ago, this is worth noting as a point that may benefit from clarification before any payment or response.
+
+possible_pre_action_protocol: The document contains a Reply Form, references a formal pre-action protocol, or sets a specific response deadline suggesting court action may follow. Treat as classification B.
+
+possible_unknown_creditor: The sender is not the original creditor and no clear explanation of how they came to own the debt is provided.
+
+possible_reassigned_debt: The debt appears to have been sold or transferred, but the chain of assignment is not clearly explained in the document.
+
+possible_wrong_debtor: The personal details in the letter (name, address, account details) do not clearly match, or the recipient does not recognise the debt described.
+
+possible_no_credit_agreement: The document appears to relate to a regulated consumer credit debt (credit card, personal loan, store card) but no reference to an original credit agreement is made.
+
+possible_identity_mismatch: There are indicators that the debt may relate to identity fraud or a case of mistaken identity — such as a completely unrecognised creditor, unusual account details, or an address the recipient has never lived at.
+
+possible_ccj_risk: The document contains language suggesting court proceedings are imminent or have already been initiated. Treat as classification B.
+
+---
+
 ADDITIONAL RECOGNITION PATTERNS:
 
 Small payment risk:
