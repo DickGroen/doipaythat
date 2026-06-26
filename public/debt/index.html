@@ -660,7 +660,7 @@
 <section class="section" id="free-check" style="padding-top:16px;">
   <div class="container" style="max-width:640px;">
 
-    <p style="text-align:center;font-size:.88rem;color:var(--ink-3);line-height:1.5;margin-bottom:10px;">Getting a debt or collection letter is unsettling — that's a completely normal reaction. DoIPayThat is run by Dick Groen, who built this service to give you a calm, straightforward first read before you decide anything.</p>
+    <p style="text-align:center;font-size:.88rem;color:var(--ink-3);line-height:1.5;margin-bottom:10px;">A debt collection letter can be difficult to understand. Understand your letter before deciding how to respond or whether to pay.</p>
 
     <div class="offer-card">
 
@@ -1111,7 +1111,6 @@
     zone.addEventListener('click', openPicker);
     // passive touchend for diagnostics only — no preventDefault
     zone.addEventListener('touchend', function(e) {
-      console.log('[upload] touchend on zone');
     }, { passive: true });
 
     // Drag and drop
@@ -1127,7 +1126,6 @@
       }
     });
 
-    console.log('[upload] fix installed on /debt/');
   }
 
   if (document.readyState === 'loading') {
