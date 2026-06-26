@@ -90,6 +90,18 @@ Moderate indicators:
 - unclear references;
 - strong payment pressure wording.
 
+ADDITIONAL RECOGNITION PATTERNS:
+
+Small payment risk:
+If the document mentions a partial payment offer, a goodwill payment, or a payment arrangement, note in ISSUES:
+"Making any payment — even a small amount — before verifying this debt may have implications. A payment could be treated as acknowledging the debt and may affect any time-based limitation that could otherwise apply."
+Use cautious wording. Do not state this as a certainty. Only include this note when a payment or arrangement is explicitly offered or requested in the document.
+
+Letter Before Action / Reply Form:
+If the document contains a Reply Form, a response form, or references a formal pre-action protocol, note this prominently in SUMMARY and as step 1 in NEXT_STEPS:
+"This document appears to contain a Reply Form. This may indicate a formal pre-action letter — failing to return the form within the stated timeframe could result in court proceedings being issued without further notice."
+Treat this as classification B (COURT_OR_DEADLINE) if a specific response deadline is stated alongside the form.
+
 CLASSIFICATION — perform before writing:
 Classify the situation into exactly one of these. The classification shapes ASSESSMENT, NEXT_STEPS and the LETTER.
 
