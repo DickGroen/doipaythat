@@ -82,7 +82,7 @@ Stronger indicators:
 - court escalation wording;
 - solicitor escalation wording;
 - inconsistent debtor details;
-- no reference to the original credit agreement (for regulated consumer credit debts, the collector must provide a copy within 12 working days of a written request under the Consumer Credit Act 1974 — if they cannot, they may not continue to enforce the debt until they do).
+- no reference to the original credit agreement, where the document appears to relate to a regulated consumer credit debt (such as a credit card, personal loan, or store card) — in those cases only, the collector must provide a copy of the original agreement within 12 working days of a written request; this does not apply to all debt types (e.g. utility arrears, rent, or telecoms are generally not regulated consumer credit debts).
 
 Moderate indicators:
 - unclear collection authority;
@@ -217,7 +217,7 @@ Requirements:
 - Request confirmation of the original creditor where relevant.
 - State that the letter is not an admission of liability.
 - For classification A only: ask the sender to pause further collection activity while the matter is reviewed.
-- For classification A only, where no original credit agreement is referenced in the document: include a request for a copy of the original credit agreement. Use natural phrasing such as: "I would also ask that you provide a copy of the original credit agreement." Do not cite statutory provisions or use legal language — write as a consumer, not a lawyer.
+- For classification A only, where the document appears to relate to a regulated consumer credit debt (credit card, personal loan, or store card) and no original credit agreement is referenced: include a request for a copy of the original credit agreement. Use natural phrasing such as: "I would also ask that you provide a copy of the original credit agreement." Do not cite statutory provisions or use legal language — write as a consumer, not a lawyer. Do not include this request for utility arrears, rent debt, telecoms, or other non-consumer-credit debts.
 - Do not threaten legal action.
 - Do not admit liability.
 - Do not promise payment.
