@@ -64,13 +64,13 @@
     }
 
     .warning-banner{
-      background:#fff7ed;
-      border-bottom:1px solid #fed7aa;
-      padding:10px 0;
+      background:var(--surface);
+      border-bottom:1px solid var(--line);
+      padding:7px 0;
       text-align:center;
-      font-size:.84rem;
-      font-weight:600;
-      color:#92400e;
+      font-size:.76rem;
+      font-weight:400;
+      color:var(--muted);
     }
 
     .header{
@@ -584,7 +584,7 @@
 <body>
 
 <div class="warning-banner">
-  Debt letter received? Many people prefer to understand it clearly before paying or responding.
+  Understand your letter before you decide what to do.
 </div>
 
 <header class="header">
@@ -596,27 +596,26 @@
   </div>
 </header>
 
-<section class="hero">
+<section class="hero" style="padding:48px 0 32px;">
   <div class="container">
 
     <a href="#free-check" class="eyebrow" style="text-decoration:none;cursor:pointer;">UK Debt Letter Review</a>
 
     <h1>
-      Received a debt letter? Understand what it's actually claiming before you pay.
+      Received a debt collection letter?<br>Understand what it&rsquo;s claiming before you pay or respond.
     </h1>
 
     <p class="hero__sub">
-      Upload your letter. We'll tell you exactly what it's claiming, whether you need to respond, and what to say.
+      Upload your letter for a free overview &mdash; usually by the next working day.
     </p>
 
-    <ul style="list-style:none;display:inline-flex;flex-direction:column;gap:8px;text-align:left;margin:0 auto 24px;font-size:.95rem;color:var(--ink-3);">
-      <li><span style="color:var(--green);font-weight:700;margin-right:8px;">&#10003;</span>The amount claimed isn't fully broken down</li>
-      <li><span style="color:var(--green);font-weight:700;margin-right:8px;">&#10003;</span>Added fees or interest you weren't expecting</li>
-      <li><span style="color:var(--green);font-weight:700;margin-right:8px;">&#10003;</span>You're not sure if the debt is actually valid</li>
-      <li><span style="color:var(--green);font-weight:700;margin-right:8px;">&#10003;</span>The letter feels urgent but the situation isn't clear</li>
-    </ul>
+    <a href="#free-check" class="hero-cta" style="margin-bottom:14px;">
+      Upload my letter &rarr; free overview
+    </a>
 
-    <p style="font-size:.88rem;color:var(--muted);max-width:560px;margin:0 auto 18px;line-height:1.6;">&#9888; Many people pay or ignore a debt letter before fully understanding what it's claiming. Once paid, it becomes much harder to question the amount or dispute the charges.</p>
+    <div class="hero-sub-note" style="line-height:1.3;margin-bottom:36px;">
+      PDF, JPG or PNG &middot; no commitment &middot; fuller overview available
+    </div>
 
     <div class="trust-triggers">
 
@@ -624,7 +623,7 @@
         <span>&#10003;</span>
         <div>
           <strong>Free first overview</strong>
-          Upload your letter and get a plain-English explanation of what it's claiming — before you pay anything or decide what to do.
+          Upload your letter and get a plain-English explanation of what it&rsquo;s claiming &mdash; before you pay anything or decide what to do.
         </div>
       </div>
 
@@ -632,7 +631,7 @@
         <span>&#10003;</span>
         <div>
           <strong>Nothing ongoing</strong>
-          One document, one review, one price if you choose to go further — £49, one time. No subscription, nothing recurring.
+          One document, one review, one price if you choose to go further &mdash; &pound;49, one time. No subscription, nothing recurring.
         </div>
       </div>
 
@@ -646,32 +645,22 @@
 
     </div>
 
-    <a href="#free-check" class="hero-cta">
-      Get my free overview &rarr; usually by next working day
-    </a>
-
-    <div class="hero-sub-note" style="line-height:1.3;">
-      PDF, JPG or PNG &middot; no commitment &middot; fuller overview available
-    </div>
-
   </div>
 </section>
 
 <section class="section" id="free-check" style="padding-top:16px;">
   <div class="container" style="max-width:640px;">
 
-    <p style="text-align:center;font-size:.88rem;color:var(--ink-3);line-height:1.5;margin-bottom:10px;">A debt collection letter can be difficult to understand. Understand your letter before deciding how to respond or whether to pay.</p>
-
     <div class="offer-card">
 
       <div class="offer-badge">Free overview</div>
 
       <div class="offer-title">
-        Get your free overview
+        Upload your letter
       </div>
 
       <p class="offer-desc">
-        Upload your debt letter, collection notice, or payment demand. We'll send you a plain-English overview of what it claims — usually by the next working day.
+        We&rsquo;ll send you a plain-English overview of what it&rsquo;s claiming &mdash; usually by the next working day before 4pm.
       </p>
 
       <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input" style="touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,0);">
@@ -690,7 +679,7 @@
       />
 
       <div class="upload-hint" style="margin:-8px 0 4px;">A phone photo is fine — just make sure the numbers are readable.</div>
-      <div class="upload-hint" style="margin:0 0 14px;">Most people receive their free overview by the next working day.</div>
+      <div style="font-size:.84rem;color:var(--green);font-weight:600;text-align:center;margin:8px 0 14px;">No payment today. Your free overview is usually sent by the next working day. &pound;49 only if you later choose the full analysis.</div>
 
       <div id="gratis-contact-fields" class="contact-fields">
         <input id="gratis-name" class="input" placeholder="Your name">
@@ -703,18 +692,13 @@
       <div id="gratis-status" class="optie-status" style="margin-top:10px;"></div>
 
       <div class="offer-security">
-        🔒 Your document is used only to prepare your overview. It is not shared with third parties, advertisers, or the company chasing the debt.
+        🔒 Not shared with the company chasing you &middot; No subscription &middot; Everything in writing
       </div>
 
     </div>
 
-    <div style="background:var(--soft);border:1px solid var(--accent);border-radius:14px;padding:20px 22px;margin-top:24px;max-width:600px;margin-left:auto;margin-right:auto;">
-      <p style="font-weight:700;color:var(--accent);font-size:.95rem;margin-bottom:12px;">Is your situation more specific?</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">
-        <a href="/bill/" style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;display:block;"><span style="font-size:.92rem;color:var(--ink);font-weight:600;">Unpaid bill, not a debt letter? &rarr;</span></a>
-        <a href="/subscription/" style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;display:block;"><span style="font-size:.92rem;color:var(--ink);font-weight:600;">Unpaid subscription? &rarr;</span></a>
-        <a href="/parking/" style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;display:block;"><span style="font-size:.92rem;color:var(--ink);font-weight:600;">Parking notice instead? &rarr;</span></a>
-      </div>
+    <div style="margin-top:16px;max-width:600px;margin-left:auto;margin-right:auto;text-align:center;">
+      <p style="font-size:.8rem;color:var(--muted);">Not a debt letter? <a href="/bill/" style="color:var(--muted);">Unpaid bill</a> &middot; <a href="/subscription/" style="color:var(--muted);">Subscription</a> &middot; <a href="/parking/" style="color:var(--muted);">Parking notice</a></p>
     </div>
 
   </div>
