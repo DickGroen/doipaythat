@@ -1,649 +1,291 @@
 <!DOCTYPE html>
-<html lang="en-GB">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Debt Letter Guides — Understand Before You Pay | DoIPayThat</title>
-  <meta name="description" content="Plain-language guides to debt collection letters, named collectors, statute-barred debt, CCA requests and more. Free to read — understand your letter before you respond.">
-  <link rel="canonical" href="https://www.doipaythat.co.uk/debt/guides/">
+  <title>Got a Debt Collection Letter? Here's What It Actually Means | DoIPayThat</title>
+  <meta name="description" content="Received a debt collection letter in the UK? Find out if the debt is legally enforceable, what your rights are under the Consumer Credit Act, and how to respond — without paying a solicitor.">
+  <link rel="canonical" href="https://www.doipaythat.co.uk/debt/guide/">
   <style>
-    :root{
-      --ink:#0f1923;
-      --ink-2:#2d3748;
-      --ink-3:#4a5568;
-      --muted:#718096;
-      --line:#e2e8f0;
-      --surface:#f7f9fc;
-      --white:#ffffff;
-      --accent:#1a3a6b;
-      --accent-2:#2d5499;
-      --green:#166534;
-      --green-soft:#dcfce7;
-      --soft:#eef4ff;
-    }
-
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    html{scroll-behavior:smooth;}
-
-    body{
-      font-family:'DM Sans',sans-serif;
-      font-size:16px;
-      line-height:1.65;
-      color:var(--ink);
-      background:var(--white);
-      -webkit-font-smoothing:antialiased;
-    }
-
-    h1,h2,h3{
-      font-family:'Lora',Georgia,serif;
-      line-height:1.2;
-    }
-
-    a{color:var(--accent);}
-
-    .container{
-      max-width:860px;
-      margin:0 auto;
-      padding:0 24px;
-    }
-
-    .warning-banner{
-      background:var(--surface);
-      border-bottom:1px solid var(--line);
-      padding:7px 0;
-      text-align:center;
-      font-size:.76rem;
-      font-weight:400;
-      color:var(--muted);
-    }
-
-    .header{
-      background:var(--white);
-      border-bottom:1px solid var(--line);
-      padding:16px 0;
-      position:sticky;
-      top:0;
-      z-index:100;
-    }
-
-    #free-check{
-      scroll-margin-top:80px;
-    }
-
-    .header__inner{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-    }
-
-    .logo{
-      font-family:'Lora',serif;
-      font-size:1.15rem;
-      font-weight:700;
-      color:var(--accent);
-    }
-
-    .logo-dot{
-      display:inline-block;
-      width:8px;
-      height:8px;
-      background:var(--accent-2);
-      border-radius:50%;
-      margin-right:6px;
-      vertical-align:middle;
-    }
-
-    .header-cta,
-    .hero-cta,
-    .primary-btn,
-    .offer-cta,
-    .final-cta-btn,
-    .sticky-cta{
-      background:var(--accent);
-      color:var(--white);
-      border:none;
-      border-radius:10px;
-      padding:16px 30px;
-      font-family:'DM Sans',sans-serif;
-      font-size:1rem;
-      font-weight:700;
-      text-decoration:none;
-      display:inline-block;
-      cursor:pointer;
-    }
-
-    .header-cta{
-      padding:10px 20px;
-      font-size:.88rem;
-    }
-
-    .hero{
-      padding:72px 0 52px;
-      text-align:center;
-    }
-
-    .hero h1{
-      font-size:clamp(2rem,5vw,3rem);
-      margin-bottom:22px;
-      max-width:760px;
-      margin-left:auto;
-      margin-right:auto;
-    }
-
-    .eyebrow{display:inline-block;background:var(--soft);color:var(--accent);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:5px 14px;border-radius:100px;margin-bottom:22px;}
-      font-size:1.05rem;
-      color:var(--ink-3);
-      max-width:640px;
-      margin:0 auto 22px;
-      line-height:1.75;
-    }
-
-    .hero__secondary{
-      max-width:580px;
-      margin:0 auto 28px;
-      color:var(--muted);
-      font-size:.96rem;
-    }
-
-    .hero-sub-note{
-      font-size:.82rem;
-      color:var(--muted);
-      margin-top:12px;
-    }
-
-    .trust-triggers{
-      background:var(--green-soft);
-      border:1px solid #bbf7d0;
-      border-radius:14px;
-      padding:22px 24px;
-      margin:42px auto 0;
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:18px;
-      max-width:760px;
-      text-align:left;
-    }
-
-    @media(max-width:700px){
-      .trust-triggers{grid-template-columns:1fr;}
-    }
-
-    .trust-trigger{
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-      color:var(--green);
-      font-size:.88rem;
-    }
-
-    .trust-trigger strong{
-      display:block;
-      color:#14532d;
-      margin-bottom:4px;
-    }
-
-    .section{
-      padding:72px 0;
-    }
-
-    .section--alt{
-      background:var(--surface);
-    }
-
-    .section-label{
-      font-size:.74rem;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.1em;
-      color:var(--accent-2);
-      margin-bottom:10px;
-    }
-
-    .section h2{
-      font-size:clamp(1.55rem,3vw,2.1rem);
-      margin-bottom:24px;
-    }
-
-    .offer-card{
-      background:var(--white);
-      border:2px solid var(--accent);
-      border-radius:16px;
-      padding:36px 32px;
-      max-width:620px;
-      margin:0 auto;
-      box-shadow:0 12px 40px rgba(26,58,107,.08);
-    }
-
-    @media(max-width:600px){
-      .offer-card{padding:24px 20px;}
-    }
-
-    .offer-badge{
-      display:inline-block;
-      background:var(--accent);
-      color:var(--white);
-      font-size:.72rem;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      padding:5px 12px;
-      border-radius:999px;
-      margin-bottom:16px;
-    }
-
-    .offer-title{
-      font-family:'Lora',serif;
-      font-size:1.5rem;
-      margin-bottom:10px;
-    }
-
-    .offer-desc{
-      color:var(--ink-3);
-      margin-bottom:22px;
-      line-height:1.75;
-    }
-
-    .upload-zone{
-      display:block;
-      position:relative;
-      border:2px dashed var(--line);
-      border-radius:14px;
-      padding:30px;
-      text-align:center;
-      cursor:pointer;
-      background:var(--surface);
-      transition:.2s;
-    }
-
-    .upload-zone:hover{
-      border-color:var(--accent);
-      background:var(--soft);
-    }
-
-    .upload-label{
-      font-weight:700;
-      color:var(--accent);
-      position:relative;
-      z-index:2;
-      pointer-events:none;
-    }
-
-    .upload-hint{
-      font-size:.84rem;
-      color:var(--muted);
-      margin-top:6px;
-      position:relative;
-      z-index:2;
-      pointer-events:none;
-    }
-
-    .contact-fields{
-      display:none;
-      flex-direction:column;
-      gap:10px;
-      margin-top:18px;
-    }
-
-    .input{
-      width:100%;
-      padding:13px 14px;
-      border:1px solid var(--line);
-      border-radius:10px;
-      font-family:'DM Sans',sans-serif;
-      font-size:1rem;
-    }
-
-    .offer-security{
-      text-align:center;
-      font-size:.8rem;
-      color:var(--muted);
-      margin-top:12px;
-    }
-
-    .value-strip{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      justify-content:center;
-      margin-bottom:36px;
-    }
-
-    .value-item{
-      display:flex;
-      align-items:center;
-      gap:7px;
-      background:var(--white);
-      border:1px solid var(--line);
-      border-radius:999px;
-      padding:9px 16px;
-      font-size:.86rem;
-      color:var(--ink-2);
-    }
-
-    .vi-check{
-      color:var(--green);
-      font-weight:700;
-    }
-
-    .offer-list{
-      list-style:none;
-      margin:24px 0;
-      display:grid;
-      gap:10px;
-    }
-
-    .offer-list li{
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-      color:var(--ink-2);
-      line-height:1.6;
-    }
-
-    .offer-list li::before{
-      content:"✓";
-      color:var(--green);
-      font-weight:700;
-      flex-shrink:0;
-    }
-
-    .offer-price{
-      font-size:2rem;
-      font-family:'Lora',serif;
-      color:var(--accent);
-      font-weight:700;
-    }
-
-    .offer-price span{
-      font-size:.95rem;
-      color:var(--muted);
-      font-family:'DM Sans',sans-serif;
-      font-weight:400;
-    }
-
-    .offer-refund{
-      text-align:center;
-      font-size:.76rem;
-      color:var(--muted);
-      margin-top:8px;
-    }
-
-    .steps{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:28px;
-    }
-
-    @media(max-width:700px){
-      .steps{grid-template-columns:1fr;}
-    }
-
-    .step__num{
-      font-family:'Lora',serif;
-      font-size:2.2rem;
-      color:var(--line);
-      margin-bottom:10px;
-    }
-
-    .step__title{
-      font-weight:700;
-      margin-bottom:8px;
-    }
-
-    .step__desc{
-      color:var(--ink-3);
-      font-size:.9rem;
-      line-height:1.7;
-    }
-
-    .trust-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:16px;
-    }
-
-    @media(max-width:700px){
-      .trust-grid{grid-template-columns:1fr;}
-    }
-
-    .trust-item{
-      background:var(--white);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:22px;
-    }
-
-    .trust-item__label{
-      font-size:.76rem;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      font-weight:700;
-      color:var(--accent);
-      margin-bottom:8px;
-    }
-
-    .trust-item__text{
-      font-size:.9rem;
-      color:var(--ink-3);
-      line-height:1.7;
-    }
-
-    .fit-rows{
-      display:grid;
-      gap:12px;
-      max-width:600px;
-    }
-
-    .fit-row{
-      display:flex;
-      align-items:flex-start;
-      gap:12px;
-      background:var(--green-soft);
-      border:1px solid #bbf7d0;
-      border-radius:10px;
-      padding:14px 18px;
-      color:#14532d;
-    }
-
-    .faq-list{
-      display:grid;
-      gap:6px;
-    }
-
-    .faq-item{
-      border:1px solid var(--line);
-      border-radius:10px;
-      overflow:hidden;
-      background:var(--white);
-    }
-
-    .faq-q{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:18px 20px;
-      cursor:pointer;
-      font-weight:600;
-    }
-
-    .faq-a{
-      max-height:0;
-      overflow:hidden;
-      transition:max-height .3s ease;
-      color:var(--ink-3);
-      line-height:1.75;
-      padding:0 20px;
-    }
-
-    .faq-item--open .faq-a{
-      max-height:500px;
-      padding:0 20px 18px;
-    }
-
-    .final-cta{
-      background:var(--accent);
-      color:var(--white);
-      text-align:center;
-      padding:76px 0;
-    }
-
-    .final-cta h2{
-      color:var(--white);
-      margin-bottom:14px;
-      font-size:clamp(1.7rem,4vw,2.2rem);
-    }
-
-    .final-cta p{
-      color:rgba(255,255,255,.76);
-      margin-bottom:30px;
-    }
-
-    .final-cta-btn{
-      background:var(--white);
-      color:var(--accent);
-    }
-
-    .final-cta-note{
-      color:rgba(255,255,255,.65);
-      margin-top:12px;
-      font-size:.82rem;
-    }
-
-    .footer-trust{
-      padding:34px 0 18px;
-      border-top:1px solid var(--line);
-      font-size:.86rem;
-      color:var(--ink-3);
-      line-height:1.8;
-    }
-
-    .disclaimer{
-      padding:16px 0 24px;
-      font-size:.78rem;
-      color:var(--muted);
-      line-height:1.7;
-    }
-
-    .sticky-footer{
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      background:var(--ink);
-      color:var(--white);
-      padding:14px 24px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      transform:translateY(100%);
-      transition:transform .3s ease;
-      z-index:200;
-    }
-
-    .sticky-footer.visible{
-      transform:translateY(0);
-    }
-
-    @media(max-width:500px){
-      .sticky-footer{
-        flex-direction:column;
-        text-align:center;
-      }
-
-      .sticky-cta{
-        width:100%;
-      }
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: #1a1a2e;
+      background: #fff;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      background: #1a1a2e;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .site-header a.logo {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.3px;
+    }
+    .site-header .header-cta {
+      background: #e63946;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* ── HERO ── */
+    .guide-hero {
+      background: #f0f4ff;
+      border-bottom: 1px solid #dde3f0;
+      padding: 48px 24px 40px;
+      text-align: center;
+    }
+    .guide-hero .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #e63946;
+      margin-bottom: 12px;
+    }
+    .guide-hero h1 {
+      font-size: clamp(24px, 4vw, 38px);
+      font-weight: 800;
+      line-height: 1.2;
+      color: #1a1a2e;
+      max-width: 720px;
+      margin: 0 auto 16px;
+    }
+    .guide-hero .lead {
+      font-size: 18px;
+      color: #444;
+      max-width: 600px;
+      margin: 0 auto 28px;
+    }
+    .guide-hero .cta-btn {
+      display: inline-block;
+      background: #e63946;
+      color: #fff;
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .guide-hero .cta-sub {
+      font-size: 13px;
+      color: #666;
+      margin-top: 8px;
+    }
+
+    /* ── CONTENT ── */
+    .guide-body {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    .guide-body h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin: 48px 0 16px;
+      padding-top: 48px;
+      border-top: 2px solid #eef0f6;
+    }
+    .guide-body h2:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+    .guide-body p { margin-bottom: 16px; color: #333; }
+
+    .guide-body strong { color: #1a1a2e; font-weight: 700; }
+
+    .guide-body ul, .guide-body ol {
+      margin: 0 0 16px 24px;
+    }
+    .guide-body li { margin-bottom: 8px; color: #333; }
+
+    .check-block {
+      background: #f8f9fc;
+      border-left: 4px solid #1a1a2e;
+      padding: 20px 24px;
+      margin: 24px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .check-block p { margin-bottom: 12px; }
+    .check-block p:last-child { margin-bottom: 0; }
+    .check-block strong { display: block; margin-bottom: 4px; font-size: 15px; }
+
+    .warning-block {
+      background: #fff8f0;
+      border-left: 4px solid #e63946;
+      padding: 20px 24px;
+      margin: 24px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .warning-block p { margin-bottom: 10px; }
+    .warning-block p:last-child { margin-bottom: 0; }
+
+    /* ── MID CTA ── */
+    .mid-cta {
+      background: #1a1a2e;
+      color: #fff;
+      border-radius: 12px;
+      padding: 32px;
+      margin: 48px 0;
+      text-align: center;
+    }
+    .mid-cta h3 { font-size: 20px; margin-bottom: 10px; }
+    .mid-cta p { color: #b0b8d0; margin-bottom: 20px; font-size: 15px; }
+    .mid-cta a {
+      display: inline-block;
+      background: #e63946;
+      color: #fff;
+      text-decoration: none;
+      padding: 13px 28px;
+      border-radius: 7px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    /* ── FAQ ── */
+    .faq-section { margin-top: 48px; }
+    .faq-section h2 { border-top: 2px solid #eef0f6; padding-top: 48px; }
+    .faq-item { border-bottom: 1px solid #eef0f6; padding: 20px 0; }
+    .faq-item strong { display: block; font-size: 16px; margin-bottom: 8px; color: #1a1a2e; }
+    .faq-item p { color: #444; margin: 0; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      background: #f0f4ff;
+      border-top: 1px solid #dde3f0;
+      padding: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+    }
+    .site-footer a { color: #1a1a2e; }
   </style>
 </head>
 <body>
 
-<header class="header">
-  <div class="container">
-    <div class="header__inner">
-      <div class="logo"><span class="logo-dot"></span>DoIPayThat</div>
-      <a href="/debt/" class="header-cta">Check my letter</a>
-    </div>
-  </div>
+<header class="site-header">
+  <a href="/" class="logo">DoIPayThat</a>
+  <a href="/debt/" class="header-cta">Check my letter →</a>
 </header>
 
-<section class="hero" style="padding:48px 0 24px;">
-  <div class="container">
-    <h1 style="text-align:center;">Debt letter guides</h1>
-    <p style="text-align:center;color:var(--muted);max-width:620px;margin:14px auto 0;line-height:1.6;">Plain-language explanations for the letters and situations people most often ask about. Free to read — no upload needed.</p>
-  </div>
+<section class="guide-hero">
+  <p class="eyebrow">Debt Collection Letters · UK Guide 2026</p>
+  <h1>Got a Debt Collection Letter? Here's What It Actually Means</h1>
+  <p class="lead">Before you pay, call them, or ignore it — understand what you're actually dealing with. Many debt collection letters are unenforceable, incorrect, or both.</p>
+  <a href="/debt/" class="cta-btn">Upload your letter for a free check →</a>
+  <p class="cta-sub">Takes 2 minutes. No account required.</p>
 </section>
 
-<section class="section" style="padding-top:8px;">
-  <div class="container">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;max-width:860px;margin:0 auto;">
-      <a href="/debt/guides/debt-collection-letter-explained/" style="background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:var(--ink);font-size:.96rem;margin-bottom:4px;">What a debt collection letter means</div>
-        <div style="color:var(--muted);font-size:.86rem;line-height:1.55;">Before you pay, call, or ignore — understand what you're dealing with.</div>
-      </a>
-      <a href="/debt/guides/cabot-letter-uk/" style="background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:var(--ink);font-size:.96rem;margin-bottom:4px;">Received a Cabot Financial letter?</div>
-        <div style="color:var(--muted);font-size:.86rem;line-height:1.55;">What it means and how to understand the claim.</div>
-      </a>
-      <a href="/debt/guides/pra-group-letter/" style="background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:var(--ink);font-size:.96rem;margin-bottom:4px;">Received a PRA Group letter?</div>
-        <div style="color:var(--muted);font-size:.86rem;line-height:1.55;">Understanding a letter from a debt purchaser.</div>
-      </a>
-      <a href="/debt/guides/lowell-letter-received/" style="background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:var(--ink);font-size:.96rem;margin-bottom:4px;">Received a Lowell letter?</div>
-        <div style="color:var(--muted);font-size:.86rem;line-height:1.55;">What a Lowell Financial letter is asking for.</div>
-      </a>
-      <a href="/debt/guides/cabot-financial-letter/" style="background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:var(--ink);font-size:.96rem;margin-bottom:4px;">Cabot Financial — explained</div>
-        <div style="color:var(--muted);font-size:.86rem;line-height:1.55;">More on letters from Cabot Financial.</div>
-      </a>
-      <a href="/debt/guides/debt-not-mine-letter/" style="background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:var(--ink);font-size:.96rem;margin-bottom:4px;">This debt isn't mine</div>
-        <div style="color:var(--muted);font-size:.86rem;line-height:1.55;">What to do if you don't recognise the debt.</div>
-      </a>
-      <a href="/debt/guides/debt-sold-to-another-company/" style="background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:var(--ink);font-size:.96rem;margin-bottom:4px;">Your debt was sold</div>
-        <div style="color:var(--muted);font-size:.86rem;line-height:1.55;">Your rights when a debt is sold to a new company.</div>
-      </a>
-      <a href="/debt/guides/statute-barred-debt-uk/" style="background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:var(--ink);font-size:.96rem;margin-bottom:4px;">Is the debt too old to enforce?</div>
-        <div style="color:var(--muted);font-size:.86rem;line-height:1.55;">Understanding statute-barred debt in the UK.</div>
-      </a>
-      <a href="/debt/guides/default-notice-received/" style="background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:var(--ink);font-size:.96rem;margin-bottom:4px;">Received a default notice?</div>
-        <div style="color:var(--muted);font-size:.86rem;line-height:1.55;">What a default notice means and your options.</div>
-      </a>
-      <a href="/debt/guides/cca-request-letter/" style="background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:var(--ink);font-size:.96rem;margin-bottom:4px;">Asking for proof of the debt</div>
-        <div style="color:var(--muted);font-size:.86rem;line-height:1.55;">How a CCA request works and when to use one.</div>
-      </a>
-      <a href="/debt/guides/county-court-judgment-uk/" style="background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:var(--ink);font-size:.96rem;margin-bottom:4px;">Worried about a CCJ?</div>
-        <div style="color:var(--muted);font-size:.86rem;line-height:1.55;">Understanding county court judgments.</div>
-      </a>
-      <a href="/debt/guides/debt-collector-calling-me/" style="background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:var(--ink);font-size:.96rem;margin-bottom:4px;">A debt collector keeps calling</div>
-        <div style="color:var(--muted);font-size:.86rem;line-height:1.55;">Your rights when a collector contacts you.</div>
-      </a>
-      <a href="/debt/guides/debt-collection-letter-ignore/" style="background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;display:block;">
-        <div style="font-weight:700;color:var(--ink);font-size:.96rem;margin-bottom:4px;">Should I ignore the letter?</div>
-        <div style="color:var(--muted);font-size:.86rem;line-height:1.55;">Why ignoring is rarely the best strategy.</div>
-      </a>
-    </div>
+<main class="guide-body">
 
-    <div style="text-align:center;margin-top:40px;padding:28px;background:var(--surface);border-radius:14px;max-width:680px;margin-left:auto;margin-right:auto;">
-      <p style="font-weight:700;color:var(--ink);font-size:1.05rem;margin-bottom:8px;">Your letter not listed here?</p>
-      <p style="color:var(--muted);font-size:.92rem;line-height:1.6;margin-bottom:18px;">Upload your debt collection letter and get a plain-language overview of what it's claiming — usually by the next working day. Free first overview.</p>
-      <a href="/debt/" class="header-cta" style="display:inline-block;">Check my letter</a>
-    </div>
+  <h2>You opened a letter you weren't expecting. Now what?</h2>
+  <p>A debt collection letter lands on your doormat. Maybe it's from a name you don't recognise — Cabot, CCS, DCBL, Bristow &amp; Sutor, ACI. Maybe the amount doesn't look right. Maybe you don't even remember the debt.</p>
+  <p>Your first instinct might be to ignore it and hope it goes away. Or panic and pay immediately just to make the feeling stop.</p>
+  <p>Neither is the right move.</p>
+  <p>Before you do anything — pay, call them, or ignore them — you need to understand what you're actually dealing with. A debt collection letter is not a court order. It does not mean the debt is valid, enforceable, or even yours.</p>
+
+  <h2>What's actually at stake</h2>
+  <p>Debt collectors make money by collecting debts. Some of those debts are legitimate. Some are old debts that have long since become statute barred — legally unenforceable. Some contain inflated charges or fees that aren't permitted. Some have been sold so many times that the original agreement no longer exists.</p>
+  <p>In 2026, FCA rules make it explicitly "unfair" for a creditor or collector to keep demanding payment on a statute barred debt once they know — or should know — it qualifies. That's a protection most people never use, simply because they don't know it exists.</p>
+  <p>The gap between what debt collectors claim and what they're actually legally entitled to collect is significant. And the people who close that gap are the ones who take the time to understand their letter before responding.</p>
+
+  <h2>What your debt collection letter should contain — and what to check</h2>
+  <p>Under the Consumer Credit Act 1974, any regulated credit agreement (credit cards, loans, store cards, overdrafts) must meet specific legal requirements. If it doesn't, it may be unenforceable.</p>
+
+  <div class="check-block">
+    <p><strong>1. Is the debt statute barred?</strong>In England and Wales, most debts become statute barred after 6 years from the last payment or acknowledgment. A debt collector cannot take you to court for a statute barred debt. The clock does not reset unless you make a payment or acknowledge the debt in writing — which is exactly why calling them or making a small "goodwill" payment can be dangerous.</p>
+    <p><strong>2. Has the debt been sold?</strong>Many letters come from debt purchasers — companies that bought your debt for pennies on the pound from the original creditor. When a debt is sold, the buyer needs to prove they own it and can legally enforce it. They often cannot produce the original credit agreement.</p>
+    <p><strong>3. Is the amount correct?</strong>Debt collectors sometimes add fees, interest, or charges that aren't permitted under the original agreement or FCA guidelines. The total they're claiming may be higher than what you actually owe.</p>
+    <p><strong>4. Is this a regulated credit agreement?</strong>Under Sections 77–79 of the Consumer Credit Act, you have the right to request a copy of the original signed credit agreement. If they cannot provide it within 12 working days, the debt becomes unenforceable for as long as the default continues. This is called a CCA request.</p>
+    <p><strong>5. Have they identified themselves correctly?</strong>The letter must clearly identify the creditor, the original debt, and the collector's authorisation. Vague or misleading letters may not meet FCA standards.</p>
   </div>
-</section>
 
-<div class="container">
-  <div class="footer-trust"><strong>DoIPayThat</strong> helps people understand what they are being asked to pay before they decide what to do. Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a></div>
-  <div class="disclaimer">DoIPayThat provides plain-language document overviews and response drafts. Not legal advice. Not legal representation. &copy; 2026 DoIPayThat</div>
-</div>
+  <h2>What the law changed in 2026</h2>
+  <p>The Consumer Credit Act 1974 is in the process of being substantially reformed, with key provisions transferring to direct FCA oversight. In practice:</p>
+  <ul>
+    <li>The FCA's Consumer Duty rules now require debt collectors to treat you fairly and act in your best interests — not just follow minimum legal rules</li>
+    <li>Pursuing a statute barred debt is explicitly categorised as an unfair practice</li>
+    <li>Debt collectors must provide clearer information about your options, including your right to seek debt advice</li>
+  </ul>
+  <p>These changes strengthen your position. But they only help you if you know about them.</p>
+
+  <h2>The most powerful tool you have: the CCA request</h2>
+  <p>If your debt relates to a regulated credit agreement, sending a CCA request is often the first and most effective step. It:</p>
+  <ul>
+    <li>Forces the collector to produce the original signed agreement</li>
+    <li>Puts enforcement of the debt on hold until they comply</li>
+    <li>Frequently reveals that the original agreement cannot be produced — especially on older debts or debts that have been sold multiple times</li>
+  </ul>
+  <p>A CCA request must be made in writing. You send it to the current collector with a £1 postal order (do not pay more). They have 12 working days to respond. If they don't, they cannot legally enforce the debt until they do.</p>
+  <p>This is not a way to avoid a legitimate debt. It is your legal right to verify that the debt is enforceable before paying anything.</p>
+
+  <h2>Combining your defences: statute barred + CCA request</h2>
+  <p>If there's any chance the debt is old, the strongest position combines both approaches:</p>
+  <ol>
+    <li>Send a CCA request to establish whether the agreement is enforceable</li>
+    <li>Check the limitation period — when was the last payment or written acknowledgment?</li>
+    <li>If the debt is statute barred, state this clearly in your response and request that they cease contact</li>
+  </ol>
+  <p>This combination is recognised by debt advice organisations and the FCA as the most robust legal position for consumers dealing with old or questionable debts.</p>
+
+  <div class="warning-block">
+    <p><strong>What not to do</strong></p>
+    <p><strong>Don't pay anything before you understand the debt.</strong> Even a small payment resets the statute of limitations and can revive an otherwise unenforceable debt.</p>
+    <p><strong>Don't acknowledge the debt in writing.</strong> A letter that says "I remember taking out this loan but I dispute the amount" has just reset the clock.</p>
+    <p><strong>Don't ignore a court claim.</strong> A debt collection letter is not a court document. But if they escalate to a County Court Claim, you must respond within 14 days or they get a default judgment automatically.</p>
+    <p><strong>Don't assume the debt is yours.</strong> Mistaken identity, fraud, and data errors do happen. If you don't recognise the debt, ask them to prove it.</p>
+  </div>
+
+  <div class="mid-cta">
+    <h3>Not sure what you're dealing with?</h3>
+    <p>Upload your letter and get a clear assessment in minutes — whether the debt looks enforceable, whether the amount is correct, and a ready-to-send response letter.</p>
+    <a href="/debt/">Upload your letter — it's free →</a>
+  </div>
+
+  <section class="faq-section">
+    <h2>Frequently asked questions</h2>
+
+    <div class="faq-item">
+      <strong>Does a debt collection letter mean they can take me to court?</strong>
+      <p>No. A letter is not a court document. They can only take you to court by issuing a County Court Claim. If that happens, you will receive formal court papers — not just a letter.</p>
+    </div>
+    <div class="faq-item">
+      <strong>What happens if I ignore a debt collection letter?</strong>
+      <p>They may escalate to court action, add more charges, or pass the debt to another collector. Ignoring letters is rarely the best strategy — but responding incorrectly can make things worse. Understanding your position first is key.</p>
+    </div>
+    <div class="faq-item">
+      <strong>Can I get the debt written off?</strong>
+      <p>In some circumstances, yes — particularly if the debt is statute barred, if the original agreement is unenforceable under the CCA, or if there are significant errors in the amount claimed. These are legal positions, not loopholes.</p>
+    </div>
+    <div class="faq-item">
+      <strong>How long does a debt stay on my credit file?</strong>
+      <p>Six years from the date of default, regardless of whether it's been paid. This is separate from the statute of limitations question.</p>
+    </div>
+    <div class="faq-item">
+      <strong>What is the difference between a debt collector and a bailiff?</strong>
+      <p>A debt collector has no legal powers to enter your home or seize goods. A bailiff (enforcement agent) does — but only after a court judgment has been obtained. Most letters you receive are from collectors, not bailiffs.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>This guide is for general information only and does not constitute legal advice. <a href="/debt/">DoIPayThat</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
+</footer>
 
 </body>
 </html>
