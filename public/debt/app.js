@@ -221,14 +221,14 @@ function normalizeTriage(triage) {
 
 function getFallbackTeaser(risk) {
   if (risk === 'high') {
-    return 'There are strong signs this claim may not be fully correct. If you don\'t act, the situation could become significantly more expensive.';
+    return 'Several parts of this letter may be worth clarifying before you respond — a closer review can set out exactly which ones.';
   }
 
   if (risk === 'medium') {
-    return 'There may be aspects in this claim worth checking. Without action, you could end up paying more than necessary.';
+    return 'Some parts of this letter may be worth confirming before you decide how to respond.';
   }
 
-  return 'Some details in this claim may not be fully clear. Without review, you could still risk unnecessary costs.';
+  return 'The letter appears relatively standard, though a fuller review can confirm the details before you respond.';
 }
 
 function renderTeaser(triage) {
@@ -279,9 +279,7 @@ function renderTeaser(triage) {
   teaser.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-function ctaText(risk) {
-  if (risk === 'high') return `Check now and avoid unnecessary costs — ${CURRENCY}${PRICE} →`;
-  if (risk === 'low')  return `Get clarity with a full analysis — ${CURRENCY}${PRICE} →`;
+function ctaText() {
   return `Get full analysis + response draft — ${CURRENCY}${PRICE} →`;
 }
 
@@ -327,7 +325,7 @@ window.goToStripe = async function() {
   } catch (err) {
     if (btn) {
       btn.disabled = false;
-      btn.textContent = ctaText(TYPE);
+      btn.textContent = ctaText();
     }
     console.error('Checkout error:', err.message);
     // Fallback to static link if available
