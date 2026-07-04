@@ -50,7 +50,7 @@ window.handleGratisFileSelect = function(input) {
     const hint  = zone.querySelector('.upload-hint');
     if (label) {
       label.style.color = 'var(--green)';
-      label.innerHTML = '✓ ' + esc(freeFile.name);
+      label.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><polyline points="20 6 9 17 4 12"></polyline></svg> ' + esc(freeFile.name);
     }
     if (hint) {
       hint.textContent = formatFileSize(freeFile.size);
@@ -152,7 +152,7 @@ window.startGratisUpload = async function() {
     }
 
     if (btn) {
-      btn.textContent = 'Done ✓';
+      btn.textContent = 'Done';
     }
   } catch (err) {
     if (status) {
@@ -162,7 +162,7 @@ window.startGratisUpload = async function() {
 
     if (btn) {
       btn.disabled = false;
-      btn.textContent = 'Start free check';
+      btn.textContent = 'Get my free overview';
     }
   }
 };
@@ -181,14 +181,14 @@ function normalizeTriage(triage) {
 
 function getFallbackTeaser(risk) {
   if (risk === 'high') {
-    return 'There are strong signs this claim may not be fully correct. If you don\'t act, the situation could become significantly more expensive.';
+    return 'Several parts of this quote may be worth clarifying before you agree — a closer review can set out exactly which ones.';
   }
 
   if (risk === 'medium') {
-    return 'There may be aspects in this claim worth checking. Without action, you could end up paying more than necessary.';
+    return 'Some parts of this quote may be worth confirming before a final decision is made.';
   }
 
-  return 'Some details in this claim may not be fully clear. Without review, you could still risk unnecessary costs.';
+  return 'The quote appears relatively standard, though a fuller review can confirm the details before you agree.';
 }
 
 function renderTeaser(triage) {
@@ -213,7 +213,7 @@ function renderTeaser(triage) {
   teaser.innerHTML = `
     <div class="offer-card teaser-card" style="border-color:var(--green);background:#f0fdf4;max-width:620px;margin:0 auto;">
       <div style="font-size:1.1rem;font-weight:700;color:#14532d;margin-bottom:12px;">
-        ✓ We've received your document.
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;"><polyline points="20 6 9 17 4 12"></polyline></svg> We've received your document.
       </div>
       <p style="color:#166534;margin-bottom:12px;line-height:1.7;">
         You'll receive your first review by email shortly — by the next working day before 4pm at the latest.
@@ -239,9 +239,7 @@ function renderTeaser(triage) {
   teaser.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-function ctaText(risk) {
-  if (risk === 'high') return `Check now and avoid unnecessary costs — ${CURRENCY}${PRICE} →`;
-  if (risk === 'low')  return `Get clarity with a full analysis — ${CURRENCY}${PRICE} →`;
+function ctaText() {
   return `Get full analysis + response draft — ${CURRENCY}${PRICE} →`;
 }
 
@@ -287,7 +285,7 @@ window.goToStripe = async function() {
   } catch (err) {
     if (btn) {
       btn.disabled = false;
-      btn.textContent = ctaText(TYPE);
+      btn.textContent = ctaText();
     }
     console.error('Checkout error:', err.message);
     // Fallback to static link if available
@@ -454,7 +452,7 @@ async function doSubmit() {
     if (card) {
       card.innerHTML = `
         <div class="success-screen">
-          <div class="success-screen__icon">✓</div>
+          <div class="success-screen__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
           <h2>Upload successful</h2>
           <p>We will analyse your letter and send you the full review and response draft by email to <strong>${esc(email)}</strong>.</p>
           <p style="font-size:.82rem;color:var(--muted);">Please also check your spam folder.</p>
