@@ -54,7 +54,7 @@ window.handleGratisFileSelect = function(input) {
   const hint  = document.getElementById('gratis-upload-hint');
 
   if (label) {
-    label.textContent = '✓ ' + freeFile.name;
+    label.innerHTML = '<svg class="icon-lg"><use href="#icon-check"></use></svg> ' + esc(freeFile.name);
     label.style.color = 'var(--green)';
   }
   if (hint) {
@@ -129,9 +129,12 @@ function checkFreeReady() {
   }
 }
 
-// Note: gratis-file-input uses inline onchange="window.handleGratisFileSelect(this)"
-// in the HTML (see index.html) — no addEventListener needed here, that caused
-// a double-fire bug where every upload-start was tracked twice.
+// Note: gratis-file-input has NO inline onchange attribute and no addEventListener
+// bound here. The single 'change' listener lives in the inline <script> at the
+// bottom of the page's HTML (installUploadFix()), which calls
+// window._gratisFileSafety() → window.handleGratisFileSelect() exactly once per
+// selection. Do not add a second listener here or an inline onchange in the HTML —
+// either would reintroduce the double-fire bug this comment used to describe.
 
 ['input', 'change', 'blur'].forEach(evt => {
   document.getElementById('gratis-name')?.addEventListener(evt, checkFreeReady);
@@ -189,7 +192,7 @@ window.startGratisUpload = async function() {
     }
 
     if (btn) {
-      btn.textContent = 'Done ✓';
+      btn.innerHTML = '<svg class="icon"><use href="#icon-check"></use></svg> Done';
     }
   } catch (err) {
     if (status) {
@@ -199,7 +202,7 @@ window.startGratisUpload = async function() {
 
     if (btn) {
       btn.disabled = false;
-      btn.textContent = 'Start free check';
+      btn.textContent = 'Get my free overview';
     }
   }
 };
@@ -249,8 +252,8 @@ function renderTeaser(triage) {
 
   teaser.innerHTML = `
     <div class="offer-card teaser-card" style="border-color:var(--green);background:#f0fdf4;max-width:620px;margin:0 auto;">
-      <div style="font-size:1.1rem;font-weight:700;color:#14532d;margin-bottom:12px;">
-        ✓ We've received your document.
+      <div style="font-size:1.1rem;font-weight:700;color:#14532d;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+        <svg class="icon-lg"><use href="#icon-check"></use></svg> We've received your document.
       </div>
       <p style="color:#166534;margin-bottom:12px;line-height:1.7;">
         We'll review it carefully and send your first check by email by the next working day before 4pm.
@@ -491,7 +494,7 @@ async function doSubmit() {
     if (card) {
       card.innerHTML = `
         <div class="success-screen">
-          <div class="success-screen__icon">✓</div>
+          <div class="success-screen__icon"><svg class="icon-lg"><use href="#icon-check"></use></svg></div>
           <h2>Upload successful</h2>
           <p>We will analyse your letter and send you the full review and response draft by email to <strong>${esc(email)}</strong>.</p>
           <p style="font-size:.82rem;color:var(--muted);">Please also check your spam folder.</p>
