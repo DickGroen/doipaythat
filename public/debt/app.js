@@ -261,9 +261,12 @@ function renderTeaser(triage) {
       <div style="background:#fff;border:1px solid #bbf7d0;border-radius:8px;padding:14px;margin-bottom:14px;">
         <strong style="color:#14532d;">Why this matters:</strong>
         <p style="color:#166534;margin-top:6px;margin-bottom:0;line-height:1.65;">
-          Our review helps you understand what to check before paying. Many people only realise they could have questioned the claim after they've already paid.
+          Our review helps you understand what to check before paying &mdash; so any questions can be asked while every option is still open.
         </p>
       </div>
+      <p style="color:#166534;margin-bottom:10px;line-height:1.65;">
+        You don't need to do anything else &mdash; your overview will arrive by email.
+      </p>
       <p style="font-size:.85rem;color:#166534;">
         → Please also check your spam folder if you don't hear from us.
       </p>
