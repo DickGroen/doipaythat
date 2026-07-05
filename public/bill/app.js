@@ -40,7 +40,7 @@ window.handleGratisFileSelect = function(input) {
     const hint  = zone.querySelector('.upload-hint');
     if (label) {
       label.style.color = 'var(--green)';
-      label.innerHTML = '✓ ' + esc(freeFile.name);
+      label.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><polyline points="20 6 9 17 4 12"></polyline></svg> ' + esc(freeFile.name);
     }
     if (hint) {
       hint.textContent = formatFileSize(freeFile.size);
@@ -103,10 +103,10 @@ window.startGratisUpload = async function() {
     if (typeof gtag !== 'undefined') {
       gtag('event', 'upload_complete');
     }
-    if (btn) { btn.textContent = 'Done \u2713'; }
+    if (btn) { btn.textContent = 'Done'; }
   } catch (err) {
     if (status) { status.className = 'optie-status optie-status--error'; status.textContent = 'Error: ' + err.message; }
-    if (btn) { btn.disabled = false; btn.textContent = 'Start free check'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Get my free overview'; }
   }
 };
 
@@ -131,7 +131,7 @@ function renderTeaser(triage) {
   track('teaser_shown', { type: TYPE, risk, amount });
   teaser.innerHTML = `
     <div class="offer-card teaser-card" style="border-color:var(--green);background:#f0fdf4;max-width:620px;margin:0 auto;">
-      <div style="font-size:1.1rem;font-weight:700;color:#14532d;margin-bottom:12px;">\u2713 We've received your document.</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#14532d;margin-bottom:12px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;"><polyline points="20 6 9 17 4 12"></polyline></svg> We've received your document.</div>
       <p style="color:#166534;margin-bottom:12px;line-height:1.7;">We'll review it carefully and send your first review by email by the next working day before 4pm.</p>
       <div style="background:#fff;border:1px solid #bbf7d0;border-radius:8px;padding:14px;margin-bottom:14px;">
         <strong style="color:#14532d;">What happens next?</strong>
