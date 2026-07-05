@@ -49,7 +49,7 @@ window.handleGratisFileSelect = function(input) {
     const hint  = zone.querySelector('.upload-hint');
     if (label) {
       label.style.color = 'var(--green)';
-      label.innerHTML = '✓ ' + esc(gratisFile.name);
+      label.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><polyline points="20 6 9 17 4 12"></polyline></svg> ' + esc(gratisFile.name);
     }
     if (hint) {
       hint.textContent = formatFileSize(gratisFile.size);
@@ -143,7 +143,7 @@ window.startGratisUpload = async function() {
     }
 
     if (btn) {
-      btn.textContent = 'Done ✓';
+      btn.textContent = 'Done';
     }
   } catch (err) {
     if (status) {
@@ -153,7 +153,7 @@ window.startGratisUpload = async function() {
 
     if (btn) {
       btn.disabled = false;
-      btn.textContent = 'Start free check';
+      btn.textContent = 'Get my free overview';
     }
   }
 };
@@ -207,7 +207,7 @@ function renderTeaser(triage) {
   teaser.innerHTML = `
     <div class="offer-card teaser-card" style="border-color:var(--green);background:#f0fdf4;max-width:620px;margin:0 auto;">
       <div style="font-size:1.1rem;font-weight:700;color:#14532d;margin-bottom:12px;">
-        ✓ We've received ${esc(docLabel)}.
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;"><polyline points="20 6 9 17 4 12"></polyline></svg> We've received ${esc(docLabel)}.
       </div>
       <p style="color:#166534;margin-bottom:12px;line-height:1.7;">
         You'll receive your first review by email shortly — by the next working day before 4pm at the latest.
@@ -407,7 +407,7 @@ async function doSubmit() {
     if (card) {
       card.innerHTML = `
         <div class="success-screen">
-          <div class="success-screen__icon">✓</div>
+          <div class="success-screen__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
           <h2>Upload successful</h2>
           <p>We will review your parking notice and send the full analysis and response letter by email to <strong>${esc(email)}</strong>.</p>
           <p style="font-size:.82rem;color:var(--muted);">Please also check your spam folder.</p>
