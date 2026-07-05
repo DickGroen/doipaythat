@@ -55,7 +55,7 @@
     .offer-desc{color:var(--ink-3);font-size:.93rem;margin-bottom:20px;line-height:1.65;}
     .offer-list{list-style:none;margin-bottom:24px;display:grid;gap:8px;}
     .offer-list li{display:flex;align-items:flex-start;gap:10px;font-size:.93rem;color:var(--ink-2);line-height:1.55;}
-    .offer-list li::before{content:"✓";color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px;}
+    .offer-list li svg{color:var(--green);margin-top:3px;}
     hr.offer-divider{border:none;border-top:1px solid var(--line);margin:20px 0;}
     .offer-price{font-size:2rem;font-weight:700;color:var(--accent);font-family:'Lora',serif;}
     .offer-price span{font-size:.95rem;color:var(--muted);font-weight:400;font-family:'DM Sans',sans-serif;}
@@ -137,9 +137,21 @@
     .modal__close:hover{color:var(--ink);}
     .footer-trust{padding:32px 0 16px;font-size:.85rem;color:var(--ink-3);line-height:1.75;border-top:1px solid var(--line);}
     .disclaimer{padding:16px 0 20px;font-size:.78rem;color:var(--muted);line-height:1.7;}
+    .icon{width:14px;height:14px;display:inline-block;vertical-align:-2px;flex-shrink:0;}
+    .icon-lg{width:16px;height:16px;vertical-align:-3px;}
   </style>
 </head>
 <body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </symbol>
+  <symbol id="icon-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="11" width="14" height="9" rx="2"></rect>
+    <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+  </symbol>
+</svg>
 
 <div class="warning-banner">Unexpected bill? It helps to understand the charges clearly before paying.</div>
 
@@ -154,13 +166,13 @@
 
 <section class="hero">
   <div class="container">
-    <h1>Bill received? Understand the charges before you pay.</h1>
+    <h1>Unexpected bill? Find out whether the charges make sense before you pay.</h1>
     <p class="hero__sub">Upload your bill and get a free first check. If there are points worth clarifying before you pay, a fuller overview with suggested response wording is available.</p>
-    <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">Bills can include estimated readings, unclear tariffs or charges that are hard to follow. Most people pay without checking — and only ask questions later.</p>
+    <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">Bills can include estimated readings, unclear tariffs or charges that are hard to follow. Checking first keeps every option open — including asking questions before you pay.</p>
 
     <div class="trust-triggers">
-      <div class="trust-trigger"><span>●</span><div><strong>Estimated readings</strong>If your bill is based on an estimate, the amount may not match your actual usage.</div></div>
-      <div class="trust-trigger"><span>●</span><div><strong>Unclear charges and fees</strong>Standing charges, exit fees or added items are not always clearly explained.</div></div>
+      <div class="trust-trigger"><span>●</span><div><strong>Free first overview</strong>Upload your bill and get a plain-English explanation of the charges — before you pay anything or decide what to do.</div></div>
+      <div class="trust-trigger"><span>●</span><div><strong>Nothing ongoing</strong>One bill, one review, one price if you choose to go further — £29, one time. No subscription, nothing recurring.</div></div>
       <div class="trust-trigger"><span>●</span><div><strong>Everything in writing</strong>No sales calls, no phone scripts. You get a written overview you can read, save, and refer back to.</div></div>
     </div>
     <a href="#free-check" class="hero-cta">Get my free overview</a>
@@ -168,9 +180,15 @@
   </div>
 </section>
 
-<section class="section" id="free-check" style="padding-top:16px;">
+<section class="section" id="free-check" style="padding-top:40px;">
   <div class="container" style="max-width:620px;">
-    <p style="text-align:center;font-size:.88rem;color:var(--ink-3);line-height:1.7;margin-bottom:18px;">A confusing bill is stressful enough on its own — that's a normal reaction. DoIPayThat is run by Dick Groen, who built this service to give you a calm, plain-English read before you pay anything.</p>
+    <p style="text-align:center;font-size:.88rem;color:var(--ink-3);line-height:1.7;margin-bottom:18px;">An unclear bill can raise a lot of questions. DoIPayThat provides an independent, plain-English overview of the charges before you pay or ask questions.</p>
+    <p style="text-align:center;font-size:.85rem;color:var(--muted);max-width:600px;margin:0 auto 18px;line-height:1.6;">DoIPayThat is an independent service. We are not affiliated with, endorsed by, or acting on behalf of any energy, water, telecoms, or service provider.</p>
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 20px;max-width:600px;margin:0 auto 18px;text-align:center;">
+      <p style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-2);margin:0 0 6px;">Bills we can review</p>
+      <p style="font-size:.88rem;color:var(--ink-3);line-height:1.7;margin:0;">Energy bills &middot; Water bills &middot; Broadband and phone bills &middot; Tradesperson invoices &middot; Service and repair bills &middot; Unexpected additional charges</p>
+    </div>
+    <p style="font-size:.88rem;color:var(--ink-3);background:var(--soft);border:1px solid #c7d9f5;border-radius:10px;padding:12px 16px;max-width:600px;margin:0 auto 18px;line-height:1.6;text-align:center;">Many people feel pressured when an unexpected bill arrives. Understanding it first can make deciding what to do much easier.</p>
     <div class="offer-card" id="free-card">
       <div class="offer-badge">Start free</div>
       <div class="offer-title">Get your free overview</div>
@@ -186,12 +204,11 @@
         id="gratis-file-input"
         type="file"
         accept=".pdf,.jpg,.jpeg,.png"
-        onchange="window._gratisFileSafety && window._gratisFileSafety(this)"
         aria-label="Choose file"
         style="position:fixed;top:-9999px;left:-9999px;opacity:0;"
       />
       <div class="upload-hint" style="margin:-8px 0 4px;">A phone photo is fine — just make sure the figures are readable.</div>
-      <div class="upload-hint" style="margin:0 0 14px;">Most people receive their free overview by the next working day.</div>
+      <div class="upload-hint" style="margin:0 0 14px;">You'll usually receive your free overview by the next working day.</div>
 
       <div id="gratis-contact-fields" class="contact-fields">
         <input id="gratis-name" class="input" placeholder="Your name">
@@ -202,7 +219,7 @@
       </div>
 
       <div id="gratis-status" class="optie-status"></div>
-      <div class="offer-security">🔒 Your document is used only to prepare your overview — not shared with third parties.</div>
+      <div class="offer-security"><svg class="icon"><use href="#icon-lock"></use></svg> Your document is used only to prepare your overview — not shared with third parties.</div>
     </div>
 
     <div style="background:var(--soft);border:1px solid var(--accent);border-radius:14px;padding:20px 22px;margin-top:20px;max-width:600px;margin-left:auto;margin-right:auto;">
@@ -232,11 +249,11 @@
 <section class="section section--alt">
   <div class="container">
     <div class="value-strip">
-      <span class="value-item"><span class="vi-check">✓</span> Reading check</span>
-      <span class="value-item"><span class="vi-check">✓</span> Tariff review</span>
-      <span class="value-item"><span class="vi-check">✓</span> Charge breakdown</span>
-      <span class="value-item"><span class="vi-check">✓</span> Response guidance</span>
-      <span class="value-item"><span class="vi-check">✓</span> Further overview available</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Reading check</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Tariff review</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Charge breakdown</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Response guidance</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Further overview available</span>
     </div>
 
     <div class="offer-card">
@@ -245,18 +262,18 @@
       <p class="offer-desc">We go through the bill in plain language — readings, tariffs, charges and any unclear items. We explain what may be worth clarifying and prepare suggested response wording. You decide what to do next.</p>
 
       <ul class="offer-list">
-        <li>Estimated readings and usage figures explained</li>
-        <li>Tariffs, standing charges and adjustments clarified</li>
-        <li>Duplicate charges or missing breakdowns identified</li>
-        <li>Unclear added costs explained</li>
-        <li>Clear next steps in plain English</li>
-        <li>Suggested response wording included</li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Estimated readings and usage figures explained</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Tariffs, standing charges and adjustments clarified</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Duplicate charges or missing breakdowns identified</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Unclear added costs explained</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Clear next steps in plain English</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Suggested response wording included</span></li>
       </ul>
 
       <hr class="offer-divider">
       <div class="offer-price">£29 <span>one-off · no subscription</span></div>
       <a href="#free-check" class="offer-cta">Start with a free overview</a>
-      <div class="offer-security">🔒 Secure payment via Stripe — card details are never stored</div>
+      <div class="offer-security"><svg class="icon"><use href="#icon-lock"></use></svg> Secure payment via Stripe — card details are never stored</div>
       <div class="offer-refund">If the overview does not cover what you uploaded, get in touch. We will take another look.</div>
       <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:14px;text-align:left;">The free overview is enough for some people. If it already answered your question, you don't need to go further.</p>
       <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:10px;text-align:left;">We review every bill the same careful way and put the result in writing, instead of a phone call you might not remember the details of afterward.</p>
@@ -293,10 +310,10 @@
     <div class="section-label">Is this for you?</div>
     <h2>Use this if</h2>
     <div class="fit-rows">
-      <div class="fit-row"><span>✓</span><span>You received an energy, water, telecoms or service bill that doesn't look right</span></div>
-      <div class="fit-row"><span>✓</span><span>The bill is based on an estimate and you're not sure how accurate it is</span></div>
-      <div class="fit-row"><span>✓</span><span>There are charges, fees or adjustments that aren't clearly explained</span></div>
-      <div class="fit-row"><span>✓</span><span>You want a clear, professional letter to send before paying or disputing</span></div>
+      <div class="fit-row"><span><svg class="icon-lg"><use href="#icon-check"></use></svg></span><span>You received an energy, water, telecoms or service bill that doesn't look right</span></div>
+      <div class="fit-row"><span><svg class="icon-lg"><use href="#icon-check"></use></svg></span><span>The bill is based on an estimate and you're not sure how accurate it is</span></div>
+      <div class="fit-row"><span><svg class="icon-lg"><use href="#icon-check"></use></svg></span><span>There are charges, fees or adjustments that aren't clearly explained</span></div>
+      <div class="fit-row"><span><svg class="icon-lg"><use href="#icon-check"></use></svg></span><span>You want a clear, professional letter to send before paying or disputing</span></div>
     </div>
   </div>
 </section>
@@ -332,7 +349,7 @@
       </div>
       <div class="faq-item">
         <div class="faq-q" >Is this legal advice? <span class="faq-chevron">⌄</span></div>
-        <div class="faq-a">No. DoIPayThat provides plain-language bill overviews and response guidance. It does not provide legal advice or legal representation.</div>
+        <div class="faq-a">No. DoIPayThat provides plain-language bill overviews and response guidance. It does not provide legal advice or legal representation. For free, regulated advice, Citizens Advice and StepChange are independent organisations that can help.</div>
       </div>
     </div>
   </div>
@@ -349,8 +366,8 @@
 
 <div class="container">
   <div class="footer-trust"><strong>DoIPayThat</strong> helps people get a clearer picture of bills and charges before they pay or ask questions.<br>Questions? <a href="mailto:support@doipaythat.co.uk">support@doipaythat.co.uk</a></div>
-  </div>
   <div class="disclaimer">DoIPayThat provides plain-language bill overviews and response guidance. It is not legal advice or legal representation.</div>
+</div>
 
 <footer style="border-top:1px solid var(--line);padding:20px 0;text-align:center;background:var(--white);">
   <div class="container">
@@ -358,6 +375,7 @@
       <a href="/privacy.html" style="color:var(--muted);margin:0 10px;">Privacy Policy</a>
       <a href="/terms.html" style="color:var(--muted);margin:0 10px;">Terms of Service</a>
       <a href="/contact.html" style="color:var(--muted);margin:0 10px;">Contact</a>
+      <a href="/about.html" style="color:var(--muted);margin:0 10px;">About</a>
     </p>
   </div>
 </footer>
@@ -378,12 +396,12 @@
       <div class="modal__price">£29 <span>one-off</span></div>
     </div>
     <div class="modal__body">
-      <div class="modal__feature"><span class="check">✓</span><span>Review of readings, tariffs and added charges</span></div>
-      <div class="modal__feature"><span class="check">✓</span><span>Clear explanation and next steps</span></div>
-      <div class="modal__feature"><span class="check">✓</span><span>Suggested response wording included</span></div>
+      <div class="modal__feature"><span class="check"><svg class="icon"><use href="#icon-check"></use></svg></span><span>Review of readings, tariffs and added charges</span></div>
+      <div class="modal__feature"><span class="check"><svg class="icon"><use href="#icon-check"></use></svg></span><span>Clear explanation and next steps</span></div>
+      <div class="modal__feature"><span class="check"><svg class="icon"><use href="#icon-check"></use></svg></span><span>Suggested response wording included</span></div>
       <div class="modal__disclaimer">Plain-language bill overview and response guidance. Not legal advice or legal representation.</div>
       <a href="https://buy.stripe.com/cNidRa6Pidv99dYbJW14401" class="modal__cta js-stripe-link" data-type="bill" data-price="29">Receive a further overview</a>
-      <div class="modal__security">🔒 Secure payment via Stripe — card details are never stored · no subscription</div>
+      <div class="modal__security"><svg class="icon"><use href="#icon-lock"></use></svg> Secure payment via Stripe — card details are never stored &middot; no subscription</div>
       <div class="modal__close" onclick="closeModal('modal')">Back</div>
     </div>
   </div>
