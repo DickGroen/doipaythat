@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Contract or cancellation question? Get clarity first | DoIPayThat</title>
+  <title>Received a builder or contractor quote? Understand it before you agree | DoIPayThat</title>
 
   <meta
     name="description"
-    content="Received a contract or facing a cancellation question? Upload it for a free first review before you sign, commit or respond."
+    content="Received a tradesperson quote, contractor estimate or service proposal? Upload it for a free first review before you sign or agree."
   />
 
-  <link rel="canonical" href="https://doipaythat.co.uk/contract/" />
+  <link rel="canonical" href="https://doipaythat.co.uk/quote/" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -325,12 +325,9 @@
       line-height:1.55;
     }
 
-    .offer-list li::before{
-      content:"✓";
+    .offer-list li svg{
       color:var(--green);
-      font-weight:700;
-      flex-shrink:0;
-      margin-top:1px;
+      margin-top:3px;
     }
 
     hr.offer-divider{
@@ -633,13 +630,25 @@
       color:var(--muted);
       line-height:1.7;
     }
+    .icon{width:14px;height:14px;display:inline-block;vertical-align:-2px;flex-shrink:0;}
+    .icon-lg{width:16px;height:16px;vertical-align:-3px;}
   </style>
 </head>
 
 <body>
 
+<svg style="display:none" aria-hidden="true">
+  <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </symbol>
+  <symbol id="icon-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="11" width="14" height="9" rx="2"></rect>
+    <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+  </symbol>
+</svg>
+
 <div class="warning-banner">
-  Contract or cancellation question? It helps to understand the terms before you commit or respond.
+  Received a quote or estimate? It helps to check it before you sign or agree.
 </div>
 
 <header class="header">
@@ -660,15 +669,15 @@
   <div class="container">
 
     <h1>
-      Contract or cancellation question? Understand it before you commit.
+      Received a builder, repair or contractor quote? Understand it before you agree.
     </h1>
 
     <p class="hero__sub">
-      Upload your contract, agreement or notice and receive a plain-language overview of the key terms. If there are points worth clarifying before you sign or act, a further overview is available.
+      Upload your tradesperson quote, contractor estimate or service proposal and receive a plain-language overview of what it includes. If there are points worth clarifying before you agree, a further overview is available.
     </p>
 
     <p style="font-size:.95rem;color:var(--muted);margin-bottom:16px;">
-      Contracts are not always straightforward. Whether you are about to sign, trying to cancel, or unsure about your obligations — understanding the terms first makes any next step clearer.
+      Quotes are not always easy to compare or fully understand. Whether you are weighing up more than one estimate or just want a second read before signing — understanding what's included first makes it easier to decide.
     </p>
 
     <div class="trust-triggers">
@@ -676,16 +685,16 @@
       <div class="trust-trigger">
         <span>●</span>
         <div>
-          <strong>Notice periods and minimum terms</strong>
-          How much notice is required to cancel is not always immediately clear from the contract wording.
+          <strong>Free first overview</strong>
+          Upload your quote and get a plain-English explanation of what it includes — before you sign anything or pay a deposit.
         </div>
       </div>
 
       <div class="trust-trigger">
         <span>●</span>
         <div>
-          <strong>Automatic renewal</strong>
-          Many agreements renew automatically if not cancelled in time. Whether that applies to yours is worth understanding before the renewal date.
+          <strong>Nothing ongoing</strong>
+          One quote, one review, one price if you choose to go further — £29, one time. No subscription, nothing recurring.
         </div>
       </div>
 
@@ -708,12 +717,19 @@
   </div>
 </section>
 
-<section class="section" id="free-check" style="padding-top:16px;">
+<section class="section" id="free-check" style="padding-top:40px;">
   <div class="container" style="max-width:620px;">
 
     <p style="text-align:center;font-size:.88rem;color:var(--ink-3);line-height:1.7;margin-bottom:18px;">
-      A confusing contract is stressful enough on its own — that's a normal reaction. DoIPayThat is run by Dick Groen, who built this service to give you a calm, plain-English read before you sign or respond.
+      A quote can raise a lot of questions, especially for larger jobs. DoIPayThat provides an independent, plain-English overview of what it includes before you sign or agree.
     </p>
+    <p style="text-align:center;font-size:.85rem;color:var(--muted);max-width:600px;margin:0 auto 18px;line-height:1.6;">
+      DoIPayThat is an independent service. We are not affiliated with, endorsed by, or acting on behalf of any tradesperson or contractor.
+    </p>
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 20px;max-width:600px;margin:0 auto 18px;text-align:center;">
+      <p style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-2);margin:0 0 6px;">Quotes we can review</p>
+      <p style="font-size:.88rem;color:var(--ink-3);line-height:1.7;margin:0;">Kitchen &middot; Bathroom &middot; Roofing &middot; Boiler &middot; Solar &middot; Repairs &middot; Renovation &middot; Glazing &middot; Landscaping</p>
+    </div>
 
     <div class="offer-card" id="free-card">
 
@@ -726,7 +742,7 @@
       </div>
 
       <p class="offer-desc">
-        Upload your contract, agreement, renewal notice or cancellation letter. You will receive a plain-language overview of the key terms — and whether anything is worth clarifying before you sign, cancel or respond.
+        Upload your quote, estimate or service proposal. You will receive a plain-language overview of what it includes — and whether anything is worth clarifying before you sign or agree.
       </p>
 
       <label id="gratis-upload-zone" class="upload-zone" for="gratis-file-input" style="touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,0);">
@@ -739,12 +755,11 @@
         id="gratis-file-input"
         type="file"
         accept=".pdf,.jpg,.jpeg,.png"
-        onchange="window._gratisFileSafety && window._gratisFileSafety(this)"
         aria-label="Choose file"
         style="position:fixed;top:-9999px;left:-9999px;opacity:0;"
       />
       <div class="upload-hint" style="margin:-8px 0 4px;">A phone photo is fine — just make sure the text is readable.</div>
-      <div class="upload-hint" style="margin:0 0 14px;">Most people receive their free overview by the next working day.</div>
+      <div class="upload-hint" style="margin:0 0 14px;">You'll usually receive your free overview by the next working day.</div>
 
       <div id="gratis-contact-fields" class="contact-fields">
 
@@ -779,7 +794,7 @@
       <div id="gratis-status" class="optie-status"></div>
 
       <div class="offer-security">
-        🔒 Your document is used only to prepare your overview and is never shared with third parties.
+        <svg class="icon"><use href="#icon-lock"></use></svg> Your document is used only to prepare your overview and is never shared with third parties.
       </div>
 
     </div>
@@ -792,8 +807,8 @@
         <a href="/subscription/" style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;display:block;">
           <span style="font-size:.92rem;color:var(--ink);font-weight:600;">Subscription or membership? &rarr;</span>
         </a>
-        <a href="/quote/" style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;display:block;">
-          <span style="font-size:.92rem;color:var(--ink);font-weight:600;">Still just a quote? &rarr;</span>
+        <a href="/contract/" style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;display:block;">
+          <span style="font-size:.92rem;color:var(--ink);font-weight:600;">Already signed a contract? &rarr;</span>
         </a>
         <a href="/housing/" style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;display:block;">
           <span style="font-size:.92rem;color:var(--ink);font-weight:600;">Housing or tenancy terms? &rarr;</span>
@@ -820,11 +835,11 @@
   <div class="container">
 
     <div class="value-strip">
-      <span class="value-item"><span class="vi-check">✓</span> Notice period review</span>
-      <span class="value-item"><span class="vi-check">✓</span> Auto-renewal terms</span>
-      <span class="value-item"><span class="vi-check">✓</span> Early exit and fees</span>
-      <span class="value-item"><span class="vi-check">✓</span> Suggested response wording</span>
-      <span class="value-item"><span class="vi-check">✓</span> Fuller overview optional</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Cost breakdown</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Materials and labour</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Terms and exclusions</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Suggested questions to ask</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Fuller overview optional</span>
     </div>
 
     <div class="offer-card">
@@ -838,16 +853,16 @@
       </div>
 
       <p class="offer-desc">
-        We go through the contract in plain language — notice periods, minimum terms, renewal conditions and any wording that is difficult to follow. We prepare suggested response wording you can adapt. You decide what to do next.
+        We explain what is included, what may cost extra, and which questions are worth asking before you agree — in plain language, covering cost breakdown, materials, labour, and any wording that is difficult to follow. You decide what to do next.
       </p>
 
       <ul class="offer-list">
-        <li>Notice periods and minimum terms in plain language</li>
-        <li>Automatic renewal conditions explained</li>
-        <li>Early exit fees and cancellation conditions clarified</li>
-        <li>Difficult wording identified and explained</li>
-        <li>Response or cancellation draft you can adapt</li>
-        <li>Result by email — before 4pm the next working day</li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Cost breakdown — materials, labour and call-out charges — explained</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>What's included and what may be charged separately</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Unclear terms, exclusions or conditions clarified</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Difficult wording identified and explained</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Suggested questions you can send before agreeing</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Result by email — before 4pm the next working day</span></li>
       </ul>
 
       <hr class="offer-divider">
@@ -862,7 +877,7 @@
       </a>
 
       <div class="offer-security">
-        🔒 Secure payment via Stripe — card details are never stored
+        <svg class="icon"><use href="#icon-lock"></use></svg> Secure payment via Stripe — card details are never stored
       </div>
 
       <div class="offer-refund">
@@ -870,7 +885,7 @@
       </div>
 
       <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:14px;text-align:left;">The free overview is enough for some people. If it already answered your question, you don't need to go further.</p>
-      <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:10px;text-align:left;">We review every contract the same careful way and put the result in writing, instead of a phone call you might not remember the details of afterward.</p>
+      <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:10px;text-align:left;">We review every quote the same careful way and put the result in writing, instead of a phone call you might not remember the details of afterward.</p>
 
     </div>
   </div>
@@ -893,7 +908,7 @@
         <div class="step__num">01</div>
         <div class="step__title">Upload your document</div>
         <div class="step__desc">
-          Upload your contract, agreement, renewal notice or cancellation correspondence. PDF, JPG or PNG.
+          Upload your quote, estimate or service proposal. PDF, JPG or PNG.
         </div>
       </div>
 
@@ -901,7 +916,7 @@
         <div class="step__num">02</div>
         <div class="step__title">Receive a free first overview</div>
         <div class="step__desc">
-          You receive a plain-language overview of the key terms — notice periods, renewal conditions, exit terms — and whether anything is worth clarifying before you act.
+          You receive a plain-language overview of what the quote includes — cost breakdown, materials, labour — and whether anything is worth clarifying before you agree.
         </div>
       </div>
 
@@ -909,7 +924,7 @@
         <div class="step__num">03</div>
         <div class="step__title">Optional: fuller overview</div>
         <div class="step__desc">
-          A further overview with suggested response wording is available for £29 if you want more.
+          A further overview with suggested wording for questions is available for £29 if you want more.
         </div>
       </div>
 
@@ -921,42 +936,42 @@
   <div class="container">
 
     <div class="section-label">
-      What contracts often leave unclear
+      What quotes often leave unclear
     </div>
 
     <h2>
-      What contracts often leave unclear
+      What quotes often leave unclear
     </h2>
 
     <div class="trust-grid">
 
       <div class="trust-item">
         <div class="trust-item__label">
-          Notice periods and minimum terms
+          Cost breakdown
         </div>
 
         <div class="trust-item__text">
-          How much notice is required to cancel, and whether a minimum period applies, is not always immediately obvious from the wording.
+          Whether a quote is a fixed price or an estimate, and what's included in materials versus labour, is not always spelled out clearly.
         </div>
       </div>
 
       <div class="trust-item">
         <div class="trust-item__label">
-          Automatic renewal
+          Extra charges and exclusions
         </div>
 
         <div class="trust-item__text">
-          Many contracts renew automatically if not cancelled in time. Whether that applies to yours, and how, is worth understanding before the renewal date.
+          Call-out charges, VAT, and costs for anything found once work begins are sometimes left vague. Worth understanding before you agree.
         </div>
       </div>
 
       <div class="trust-item">
         <div class="trust-item__label">
-          Exit fees and unclear clauses
+          Terms and timing
         </div>
 
         <div class="trust-item__text">
-          Early exit fees, unclear wording and difficult clauses can affect your options. Understanding them before you act is generally easier than after.
+          Payment terms, timelines and what happens if the job takes longer than expected can affect your options. Understanding them before you sign is generally easier than after.
         </div>
       </div>
 
@@ -978,23 +993,23 @@
     <div class="fit-rows">
 
       <div class="fit-row">
-        <span>✓</span>
-        <span>You have received a contract or agreement and want to understand the terms before signing or committing</span>
+        <span><svg class="icon-lg"><use href="#icon-check"></use></svg></span>
+        <span>You have received a quote or estimate and want to understand exactly what it includes before signing</span>
       </div>
 
       <div class="fit-row">
-        <span>✓</span>
-        <span>You are trying to cancel an agreement and are not sure what the notice period or conditions require</span>
+        <span><svg class="icon-lg"><use href="#icon-check"></use></svg></span>
+        <span>You are comparing more than one quote and want a clearer picture of what each one actually covers</span>
       </div>
 
       <div class="fit-row">
-        <span>✓</span>
-        <span>A contract has renewed automatically and you are not sure whether it was clearly disclosed</span>
+        <span><svg class="icon-lg"><use href="#icon-check"></use></svg></span>
+        <span>The quote seems higher than expected and you are not sure why, or what's included</span>
       </div>
 
       <div class="fit-row">
-        <span>✓</span>
-        <span>You would like calm, professional wording before you contact the company</span>
+        <span><svg class="icon-lg"><use href="#icon-check"></use></svg></span>
+        <span>You would like calm, professional wording for questions before you agree</span>
       </div>
 
     </div>
@@ -1024,28 +1039,28 @@
       </div>
 
       <div class="faq-item">
-        <h3>What types of contracts can I upload?</h3>
-        <p>Service agreements, gym memberships, broadband and telecoms contracts, software or platform agreements, coaching contracts, rental agreements, trade service contracts and other agreements where the cancellation terms, notice periods or obligations are unclear.</p>
+        <h3>What types of quotes can I upload?</h3>
+        <p>Tradesperson quotes, contractor estimates, home improvement proposals, repair or renovation quotes, and other service proposals where the cost breakdown, materials, labour or terms are unclear.</p>
       </div>
 
       <div class="faq-item">
-        <h3>How much notice do I need to give to cancel?</h3>
-        <p>It depends on what the contract says. Many service agreements require 30 days' notice, some require more, and some only allow cancellation at the end of a fixed term. A review can identify the relevant clauses and explain what they mean in plain language.</p>
+        <h3>Is a quote legally binding once I've received it?</h3>
+        <p>Generally not until you accept it — a quote is normally an offer, and the agreement is formed once you agree to it, often in writing. What counts as acceptance can depend on how the quote is worded, which a review can help clarify.</p>
       </div>
 
       <div class="faq-item">
-        <h3>Can a contract renew automatically without me agreeing again?</h3>
-        <p>Yes, if the original agreement included an auto-renewal clause. These are valid in the UK if clearly disclosed. Whether yours was clearly set out — and what your options are — can be clarified from the document.</p>
+        <h3>Can the final price differ from the quote?</h3>
+        <p>It can, particularly with estimates rather than fixed-price quotes, or where the wording allows for additional charges once work begins. Understanding which type you have, and what it allows for, is worth doing before you agree.</p>
       </div>
 
       <div class="faq-item">
         <h3>What happens after I upload?</h3>
-        <p>You receive a free first overview by email — typically by the next working day before 4pm. This gives you a plain-language summary of the key terms and flags anything worth clarifying before you act. A further overview with suggested response wording is available for £29 if you want more.</p>
+        <p>You receive a free first overview by email — typically by the next working day before 4pm. This gives you a plain-language summary of what the quote includes and flags anything worth clarifying before you agree. A further overview with suggested wording is available for £29 if you want more.</p>
       </div>
 
       <div class="faq-item">
         <h3>Is this legal advice?</h3>
-        <p>No. DoIPayThat provides plain-language contract overviews and response guidance. It is not legal advice and does not provide legal representation.</p>
+        <p>No. DoIPayThat provides plain-language quote overviews and response guidance. It is not legal advice and does not provide legal representation. For free, regulated advice, Citizens Advice and StepChange are independent organisations that can help.</p>
       </div>
 
     </div>
@@ -1056,11 +1071,11 @@
   <div class="container">
 
     <h2>
-      Understand it before you commit or cancel.
+      Understand it before you sign or agree.
     </h2>
 
     <p>
-      Contract question? A free first review gives you a plain-language overview of the key terms before you sign, cancel or respond.
+      Received a quote or estimate? A free first review gives you a plain-language overview of what it includes before you sign, agree or pay a deposit.
     </p>
 
     <a href="#free-check" class="final-cta-btn">
@@ -1077,7 +1092,7 @@
 <div class="container">
 
   <div class="footer-trust">
-    <strong>DoIPayThat</strong> helps people better understand contracts and agreements before signing, cancelling or responding.
+    <strong>DoIPayThat</strong> helps people better understand quotes and estimates before signing or agreeing.
     <br />
     Questions?
     <a href="mailto:support@doipaythat.co.uk">
@@ -1086,7 +1101,7 @@
   </div>
 
   <div class="disclaimer">
-    DoIPayThat provides plain-language contract overviews and response guidance. It is not legal advice and does not provide legal representation. © 2026 DoIPayThat
+    DoIPayThat provides plain-language quote overviews and response guidance. It is not legal advice and does not provide legal representation. © 2026 DoIPayThat
   </div>
 
 </div>
@@ -1108,13 +1123,17 @@
         Contact
       </a>
 
+      <a href="/about.html" style="color:var(--muted);margin:0 10px;">
+        About
+      </a>
+
     </p>
   </div>
 </footer>
 
 <div class="sticky-footer" id="sticky-footer">
   <div>
-    <div style="font-weight:400;font-size:.86rem;color:rgba(255,255,255,.9);">Contract question? Get a clearer picture first.</div>
+    <div style="font-weight:400;font-size:.86rem;color:rgba(255,255,255,.9);">Quote or estimate? Get a clearer picture first.</div>
     <div style="font-size:.76rem;color:rgba(255,255,255,.55);margin-top:2px;">No commitment · fuller overview optional</div>
   </div>
   <a href="#free-check" style="background:var(--white);color:var(--accent);border:none;border-radius:8px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;text-decoration:none;">Get my free overview</a>
@@ -1143,6 +1162,7 @@
     }
   })();
 </script>
+<script src="/quote/app.js"></script>
 <script>
 (function() {
   // ── gratis file safety wrapper ────────────────────────────────────────────
@@ -1226,7 +1246,8 @@
   }
 })();
 </script>
-<script type="module" src="/contract/app.js"></script>
+
+
 
 
 <script>
