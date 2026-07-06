@@ -325,12 +325,9 @@
       line-height:1.55;
     }
 
-    .offer-list li::before{
-      content:"✓";
+    .offer-list li svg{
       color:var(--green);
-      font-weight:700;
-      flex-shrink:0;
-      margin-top:1px;
+      margin-top:3px;
     }
 
     hr.offer-divider{
@@ -633,10 +630,22 @@
       color:var(--muted);
       line-height:1.7;
     }
+    .icon{width:14px;height:14px;display:inline-block;vertical-align:-2px;flex-shrink:0;}
+    .icon-lg{width:16px;height:16px;vertical-align:-3px;}
   </style>
 </head>
 
 <body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </symbol>
+  <symbol id="icon-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="11" width="14" height="9" rx="2"></rect>
+    <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+  </symbol>
+</svg>
 
 <div class="warning-banner">
   Contract or cancellation question? It helps to understand the terms before you commit or respond.
@@ -708,11 +717,14 @@
   </div>
 </section>
 
-<section class="section" id="free-check" style="padding-top:16px;">
+<section class="section" id="free-check" style="padding-top:40px;">
   <div class="container" style="max-width:620px;">
 
     <p style="text-align:center;font-size:.88rem;color:var(--ink-3);line-height:1.7;margin-bottom:18px;">
-      A confusing contract is stressful enough on its own — that's a normal reaction. DoIPayThat is run by Dick Groen, who built this service to give you a calm, plain-English read before you sign or respond.
+      A confusing contract can raise a lot of questions. DoIPayThat provides an independent, plain-English overview of the terms before you sign or respond.
+    </p>
+    <p style="text-align:center;font-size:.85rem;color:var(--muted);max-width:600px;margin:0 auto 18px;line-height:1.6;">
+      DoIPayThat is an independent service. We are not affiliated with, endorsed by, or acting on behalf of any company you have a contract with.
     </p>
 
     <div class="offer-card" id="free-card">
@@ -739,12 +751,11 @@
         id="gratis-file-input"
         type="file"
         accept=".pdf,.jpg,.jpeg,.png"
-        onchange="window._gratisFileSafety && window._gratisFileSafety(this)"
         aria-label="Choose file"
         style="position:fixed;top:-9999px;left:-9999px;opacity:0;"
       />
       <div class="upload-hint" style="margin:-8px 0 4px;">A phone photo is fine — just make sure the text is readable.</div>
-      <div class="upload-hint" style="margin:0 0 14px;">Most people receive their free overview by the next working day.</div>
+      <div class="upload-hint" style="margin:0 0 14px;">You'll usually receive your free overview by the next working day.</div>
 
       <div id="gratis-contact-fields" class="contact-fields">
 
@@ -779,7 +790,7 @@
       <div id="gratis-status" class="optie-status"></div>
 
       <div class="offer-security">
-        🔒 Your document is used only to prepare your overview and is never shared with third parties.
+        <svg class="icon"><use href="#icon-lock"></use></svg> Your document is used only to prepare your overview and is never shared with third parties.
       </div>
 
     </div>
@@ -820,11 +831,11 @@
   <div class="container">
 
     <div class="value-strip">
-      <span class="value-item"><span class="vi-check">✓</span> Notice period review</span>
-      <span class="value-item"><span class="vi-check">✓</span> Auto-renewal terms</span>
-      <span class="value-item"><span class="vi-check">✓</span> Early exit and fees</span>
-      <span class="value-item"><span class="vi-check">✓</span> Suggested response wording</span>
-      <span class="value-item"><span class="vi-check">✓</span> Fuller overview optional</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Notice period review</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Auto-renewal terms</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Early exit and fees</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Suggested response wording</span>
+      <span class="value-item"><span class="vi-check"><svg class="icon"><use href="#icon-check"></use></svg></span> Fuller overview optional</span>
     </div>
 
     <div class="offer-card">
@@ -842,12 +853,12 @@
       </p>
 
       <ul class="offer-list">
-        <li>Notice periods and minimum terms in plain language</li>
-        <li>Automatic renewal conditions explained</li>
-        <li>Early exit fees and cancellation conditions clarified</li>
-        <li>Difficult wording identified and explained</li>
-        <li>Response or cancellation draft you can adapt</li>
-        <li>Result by email — before 4pm the next working day</li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Notice periods and minimum terms in plain language</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Automatic renewal conditions explained</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Early exit fees and cancellation conditions clarified</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Difficult wording identified and explained</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Response or cancellation draft you can adapt</span></li>
+        <li><svg class="icon"><use href="#icon-check"></use></svg><span>Result by email — before 4pm the next working day</span></li>
       </ul>
 
       <hr class="offer-divider">
@@ -862,7 +873,7 @@
       </a>
 
       <div class="offer-security">
-        🔒 Secure payment via Stripe — card details are never stored
+        <svg class="icon"><use href="#icon-lock"></use></svg> Secure payment via Stripe — card details are never stored
       </div>
 
       <div class="offer-refund">
@@ -978,22 +989,22 @@
     <div class="fit-rows">
 
       <div class="fit-row">
-        <span>✓</span>
+        <span><svg class="icon-lg"><use href="#icon-check"></use></svg></span>
         <span>You have received a contract or agreement and want to understand the terms before signing or committing</span>
       </div>
 
       <div class="fit-row">
-        <span>✓</span>
+        <span><svg class="icon-lg"><use href="#icon-check"></use></svg></span>
         <span>You are trying to cancel an agreement and are not sure what the notice period or conditions require</span>
       </div>
 
       <div class="fit-row">
-        <span>✓</span>
+        <span><svg class="icon-lg"><use href="#icon-check"></use></svg></span>
         <span>A contract has renewed automatically and you are not sure whether it was clearly disclosed</span>
       </div>
 
       <div class="fit-row">
-        <span>✓</span>
+        <span><svg class="icon-lg"><use href="#icon-check"></use></svg></span>
         <span>You would like calm, professional wording before you contact the company</span>
       </div>
 
@@ -1045,7 +1056,7 @@
 
       <div class="faq-item">
         <h3>Is this legal advice?</h3>
-        <p>No. DoIPayThat provides plain-language contract overviews and response guidance. It is not legal advice and does not provide legal representation.</p>
+        <p>No. DoIPayThat provides plain-language contract overviews and response guidance. It is not legal advice and does not provide legal representation. For free, regulated advice, Citizens Advice and StepChange are independent organisations that can help.</p>
       </div>
 
     </div>
@@ -1106,6 +1117,10 @@
 
       <a href="/contact.html" style="color:var(--muted);margin:0 10px;">
         Contact
+      </a>
+
+      <a href="/about.html" style="color:var(--muted);margin:0 10px;">
+        About
       </a>
 
     </p>
