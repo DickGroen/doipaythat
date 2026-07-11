@@ -229,6 +229,12 @@ export async function submitPaid({ file, name, email, type, sessionId, onStatus 
     throw new Error(data?.error || "Upload failed");
   }
 
+  track("paid_upload_completed", {
+    type,
+    fileType: file.type || null,
+    fileSize: file.size || null,
+  });
+
   return data;
 }
 
