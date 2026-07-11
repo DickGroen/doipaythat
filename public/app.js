@@ -21,6 +21,15 @@ export function track(eventName, payload = {}) {
     window.dataLayer.push(event);
   } catch (_) {}
 
+  // The site uses gtag.js directly (no GTM container), so a plain
+  // dataLayer.push of a custom object is never read by anything.
+  // gtag.js only reacts to actual gtag('event', ...) calls.
+  try {
+    if (typeof window.gtag === "function") {
+      window.gtag("event", eventName, payload);
+    }
+  } catch (_) {}
+
   try {
     const body = JSON.stringify(event);
 
