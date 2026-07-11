@@ -407,6 +407,8 @@ function updateSelectedFile(file) {
     return;
   }
 
+  track('paid_upload_started', { type: TYPE });
+
   selectedFile = file;
 
   document.getElementById('selected-file')?.classList.add('show');
