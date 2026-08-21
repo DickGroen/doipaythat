@@ -22,7 +22,7 @@ TEST_SECRET = "dipt-test-2026-xq7k"
 TEST_EMAIL  = "groenvantexel@gmail.com"
 [[kv_namespaces]]
 binding = "DEBT_QUEUE"
-id = "79aa4e89ce7c4699a36c73a6ea8a8af2"
+id = "6babd60de35a4837bd3b7c206299ba71"
 [[r2_buckets]]
 binding = "DOCS_BUCKET"
 bucket_name = "doipaythat-docs"
