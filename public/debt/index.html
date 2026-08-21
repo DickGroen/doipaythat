@@ -1282,10 +1282,16 @@
     setStatus('', '');
     updateBtn();
 
-    // Bring name/email into view (esp. when the picker was opened from the hero).
+    // Bring name/email into view. When the picker was opened from the hero <label>,
+    // closing it returns focus to that label and the browser scrolls it back to the
+    // top — so drop that focus first, then scroll to the card after restoration.
+    try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (_) {}
     const card = $('free-check');
-    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setTimeout(() => { try { $('gratis-name')?.focus({ preventScroll: true }); } catch (_) {} }, 350);
+    if (card) {
+      requestAnimationFrame(() => {
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+      });
+    }
   }
 
   // Kept on window so the documented check passes and for any external caller.
@@ -1368,7 +1374,9 @@
     $('gratis-email')?.addEventListener(evt, updateBtn);
   });
 
-  // Hero CTA: native <label for="gratis-file-input"> opens the picker. Track only.
+  // Hero CTA: native <label for="gratis-file-input"> opens the picker. Track only —
+  // no scroll here (it competed with the post-select scroll). After a file is chosen,
+  // handleFile() reliably brings the card into view. No input.click(), no double-open.
   $('hero-upload-cta')?.addEventListener('click', () => {
     track('upload_cta_clicked', { type: TYPE, source: 'hero' });
     track('file_picker_opened', { type: TYPE, source: 'hero' });
