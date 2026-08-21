@@ -1163,95 +1163,8 @@
   }
 </script>
 
-<script type="module" src="/debt/app.js"></script>
-<script>
-(function() {
-  // ── gratis file safety wrapper ────────────────────────────────────────────
-  window._gratisFileSafety = window._gratisFileSafety || function(input) {
-    if (!input || !input.files || !input.files.length) return;
-    var poll = setInterval(function() {
-      if (typeof window.handleGratisFileSelect === 'function') {
-        clearInterval(poll);
-        window.handleGratisFileSelect(input);
-      }
-    }, 100);
-    setTimeout(function() { clearInterval(poll); }, 5000);
-  };
-
-  function installUploadFix() {
-    var zone  = document.getElementById('gratis-upload-zone');
-    var input = document.getElementById('gratis-file-input');
-    if (!zone || !input) return;
-
-    // Single consolidated change listener
-    var pickerOpened = false;
-    var pickerTimeout = null;
-
-    input.addEventListener('change', function() {
-      pickerOpened = false;
-      if (pickerTimeout) { clearTimeout(pickerTimeout); pickerTimeout = null; }
-      if (input.files && input.files.length > 0) {
-        window._gratisFileSafety(input);
-        if (window.track) window.track('file_selected', { type: 'debt' });
-      }
-    });
-
-    // openPicker — no preventDefault/stopPropagation on touchstart
-    // double-trigger guard via 50ms flag instead
-    var lastOpen = 0;
-    function openPicker(e) {
-      // If the native input itself was tapped, label[for] handles it
-      if (e.target === input) return;
-      var now = Date.now();
-      if (now - lastOpen < 50) return;
-      lastOpen = now;
-
-      // zone IS the <label for="gratis-file-input">, so the browser already
-      // forwards this click to the input natively. Stop that native forward
-      // and drive the picker explicitly below — otherwise input.click() here
-      // fires *in addition to* the native forward, risking two file-picker
-      // opens per tap on some mobile browsers.
-      e.preventDefault();
-
-      pickerOpened = true;
-      if (pickerTimeout) clearTimeout(pickerTimeout);
-      pickerTimeout = setTimeout(function() {
-        if (pickerOpened) {
-          if (window.track) window.track('file_picker_abandoned', { type: 'debt' });
-          pickerOpened = false;
-        }
-      }, 10000);
-
-      input.click();
-    }
-
-    zone.addEventListener('click', openPicker);
-    // passive touchend for diagnostics only — no preventDefault
-    zone.addEventListener('touchend', function(e) {
-    }, { passive: true });
-
-    // Drag and drop
-    zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over'); });
-    zone.addEventListener('dragleave', function() { zone.classList.remove('drag-over'); });
-    zone.addEventListener('drop', function(e) {
-      e.preventDefault();
-      zone.classList.remove('drag-over');
-      if (e.dataTransfer && e.dataTransfer.files.length) {
-        input.files; // reference
-        Object.defineProperty(input, 'files', { value: e.dataTransfer.files, configurable: true });
-        input.dispatchEvent(new Event('change'));
-      }
-    });
-
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', installUploadFix);
-  } else {
-    installUploadFix();
-  }
-})();
-</script>
+<!-- installUploadFix + _gratisFileSafety removed: the ES module below attaches a
+     single change listener and opens the picker via the native <label for>. -->
 
 
 <script>
@@ -1297,39 +1210,23 @@
 
 
 
-<script>
-  // Google Ads upload conversion
-  document.addEventListener('DOMContentLoaded', function(){
-    var el = document.getElementById('gratis-status');
-    if(!el) return;
-    var fired = false;
-    new MutationObserver(function(){
-      if(fired) return;
-      if(el.classList.contains('optie-status--success')){
-        fired = true;
-        if(typeof gtag !== 'undefined'){
-          gtag('event', 'conversion', {'send_to': 'AW-18193666186/hTTyCMbF67gcEIqhteND'});
-        }
-      }
-    }).observe(el, {attributes: true, attributeFilter: ['class']});
-  });
-</script>
-<!-- ── Free-upload wiring ──────────────────────────────────────────────────────
-     Bridges app.js (ES module exports) to the page. Without this, the button's
-     onclick="window.startGratisUpload()" and the file-select poll for
-     window.handleGratisFileSelect hit undefined functions -> free funnel is dead.
-     On success this sets #gratis-status .optie-status--success, which is what the
-     Google Ads conversion MutationObserver above listens for. -->
+<!-- Ads-conversion MutationObserver removed: the conversion now fires directly in
+     the module success path, exactly once (guarded). -->
+<!-- Free-upload wiring: single ES module. Imports app.js exports, defines
+     window.track / handleGratisFileSelect / startGratisUpload, owns selectedFile,
+     the one change listener, submit, funnel events and the Ads conversion. -->
 <script type="module">
   import { submitFree, validateFile, formatFileSize, track, initStickyFooter } from '/debt/app.js';
 
   const TYPE = 'debt';
-  let selectedFile = null;
-
-  // Expose track for the inline upload-fix + diagnostics scripts that call window.track.
-  window.track = track;
-
   const $ = (id) => document.getElementById(id);
+
+  // ── Single source of truth ──────────────────────────────────────────────────
+  let selectedFile = null;
+  let conversionFired = false;
+
+  // Expose track so any remaining inline script can call window.track safely.
+  window.track = track;
 
   function setStatus(kind, msg) {
     const el = $('gratis-status');
@@ -1351,32 +1248,30 @@
   function updateBtn() {
     const btn = $('gratis-btn');
     if (!btn) return;
-    const name = ($('gratis-name') && $('gratis-name').value || '').trim();
-    const email = ($('gratis-email') && $('gratis-email').value || '').trim();
-    btn.disabled = !(selectedFile && name && email);
+    const name = ($('gratis-name')?.value || '').trim();
+    const email = ($('gratis-email')?.value || '').trim();
+    btn.disabled = !(selectedFile && name && isValidEmail(email));
   }
 
-  // Called by the inline upload-fix wrapper (window._gratisFileSafety) after a file is picked.
-  window.handleGratisFileSelect = function (input) {
-    const file = input && input.files && input.files[0];
+  // ── One file handler — called by the change listener and by drag-and-drop ────
+  function handleFile(file) {
     if (!file) return;
 
     const err = validateFile(file);
     if (err) {
       setStatus('error', err);
-      try { input.value = ''; } catch (_) {}
+      selectedFile = null;
+      updateBtn();
       return;
     }
 
     selectedFile = file;
+    track('file_selected', { type: TYPE, fileType: file.type || null, fileSize: file.size || null });
 
     const label = $('gratis-upload-label');
     const hint = $('gratis-upload-hint');
     if (label) label.innerHTML = '<span>' + escapeHtml(file.name) + '</span>';
     if (hint) hint.textContent = formatFileSize(file.size);
-
-    // Reset value so re-picking the same file still fires a change event.
-    try { input.value = ''; } catch (_) {}
 
     const cf = $('gratis-contact-fields');
     if (cf) {
@@ -1387,19 +1282,22 @@
     setStatus('', '');
     updateBtn();
 
-    // If the picker was opened from the hero, bring the name/email fields into view.
+    // Bring name/email into view (esp. when the picker was opened from the hero).
     const card = $('free-check');
     if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setTimeout(function () {
-      try { $('gratis-name') && $('gratis-name').focus({ preventScroll: true }); } catch (_) {}
-    }, 350);
+    setTimeout(() => { try { $('gratis-name')?.focus({ preventScroll: true }); } catch (_) {} }, 350);
+  }
+
+  // Kept on window so the documented check passes and for any external caller.
+  window.handleGratisFileSelect = function (input) {
+    handleFile(input && input.files && input.files[0]);
   };
 
-  // Called by the submit button: onclick="window.startGratisUpload()".
+  // ── Submit — button uses onclick="window.startGratisUpload()" ────────────────
   window.startGratisUpload = async function () {
     const btn = $('gratis-btn');
-    const name = ($('gratis-name') && $('gratis-name').value || '').trim();
-    const email = ($('gratis-email') && $('gratis-email').value || '').trim();
+    const name = ($('gratis-name')?.value || '').trim();
+    const email = ($('gratis-email')?.value || '').trim();
 
     if (!selectedFile) { setStatus('error', 'Please choose your letter first.'); return; }
     if (!name) { setStatus('error', 'Please enter your name.'); return; }
@@ -1411,45 +1309,75 @@
     try {
       await submitFree({
         file: selectedFile,
-        name: name,
-        email: email,
+        name,
+        email,
         type: TYPE,
-        onStatus: function (k, m) { setStatus(k, m); },
+        onStatus: (k, m) => setStatus(k, m),
       });
 
-      // SUCCESS: this exact class is what the Ads-conversion observer fires on.
+      // Success: set the visual status class, then fire the Ads conversion directly,
+      // exactly once. (No MutationObserver.)
       setStatus('success', 'Got it \u2014 your free overview is on its way by email, usually by the next working day.');
+
+      if (!conversionFired && typeof window.gtag === 'function') {
+        conversionFired = true;
+        window.gtag('event', 'conversion', { send_to: 'AW-18193666186/hTTyCMbF67gcEIqhteND' });
+      }
+      track('free_upload_success', { type: TYPE });
 
       const cf = $('gratis-contact-fields');
       if (cf) cf.style.display = 'none';
-      // app.js submitFree() already emits track('upload_completed', ...) on success.
     } catch (err) {
       setStatus('error', (err && err.message) || 'Something went wrong. Please try again.');
-      track('upload_error', { type: TYPE, message: (err && err.message) || null });
+      track('free_upload_error', { type: TYPE, message: (err && err.message) || null });
       if (btn) { btn.disabled = false; btn.textContent = btn.dataset.label || 'Get my free overview'; }
     }
   };
 
-  // Live enable/disable of the submit button as name/email are typed.
-  ['input', 'change', 'blur'].forEach(function (evt) {
-    var n = $('gratis-name'); if (n) n.addEventListener(evt, updateBtn);
-    var e = $('gratis-email'); if (e) e.addEventListener(evt, updateBtn);
-  });
+  // ── Wire the DOM ─────────────────────────────────────────────────────────────
+  const fileInput = $('gratis-file-input');
+  const zone = $('gratis-upload-zone');
 
-  // Hero CTA is a <label for="gratis-file-input"> — it opens the picker natively.
-  // We only TRACK here; no input.click(), so there is no double-open.
-  var heroCta = $('hero-upload-cta');
-  if (heroCta) {
-    heroCta.addEventListener('click', function () {
-      track('upload_cta_clicked', { type: TYPE, source: 'hero' });
-      track('file_picker_opened', { type: TYPE, source: 'hero' });
+  // One change listener. Native <label for="gratis-file-input"> opens the picker.
+  if (fileInput) {
+    fileInput.addEventListener('change', () => {
+      const f = fileInput.files && fileInput.files[0];
+      if (f) handleFile(f);
+      // Allow re-picking the same file (a same-value change would not fire).
+      try { fileInput.value = ''; } catch (_) {}
     });
   }
 
-  // Sticky-footer scroll reveal (app.js helper was never called on this page).
+  // Drag-and-drop (desktop). Mobile relies on the native label tap.
+  if (zone) {
+    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) handleFile(f);
+    });
+    // Intent event only — no input.click(); the <label for> opens the picker.
+    zone.addEventListener('click', () => track('file_picker_opened', { type: TYPE, source: 'zone' }));
+  }
+
+  // Live enable/disable of the submit button.
+  ['input', 'change', 'blur'].forEach((evt) => {
+    $('gratis-name')?.addEventListener(evt, updateBtn);
+    $('gratis-email')?.addEventListener(evt, updateBtn);
+  });
+
+  // Hero CTA: native <label for="gratis-file-input"> opens the picker. Track only.
+  $('hero-upload-cta')?.addEventListener('click', () => {
+    track('upload_cta_clicked', { type: TYPE, source: 'hero' });
+    track('file_picker_opened', { type: TYPE, source: 'hero' });
+  });
+
+  // Sticky-footer scroll reveal.
   try { initStickyFooter(); } catch (_) {}
 
-  track('landing_view', { type: TYPE });
+  track('landing_page_view', { type: TYPE });
 </script>
 </body>
 </html>
