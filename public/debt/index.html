@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -1163,8 +1163,51 @@
   }
 </script>
 
-<!-- installUploadFix + _gratisFileSafety removed: the ES module below attaches a
-     single change listener and opens the picker via the native <label for>. -->
+<!-- The debt free-upload funnel lives in /debt/app.js: it imports shared helpers
+     from /app.js and defines window.handleGratisFileSelect / window.startGratisUpload. -->
+<script type="module" src="/debt/app.js"></script>
+
+<!-- One change listener -> the handler defined in /debt/app.js. The upload zone and
+     hero CTA are native <label for="gratis-file-input">, so the browser opens the
+     picker; no input.click(). Drag-and-drop is desktop-only. -->
+<script>
+  (function () {
+    var input = document.getElementById('gratis-file-input');
+    var zone  = document.getElementById('gratis-upload-zone');
+
+    function bringFieldsIntoView() {
+      try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {}
+      var t = document.getElementById('gratis-contact-fields') || document.getElementById('free-check');
+      if (!t) return;
+      var bring = function () { try { t.scrollIntoView({ block: 'center' }); } catch (e) {} };
+      [60, 220, 450, 700, 1000].forEach(function (ms) { setTimeout(bring, ms); });
+    }
+
+    function handle() {
+      if (typeof window.handleGratisFileSelect === 'function' && input && input.files && input.files.length) {
+        window.handleGratisFileSelect(input);
+        bringFieldsIntoView();
+      }
+    }
+
+    if (input) {
+      input.addEventListener('change', handle);
+    }
+
+    if (zone) {
+      zone.addEventListener('dragover', function (e) { e.preventDefault(); zone.classList.add('drag-over'); });
+      zone.addEventListener('dragleave', function () { zone.classList.remove('drag-over'); });
+      zone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        if (input && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+          try { input.files = e.dataTransfer.files; } catch (err) {}
+          handle();
+        }
+      });
+    }
+  })();
+</script>
 
 
 <script>
@@ -1210,183 +1253,23 @@
 
 
 
-<!-- Ads-conversion MutationObserver removed: the conversion now fires directly in
-     the module success path, exactly once (guarded). -->
-<!-- Free-upload wiring: single ES module. Imports app.js exports, defines
-     window.track / handleGratisFileSelect / startGratisUpload, owns selectedFile,
-     the one change listener, submit, funnel events and the Ads conversion. -->
-<script type="module">
-  import { submitFree, validateFile, formatFileSize, track, initStickyFooter } from '/debt/app.js';
-
-  const TYPE = 'debt';
-  const $ = (id) => document.getElementById(id);
-
-  // ── Single source of truth ──────────────────────────────────────────────────
-  let selectedFile = null;
-  let conversionFired = false;
-
-  // Expose track so any remaining inline script can call window.track safely.
-  window.track = track;
-
-  function setStatus(kind, msg) {
-    const el = $('gratis-status');
+<!-- Google Ads conversion: /debt/app.js sets #gratis-status .optie-status--success
+     on a successful free upload. Fire the Ads conversion exactly once. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var el = document.getElementById('gratis-status');
     if (!el) return;
-    el.textContent = msg || '';
-    el.className = 'optie-status' + (kind ? ' optie-status--' + kind : '');
-  }
-
-  function escapeHtml(v = '') {
-    return String(v)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-  }
-
-  function isValidEmail(v) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-  }
-
-  function updateBtn() {
-    const btn = $('gratis-btn');
-    if (!btn) return;
-    const name = ($('gratis-name')?.value || '').trim();
-    const email = ($('gratis-email')?.value || '').trim();
-    btn.disabled = !(selectedFile && name && isValidEmail(email));
-  }
-
-  // ── One file handler — called by the change listener and by drag-and-drop ────
-  function handleFile(file) {
-    if (!file) return;
-
-    const err = validateFile(file);
-    if (err) {
-      setStatus('error', err);
-      selectedFile = null;
-      updateBtn();
-      return;
-    }
-
-    selectedFile = file;
-    track('file_selected', { type: TYPE, fileType: file.type || null, fileSize: file.size || null });
-
-    const label = $('gratis-upload-label');
-    const hint = $('gratis-upload-hint');
-    if (label) label.innerHTML = '<span>' + escapeHtml(file.name) + '</span>';
-    if (hint) hint.textContent = formatFileSize(file.size);
-
-    const cf = $('gratis-contact-fields');
-    if (cf) {
-      cf.style.display = 'flex';
-      track('contact_fields_shown', { type: TYPE });
-    }
-
-    setStatus('', '');
-    updateBtn();
-
-    // Bring the name/email fields into view after a file is chosen. On iOS the
-    // closing file picker returns focus to the hero <label> and Safari scrolls it
-    // back to the top; we blur that and re-assert the scroll across ~1s so one
-    // attempt reliably lands after the browser's restoration scroll, then focus name.
-    try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (_) {}
-    const target = $('gratis-contact-fields') || $('free-check');
-    if (target) {
-      const bring = () => { try { target.scrollIntoView({ block: 'center' }); } catch (_) {} };
-      [60, 220, 450, 700, 1000].forEach((ms) => setTimeout(bring, ms));
-      setTimeout(() => { try { $('gratis-name')?.focus({ preventScroll: true }); } catch (_) {} }, 1050);
-    }
-  }
-
-  // Kept on window so the documented check passes and for any external caller.
-  window.handleGratisFileSelect = function (input) {
-    handleFile(input && input.files && input.files[0]);
-  };
-
-  // ── Submit — button uses onclick="window.startGratisUpload()" ────────────────
-  window.startGratisUpload = async function () {
-    const btn = $('gratis-btn');
-    const name = ($('gratis-name')?.value || '').trim();
-    const email = ($('gratis-email')?.value || '').trim();
-
-    if (!selectedFile) { setStatus('error', 'Please choose your letter first.'); return; }
-    if (!name) { setStatus('error', 'Please enter your name.'); return; }
-    if (!isValidEmail(email)) { setStatus('error', 'Please enter a valid email address.'); return; }
-
-    if (btn) { btn.dataset.label = btn.textContent; btn.disabled = true; btn.textContent = 'Checking\u2026'; }
-    track('free_overview_submitted', { type: TYPE });
-
-    try {
-      await submitFree({
-        file: selectedFile,
-        name,
-        email,
-        type: TYPE,
-        onStatus: (k, m) => setStatus(k, m),
-      });
-
-      // Success: set the visual status class, then fire the Ads conversion directly,
-      // exactly once. (No MutationObserver.)
-      setStatus('success', 'Got it \u2014 your free overview is on its way by email, usually by the next working day.');
-
-      if (!conversionFired && typeof window.gtag === 'function') {
-        conversionFired = true;
-        window.gtag('event', 'conversion', { send_to: 'AW-18193666186/hTTyCMbF67gcEIqhteND' });
+    var fired = false;
+    new MutationObserver(function () {
+      if (fired) return;
+      if (el.classList.contains('optie-status--success')) {
+        fired = true;
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'conversion', { send_to: 'AW-18193666186/hTTyCMbF67gcEIqhteND' });
+        }
       }
-      track('free_upload_success', { type: TYPE });
-
-      const cf = $('gratis-contact-fields');
-      if (cf) cf.style.display = 'none';
-    } catch (err) {
-      setStatus('error', (err && err.message) || 'Something went wrong. Please try again.');
-      track('free_upload_error', { type: TYPE, message: (err && err.message) || null });
-      if (btn) { btn.disabled = false; btn.textContent = btn.dataset.label || 'Get my free overview'; }
-    }
-  };
-
-  // ── Wire the DOM ─────────────────────────────────────────────────────────────
-  const fileInput = $('gratis-file-input');
-  const zone = $('gratis-upload-zone');
-
-  // One change listener. Native <label for="gratis-file-input"> opens the picker.
-  if (fileInput) {
-    fileInput.addEventListener('change', () => {
-      const f = fileInput.files && fileInput.files[0];
-      if (f) handleFile(f);
-      // Allow re-picking the same file (a same-value change would not fire).
-      try { fileInput.value = ''; } catch (_) {}
-    });
-  }
-
-  // Drag-and-drop (desktop). Mobile relies on the native label tap.
-  if (zone) {
-    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
-    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-    zone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      zone.classList.remove('drag-over');
-      const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-      if (f) handleFile(f);
-    });
-    // Intent event only — no input.click(); the <label for> opens the picker.
-    zone.addEventListener('click', () => track('file_picker_opened', { type: TYPE, source: 'zone' }));
-  }
-
-  // Live enable/disable of the submit button.
-  ['input', 'change', 'blur'].forEach((evt) => {
-    $('gratis-name')?.addEventListener(evt, updateBtn);
-    $('gratis-email')?.addEventListener(evt, updateBtn);
+    }).observe(el, { attributes: true, attributeFilter: ['class'] });
   });
-
-  // Hero CTA: native <label for="gratis-file-input"> opens the picker. Track only —
-  // no scroll here (it competed with the post-select scroll). After a file is chosen,
-  // handleFile() reliably brings the card into view. No input.click(), no double-open.
-  $('hero-upload-cta')?.addEventListener('click', () => {
-    track('upload_cta_clicked', { type: TYPE, source: 'hero' });
-    track('file_picker_opened', { type: TYPE, source: 'hero' });
-  });
-
-  // Sticky-footer scroll reveal.
-  try { initStickyFooter(); } catch (_) {}
-
-  track('landing_page_view', { type: TYPE });
 </script>
 </body>
 </html>
