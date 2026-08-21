@@ -1282,15 +1282,16 @@
     setStatus('', '');
     updateBtn();
 
-    // Bring name/email into view. When the picker was opened from the hero <label>,
-    // closing it returns focus to that label and the browser scrolls it back to the
-    // top — so drop that focus first, then scroll to the card after restoration.
+    // Bring the name/email fields into view after a file is chosen. On iOS the
+    // closing file picker returns focus to the hero <label> and Safari scrolls it
+    // back to the top; we blur that and re-assert the scroll across ~1s so one
+    // attempt reliably lands after the browser's restoration scroll, then focus name.
     try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (_) {}
-    const card = $('free-check');
-    if (card) {
-      requestAnimationFrame(() => {
-        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
-      });
+    const target = $('gratis-contact-fields') || $('free-check');
+    if (target) {
+      const bring = () => { try { target.scrollIntoView({ block: 'center' }); } catch (_) {} };
+      [60, 220, 450, 700, 1000].forEach((ms) => setTimeout(bring, ms));
+      setTimeout(() => { try { $('gratis-name')?.focus({ preventScroll: true }); } catch (_) {} }, 1050);
     }
   }
 
