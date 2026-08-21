@@ -617,7 +617,7 @@
   <div class="container">
     <div class="header__inner">
       <div class="logo"><span class="logo-dot"></span>DoIPayThat</div>
-      <a href="#free-check" class="header-cta">Get my free overview</a>
+      <a href="#free-check" class="header-cta">Upload my debt letter</a>
     </div>
   </div>
 </header>
@@ -628,50 +628,24 @@
     <a href="#free-check" class="eyebrow" style="text-decoration:none;cursor:pointer;">UK Debt Letter Review</a>
 
     <h1>
-      Received a debt collection letter?<br>Understand what it&rsquo;s claiming before you pay or respond.
+      Received a debt collection letter?
     </h1>
 
-    <p class="hero__sub">
-      Upload your letter. We&rsquo;ll explain what it&rsquo;s claiming in plain English &mdash; usually by the next working day.
+    <p class="hero__sub" style="margin-bottom:8px;">
+      Understand what it&rsquo;s claiming before you pay or respond.
     </p>
 
-    <a href="#free-check" class="hero-cta" style="margin-bottom:14px;">
-      Get my free overview
-    </a>
+    <p style="font-weight:600;color:var(--green);margin:0 auto 22px;font-size:1rem;">
+      Free first overview &mdash; no payment required.
+    </p>
 
-    <div class="hero-sub-note" style="line-height:1.3;margin-bottom:36px;">
-      PDF, JPG or PNG &middot; no commitment &middot; fuller overview available
+    <label for="gratis-file-input" id="hero-upload-cta" class="hero-cta" style="margin-bottom:12px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,0);">
+      Upload my debt letter
+    </label>
+
+    <div class="hero-sub-note" style="line-height:1.4;margin-bottom:8px;">
+      PDF, JPG or phone photo &middot; Private &middot; No subscription
     </div>
-
-    <div class="trust-triggers">
-
-      <div class="trust-trigger">
-        <span><svg class="icon-lg"><use href="#icon-check"></use></svg></span>
-        <div>
-          <strong>Free first overview</strong>
-          Upload your letter and get a plain-English explanation of what it&rsquo;s claiming &mdash; before you pay anything or decide what to do.
-        </div>
-      </div>
-
-      <div class="trust-trigger">
-        <span><svg class="icon-lg"><use href="#icon-check"></use></svg></span>
-        <div>
-          <strong>Nothing ongoing</strong>
-          One document, one review, one price if you choose to go further &mdash; &pound;49, one time. No subscription, nothing recurring.
-        </div>
-      </div>
-
-      <div class="trust-trigger">
-        <span><svg class="icon-lg"><use href="#icon-check"></use></svg></span>
-        <div>
-          <strong>Everything in writing</strong>
-          No sales calls, no phone scripts. You get a written overview you can read, save, and refer back to.
-        </div>
-      </div>
-
-    </div>
-
-    <p style="text-align:center;font-size:.85rem;color:var(--muted);max-width:600px;margin:20px auto 0;line-height:1.6;">DoIPayThat is an independent service. We are not a debt collection company and we are not connected with any creditor or collection agency.</p>
 
   </div>
 </section>
@@ -708,7 +682,14 @@
       />
 
       <div class="upload-hint" style="margin:-8px 0 4px;">A phone photo is fine — just make sure the numbers are readable.</div>
-      <div style="font-size:.84rem;color:var(--green);font-weight:600;text-align:center;margin:8px 0 14px;">No payment today. Your free overview is usually sent by the next working day. &pound;49 only if you later choose the full analysis.</div>
+      <div style="font-size:.84rem;color:var(--green);font-weight:600;text-align:center;margin:8px 0 12px;">No payment today. Your free overview is usually sent by the next working day. The fuller overview is optional, later.</div>
+
+      <div style="background:var(--soft);border:1px solid #c7d9f5;border-radius:10px;padding:12px 14px;margin:0 0 14px;display:flex;gap:10px;align-items:flex-start;">
+        <svg class="icon-lg" style="color:var(--accent);flex-shrink:0;margin-top:2px;"><use href="#icon-lock"></use></svg>
+        <div style="font-size:.86rem;color:var(--ink-3);line-height:1.55;">
+          <strong style="color:var(--ink-2);">Private &amp; secure.</strong> Your document is used only to prepare your overview. It isn&rsquo;t sent to your creditor or debt collector. <a href="/privacy.html" style="color:var(--accent);">Privacy</a>
+        </div>
+      </div>
 
       <div id="gratis-contact-fields" class="contact-fields">
         <input id="gratis-name" class="input" placeholder="Your name">
@@ -734,6 +715,42 @@
 
       <div id="teaser" class="teaser" style="display:none;margin-top:24px;"></div>
     </section>
+
+<section class="section" style="padding:20px 0 4px;">
+  <div class="container">
+
+    <div class="trust-triggers">
+
+      <div class="trust-trigger">
+        <span><svg class="icon-lg"><use href="#icon-check"></use></svg></span>
+        <div>
+          <strong>Free first overview</strong>
+          Upload your letter and get a plain-English explanation of what it&rsquo;s claiming &mdash; before you pay anything or decide what to do.
+        </div>
+      </div>
+
+      <div class="trust-trigger">
+        <span><svg class="icon-lg"><use href="#icon-check"></use></svg></span>
+        <div>
+          <strong>Nothing ongoing</strong>
+          One document, one review. No subscription and nothing recurring &mdash; and no payment to see your first overview.
+        </div>
+      </div>
+
+      <div class="trust-trigger">
+        <span><svg class="icon-lg"><use href="#icon-check"></use></svg></span>
+        <div>
+          <strong>Everything in writing</strong>
+          No sales calls, no phone scripts. You get a written overview you can read, save, and refer back to.
+        </div>
+      </div>
+
+    </div>
+
+    <p style="text-align:center;font-size:.85rem;color:var(--muted);max-width:600px;margin:20px auto 0;line-height:1.6;">DoIPayThat is an independent service. We are not a debt collection company and we are not connected with any creditor or collection agency.</p>
+
+  </div>
+</section>
 
 <section class="section section--alt">
   <div class="container">
@@ -1079,7 +1096,7 @@
     </p>
 
     <a href="#free-check" class="final-cta-btn">
-      Get my free overview
+      Upload my debt letter
     </a>
 
     <div class="final-cta-note">
@@ -1124,7 +1141,7 @@
   </div>
 
   <a href="#free-check" class="sticky-cta">
-    Get my free overview
+    Upload my debt letter
   </a>
 </div>
 
@@ -1296,6 +1313,143 @@
       }
     }).observe(el, {attributes: true, attributeFilter: ['class']});
   });
+</script>
+<!-- ── Free-upload wiring ──────────────────────────────────────────────────────
+     Bridges app.js (ES module exports) to the page. Without this, the button's
+     onclick="window.startGratisUpload()" and the file-select poll for
+     window.handleGratisFileSelect hit undefined functions -> free funnel is dead.
+     On success this sets #gratis-status .optie-status--success, which is what the
+     Google Ads conversion MutationObserver above listens for. -->
+<script type="module">
+  import { submitFree, validateFile, formatFileSize, track, initStickyFooter } from '/debt/app.js';
+
+  const TYPE = 'debt';
+  let selectedFile = null;
+
+  // Expose track for the inline upload-fix + diagnostics scripts that call window.track.
+  window.track = track;
+
+  const $ = (id) => document.getElementById(id);
+
+  function setStatus(kind, msg) {
+    const el = $('gratis-status');
+    if (!el) return;
+    el.textContent = msg || '';
+    el.className = 'optie-status' + (kind ? ' optie-status--' + kind : '');
+  }
+
+  function escapeHtml(v = '') {
+    return String(v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+  }
+
+  function isValidEmail(v) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+
+  function updateBtn() {
+    const btn = $('gratis-btn');
+    if (!btn) return;
+    const name = ($('gratis-name') && $('gratis-name').value || '').trim();
+    const email = ($('gratis-email') && $('gratis-email').value || '').trim();
+    btn.disabled = !(selectedFile && name && email);
+  }
+
+  // Called by the inline upload-fix wrapper (window._gratisFileSafety) after a file is picked.
+  window.handleGratisFileSelect = function (input) {
+    const file = input && input.files && input.files[0];
+    if (!file) return;
+
+    const err = validateFile(file);
+    if (err) {
+      setStatus('error', err);
+      try { input.value = ''; } catch (_) {}
+      return;
+    }
+
+    selectedFile = file;
+
+    const label = $('gratis-upload-label');
+    const hint = $('gratis-upload-hint');
+    if (label) label.innerHTML = '<span>' + escapeHtml(file.name) + '</span>';
+    if (hint) hint.textContent = formatFileSize(file.size);
+
+    // Reset value so re-picking the same file still fires a change event.
+    try { input.value = ''; } catch (_) {}
+
+    const cf = $('gratis-contact-fields');
+    if (cf) {
+      cf.style.display = 'flex';
+      track('contact_fields_shown', { type: TYPE });
+    }
+
+    setStatus('', '');
+    updateBtn();
+
+    // If the picker was opened from the hero, bring the name/email fields into view.
+    const card = $('free-check');
+    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(function () {
+      try { $('gratis-name') && $('gratis-name').focus({ preventScroll: true }); } catch (_) {}
+    }, 350);
+  };
+
+  // Called by the submit button: onclick="window.startGratisUpload()".
+  window.startGratisUpload = async function () {
+    const btn = $('gratis-btn');
+    const name = ($('gratis-name') && $('gratis-name').value || '').trim();
+    const email = ($('gratis-email') && $('gratis-email').value || '').trim();
+
+    if (!selectedFile) { setStatus('error', 'Please choose your letter first.'); return; }
+    if (!name) { setStatus('error', 'Please enter your name.'); return; }
+    if (!isValidEmail(email)) { setStatus('error', 'Please enter a valid email address.'); return; }
+
+    if (btn) { btn.dataset.label = btn.textContent; btn.disabled = true; btn.textContent = 'Checking\u2026'; }
+    track('free_overview_submitted', { type: TYPE });
+
+    try {
+      await submitFree({
+        file: selectedFile,
+        name: name,
+        email: email,
+        type: TYPE,
+        onStatus: function (k, m) { setStatus(k, m); },
+      });
+
+      // SUCCESS: this exact class is what the Ads-conversion observer fires on.
+      setStatus('success', 'Got it \u2014 your free overview is on its way by email, usually by the next working day.');
+
+      const cf = $('gratis-contact-fields');
+      if (cf) cf.style.display = 'none';
+      // app.js submitFree() already emits track('upload_completed', ...) on success.
+    } catch (err) {
+      setStatus('error', (err && err.message) || 'Something went wrong. Please try again.');
+      track('upload_error', { type: TYPE, message: (err && err.message) || null });
+      if (btn) { btn.disabled = false; btn.textContent = btn.dataset.label || 'Get my free overview'; }
+    }
+  };
+
+  // Live enable/disable of the submit button as name/email are typed.
+  ['input', 'change', 'blur'].forEach(function (evt) {
+    var n = $('gratis-name'); if (n) n.addEventListener(evt, updateBtn);
+    var e = $('gratis-email'); if (e) e.addEventListener(evt, updateBtn);
+  });
+
+  // Hero CTA is a <label for="gratis-file-input"> — it opens the picker natively.
+  // We only TRACK here; no input.click(), so there is no double-open.
+  var heroCta = $('hero-upload-cta');
+  if (heroCta) {
+    heroCta.addEventListener('click', function () {
+      track('upload_cta_clicked', { type: TYPE, source: 'hero' });
+      track('file_picker_opened', { type: TYPE, source: 'hero' });
+    });
+  }
+
+  // Sticky-footer scroll reveal (app.js helper was never called on this page).
+  try { initStickyFooter(); } catch (_) {}
+
+  track('landing_view', { type: TYPE });
 </script>
 </body>
 </html>
