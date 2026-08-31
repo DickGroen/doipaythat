@@ -6,7 +6,12 @@
 //   GET /api/test-analysis?secret=XXX&type=mahnung&case=tier1-inflated-fees
 //   GET /api/test-analysis?secret=XXX&list=1   → overzicht beschikbare cases
 //
-// Beveiligd met TEST_SECRET uit wrangler.toml.
+// Beveiligd met TEST_SECRET (Cloudflare secret, niet in wrangler.toml vars)
+// EN met API_DEBUG_MODE — de route is volledig uitgeschakeld tenzij
+// API_DEBUG_MODE="true", ongeacht of iemand het juiste secret heeft.
+// Zo kan een gelekt/geraden secret in productie nooit meer een echte
+// analyse + e-mail triggeren; je moet DEBUG expliciet aanzetten om te testen.
+//
 // Nooit publiek linken. Niet in productie-UI tonen.
 
 import { jsonResponse }          from "../utils/response.js";
@@ -18,13 +23,26 @@ import { sendFreeEmail, sendPaidEmail }                 from "../services/resend
 import { getTestCase, listTestCases, BLANK_PDF_B64 }    from "../services/testcases.js";
 
 export async function handleTestAnalysis(request, env) {
+  // ── Hard gate: alleen actief als DEBUG expliciet aan staat ────────────────
+  // Dit is de belangrijkste wijziging. Zelfs met het juiste TEST_SECRET kan
+  // deze route in productie (API_DEBUG_MODE="false") niets meer doen — dus
+  // een gelekt secret, een vergeten monitoring-ping of een geraden URL kan
+  // nooit meer ongemerkt 4x per dag een echte e-mail versturen.
+  if (env.API_DEBUG_MODE !== "true") {
+    console.warn(`[TEST] Geblokkeerd: API_DEBUG_MODE staat niet op "true" (huidige waarde: ${env.API_DEBUG_MODE ?? "niet gezet"})`);
+    return jsonResponse({ ok: false, error: "Not found" }, 404);
+  }
+
   // ── Auth ───────────────────────────────────────────────────────────────────
   const url    = new URL(request.url);
   const secret = url.searchParams.get("secret");
 
   if (!env.TEST_SECRET || secret !== env.TEST_SECRET) {
+    console.warn(`[TEST] Forbidden: ongeldig of ontbrekend secret vanaf ${request.headers.get("cf-connecting-ip") || "onbekend IP"}`);
     return jsonResponse({ ok: false, error: "Forbidden" }, 403);
   }
+
+  console.log(`[TEST] Aangeroepen vanaf ${request.headers.get("cf-connecting-ip") || "onbekend IP"} — user-agent: ${request.headers.get("user-agent") || "onbekend"}`);
 
   // ── List mode ──────────────────────────────────────────────────────────────
   if (url.searchParams.get("list") === "1") {
@@ -54,7 +72,7 @@ export async function handleTestAnalysis(request, env) {
   const testEmail = env.TEST_EMAIL || env.ADMIN_EMAIL;
   if (!testEmail) {
     return jsonResponse(
-      { ok: false, error: "TEST_EMAIL or ADMIN_EMAIL not configured in wrangler.toml" },
+      { ok: false, error: "TEST_EMAIL or ADMIN_EMAIL not configured" },
       500
     );
   }
