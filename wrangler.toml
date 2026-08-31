@@ -2,11 +2,13 @@ name = "doipaythat"
 main = "worker/index.js"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
+
 [vars]
 ENV = "production"
 API_DEBUG_MODE = "false"
 ADMIN_EMAIL = "groenvantexel@gmail.com"
 SITE_URL = "https://doipaythat.co.uk"
+
 # Stripe Payment Links (public — not secrets)
 STRIPE_LINK_DEBT         = "https://buy.stripe.com/bJe4gA7Tm8aP61M5ly14400"
 STRIPE_LINK_BILL         = "https://buy.stripe.com/cNidRa6Pidv99dYbJW14401"
@@ -15,19 +17,36 @@ STRIPE_LINK_HOUSING      = "https://buy.stripe.com/14A8wQ4HagHlgGqcO014403"
 STRIPE_LINK_PARKING      = "https://buy.stripe.com/eVq28sb5ycr59dYdS414404"
 STRIPE_LINK_QUOTE        = "https://buy.stripe.com/14AeVe0qU76LfCm6pC14405"
 STRIPE_LINK_SUBSCRIPTION = "https://buy.stripe.com/5kQfZi0qU62H9dY8xK14406"
-# Secrets via Cloudflare Dashboard:
+
+# Secrets via Cloudflare Dashboard (never in this file):
 # ANTHROPIC_API_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY
-# Test route (never link publicly)
-TEST_SECRET = "dipt-test-2026-xq7k"
+
+# ── Test route ────────────────────────────────────────────────────────────
+# ⚠️ Verplaats TEST_SECRET naar een Cloudflare secret (wrangler secret put
+# TEST_SECRET) in plaats van hier als platte tekst in vars. Plain vars staan
+# leesbaar in het dashboard èn in elke wrangler.toml-kopie/commit-historie;
+# een secret is versleuteld en nergens als platte tekst zichtbaar.
+# Overweeg bovendien de route zelf te verwijderen/uit te schakelen zodra je
+# 'm niet actief nodig hebt voor ontwikkeling — een niet-bestaande route kan
+# nooit per ongeluk aangeroepen worden, wat je huidige probleem is.
 TEST_EMAIL  = "groenvantexel@gmail.com"
+# TEST_SECRET is verwijderd uit deze vars-sectie — zet 'm als secret:
+#   npx wrangler secret put TEST_SECRET
+# (waarde: dipt-test-2026-xq7k, of genereer een nieuwe zodat de oude,
+# mogelijk gelekte waarde niet langer geldig is)
+
 [[kv_namespaces]]
 binding = "DEBT_QUEUE"
 id = "6babd60de35a4837bd3b7c206299ba71"
+
 [[r2_buckets]]
 binding = "DOCS_BUCKET"
 bucket_name = "doipaythat-docs"
-[triggers]
 
-routes = [
-  { pattern = "doipaythat.co.uk/api/*", zone_name = "doipaythat.co.uk" }
-]
+# Geen cron-triggers actief op deze worker.
+[triggers]
+crons = []
+
+[[routes]]
+pattern = "doipaythat.co.uk/api/*"
+zone_name = "doipaythat.co.uk"
